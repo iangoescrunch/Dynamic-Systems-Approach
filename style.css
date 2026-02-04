@@ -170,6 +170,11 @@ header h1 {
     display: block;
 }
 
+.fake-link {
+    cursor: default;
+    pointer-events: none;
+}
+
 .chapter-card:hover {
     border-color: #3498db;
     box-shadow: 0 4px 12px rgba(52, 152, 219, 0.2);
