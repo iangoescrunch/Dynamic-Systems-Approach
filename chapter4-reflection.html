@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 4 Reflection: Learning to Walk Without Instructions</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="chapter-nav">
+        <a href="index.html" class="nav-home">← Home</a>
+        <div class="nav-buttons">
+            <a href="chapter3-reflection.html" class="nav-btn">← Chapter 3</a>
+            <span class="nav-disabled">Chapter 5 →</span>
+        </div>
+    </nav>
+
+    <div class="container">
+        <header>
+            <h1>Chapter 4 Reflection: Learning to Walk Without Instructions</h1>
+            <div class="meta">
+                <span class="date">Graduate Seminar Reflection</span>
+                <span class="course">Perception and Action</span>
+            </div>
+        </header>
+
+        <article>
+            <p>Reading Chapter 4 made me rethink everything about motor control and learning. Thelen and Smith apply dynamic systems principles to infant development, specifically learning to walk, and it challenges the entire notion of motor programs or developmental blueprints. Coming from computer science where everything has explicit instructions, this is disorienting but compelling.</p>
+
+            <p>Bernstein's degrees of freedom problem is what hooked me. Your body generates different forces depending on where your limbs are in space. The same muscle contraction produces different movements depending on whether your arm is extended or bent, whether you're moving fast or slow. How does your nervous system coordinate all these changing variables?</p>
+
+            <p>I think about this every time I change the oil in my car. I pour from about 18 inches up, hitting a 2 inch filler opening. As the bottle empties, the mass changes, the flow rate drops, my arm extension increases, and the bottle tips further. I'm solving continuous equations of motion in real time without thinking about it. My perception-action system adjusts for the changing weight distribution, the viscosity of the oil, the trajectory as the bottle angle shifts. If I had to compute this explicitly, I'd be there all day with a calculator. But the system just self-organizes. No program, no instructions. Just continuous coupling between perception and action.</p>
+
+            <p>The chapter argues that infant kicking works the same way. When babies kick, their legs flex from muscle activation, but they extend from spring-like properties of the muscles plus gravity. No neural command to extend. The movement contains more information than the neural signal because physics is doing work. The trajectory emerges from the interaction of neural activation, muscle elasticity, and gravitational forces. This seems huge. It means you can't separate the "motor command" from the physical properties of the body and environment.</p>
+
+            <p>The control parameter concept clicked for me through drumming. At slow tempos, I'm relaxed. My arms swing in a loose, galloping rhythm. My posture is casual. But as tempo increases past a certain threshold, everything reorganizes. My spine straightens. I'm no longer flowing, I'm attacking. Large muscle groups move my body into position before my hands arrive. My feet shift to an attack position, balls down, so I can make two strikes with one leg motion. Different muscle groups, different coordination, different posture. Same drummer, same kit, but a completely different coordinative structure.</p>
+
+            <p>Tempo is just a scalar. It doesn't encode how to play fast. But it acts as a control parameter that moves my system between different attractor states. It reminds me of the F-14 Tomcat with variable-sweep wings. Same aircraft, but the wings reconfigure for supersonic flight versus slow landing approaches. The plane doesn't have separate "programs" for each configuration. The wings find stable positions given airspeed and task demands.</p>
+
+            <p>The asynchronous development section connected to my experience learning programming. Markdown was a phase shift. Everything was confusing, then suddenly I understood how it functions and could run with it. R syntax feels more gradual. Every time I load a package, there are new operators requiring parameters that pass through layers of the system to communicate with other packages. I'm still a novice, so I'm not sure if this will ever phase shift for me. Maybe other users experience a subjective phase shift once they've built enough skill and memory, but from inside the learning process, it feels incremental.</p>
+
+            <p>Drumming and guitar have clear phase shifts. There's a moment when you can hold a "boom boom clap" beat or play open chords without thinking. Before that threshold, you're struggling with every strike. After, it's automatic. Same with jazz musicians sensing time signature changes and key shifts for hours. Some people can do this, some can't. The chapter would probably say they've developed stable attractors for those coordinative patterns.</p>
+
+            <p>But here's where I get stuck. I've built neural networks. I've watched them train. Sometimes the loss function drops gradually, then suddenly jumps at certain points. The network would oscillate between fast and slow learning, find a saddle point with near-zero gradients, then escape and rapidly descend. That looks like phase transitions. The system sits at the saddle point (critical slowing down?), then shifts to qualitatively different behavior.</p>
+
+            <p>Is gradient descent compatible with self-organization? Backprop is a supervisor, explicitly optimizing toward lower loss. Dynamic systems self-organize without goal-directed algorithms. But maybe the loss landscape is the environment and the network explores stable configurations within that landscape. The weights aren't told what values to take. They find collective configurations that minimize loss. Maybe that's self-organization within constraints?</p>
+
+            <p>Thelen and Smith reject the computer metaphor because it implies programs and representations. But neural networks don't have programs either. They have weights settling into configurations. Modern connectionist models might be more compatible with dynamic systems than the authors realize. Or maybe I'm trying to force compatibility because I want both frameworks to work.</p>
+
+            <p>The variability section reframed how I think about my automaticity research data. High variability isn't noise to average out. It's information about system stability. When participants show inconsistent reaction times, maybe they're near a transition between automatic and controlled processing. The system is exploring multiple possible coordinative states before settling into one.</p>
+
+            <p>The chapter's core claim is that walking self-organizes from heterogeneous components within task and environmental contexts. No component contains a dedicated plan. Just like my oil pouring, infant stepping emerges from the confluence of neural maturation, muscle properties, motivation, gravity, and support surfaces. This makes development messier and more contingent than stage theories suggest, but it also explains the flexibility and context-dependence that traditional theories struggle with.</p>
+
+            <p>I'm still wrestling with whether this framework can scale to cognition. Motor control feels transparent because the physics is visible. But does concept learning or language acquisition work the same way? That's probably the next chapter's problem.</p>
+        </article>
+
+        <footer>
+            <div class="tags">
+                <span class="tag">Motor Control</span>
+                <span class="tag">Bernstein</span>
+                <span class="tag">Self-Organization</span>
+                <span class="tag">Control Parameters</span>
+                <span class="tag">Neural Networks</span>
+            </div>
+        </footer>
+    </div>
+
+    <nav class="chapter-nav bottom-nav">
+        <a href="index.html" class="nav-home">← Home</a>
+        <div class="nav-buttons">
+            <a href="chapter3-reflection.html" class="nav-btn">← Chapter 3</a>
+            <span class="nav-disabled">Chapter 5 →</span>
+        </div>
+    </nav>
+
+    <script src="script.js"></script>
+</body>
+</html>
