@@ -11,6 +11,7 @@ This graduate seminar blog demonstrates two complementary approaches to engaging
 
 ## Current Status
 
+**Chapters 1-2**: Technical analyses complete  
 **Chapters 3-4**: Complete with both reflection and analysis  
 **Chapter 5**: Technical analysis complete (reflection pending)
 
@@ -21,6 +22,9 @@ outputs/
 ├── index.html                     # Homepage with chapter sections
 ├── style.css                      # Comprehensive stylesheet
 ├── script.js                      # Reading time & animations
+│
+├── chapter1-analysis.html         # Technical: Developmental puzzle & infinite regress
+├── chapter2-analysis.html         # Technical: Cognitive development crisis
 │
 ├── chapter3-reflection.html       # Personal: Horse gaits & phase transitions
 ├── chapter3-analysis.html         # Technical: Dynamic systems framework
@@ -55,6 +59,12 @@ outputs/
 **Example triggers**: Theoretical framework, experimental implications, explanatory mechanisms
 
 ## Completed Content
+
+### Chapter 1: The Puzzle of Motor Development
+**Analysis**: Teleological assumptions in developmental theory; the infinite regress problem; why traditional approaches cannot explain ordered progressions without prespecified instructions
+
+### Chapter 2: What is Developing?
+**Analysis**: Cognitive development exhibiting same paradoxes as motor development; competence-incompetence coexistence; context-dependent performance; asynchronous trajectories
 
 ### Chapter 3: Exploring Paradigms for Change
 **Reflection**: Horse gaits as paradigm for phase transitions, self-organization, and attractor dynamics  
@@ -108,6 +118,12 @@ git push -u origin main
 
 ```
 Homepage (index.html)
+│
+├── Chapter 1: The Puzzle of Motor Development
+│   └── Technical Analysis → chapter1-analysis.html
+│
+├── Chapter 2: What is Developing?
+│   └── Technical Analysis → chapter2-analysis.html
 │
 ├── Chapter 3: Exploring Paradigms for Change
 │   ├── Personal Reflection → chapter3-reflection.html
@@ -226,6 +242,7 @@ Both are necessary for graduate-level mastery of complex theoretical frameworks.
 ## Development Notes
 
 ### Completed Work
+- Chapters 1-2: Technical analyses
 - Chapters 3-4: Full suite (reflection + analysis)
 - Chapter 5: Technical analysis (reflection pending)
 - Homepage with organized chapter sections
