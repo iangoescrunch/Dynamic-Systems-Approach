@@ -5,6 +5,102 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dynamic Systems Approach to Development | Ian McDermid</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        .diagrams-section {
+            margin: 2rem 0 3rem;
+            padding: 0;
+        }
+
+        .diagrams-section h2 {
+            font-size: 1.1rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: #888;
+            margin-bottom: 1.2rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #2a2a35;
+        }
+
+        .diagram-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 700px) {
+            .diagram-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .diagram-card {
+            display: block;
+            background: #0a0a0f;
+            border: 1px solid #1e1e2a;
+            border-radius: 8px;
+            overflow: hidden;
+            text-decoration: none;
+            color: inherit;
+            transition: border-color 0.3s, transform 0.2s, box-shadow 0.3s;
+        }
+
+        .diagram-card:hover {
+            border-color: #3a3a4a;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 24px rgba(0,0,0,0.4);
+        }
+
+        .diagram-thumb {
+            width: 100%;
+            display: block;
+            border-bottom: 1px solid #1e1e2a;
+        }
+
+        .diagram-info {
+            padding: 1rem 1.2rem;
+        }
+
+        .diagram-info .diagram-type {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: #8ecae6;
+            margin-bottom: 0.4rem;
+        }
+
+        .diagram-info h3 {
+            font-size: 1rem;
+            color: #e0dcd0;
+            margin-bottom: 0.4rem;
+            font-weight: 500;
+        }
+
+        .diagram-info p {
+            font-size: 0.85rem;
+            color: #777;
+            line-height: 1.5;
+            margin-bottom: 0.6rem;
+        }
+
+        .diagram-info .diagram-stats {
+            font-size: 0.7rem;
+            color: #555;
+            letter-spacing: 0.05em;
+        }
+
+        .diagram-info .open-link {
+            display: inline-block;
+            margin-top: 0.5rem;
+            font-size: 0.8rem;
+            color: #81b29a;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .diagram-card:hover .open-link {
+            color: #a8d4b8;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -17,6 +113,33 @@
                 <p class="institution">University of Central Oklahoma | Experimental Psychology | Spring 2026</p>
             </div>
         </header>
+
+        <!-- Interactive Diagrams Section -->
+        <section class="diagrams-section">
+            <h2>Interactive Theory Maps</h2>
+            <div class="diagram-grid">
+                <a href="theory-arc-diagram.html" class="diagram-card">
+                    <img src="figures/thumb-theory-architecture.svg" alt="Theory Architecture arc diagram preview" class="diagram-thumb">
+                    <div class="diagram-info">
+                        <div class="diagram-type">D3 Arc Diagram</div>
+                        <h3>Theory Architecture</h3>
+                        <p>How concepts build across chapters: from the developmental puzzle through dynamic principles to neural mechanism and cognition.</p>
+                        <div class="diagram-stats">26 concepts &middot; 33 connections &middot; Chapters 1&ndash;6</div>
+                        <span class="open-link">Explore diagram &rarr;</span>
+                    </div>
+                </a>
+                <a href="theory-lineage.html" class="diagram-card">
+                    <img src="figures/thumb-theory-lineage.svg" alt="Intellectual Lineage temporal diagram preview" class="diagram-thumb">
+                    <div class="diagram-info">
+                        <div class="diagram-type">D3 Arc Diagram</div>
+                        <h3>Intellectual Lineage</h3>
+                        <p>Every theory cited from Introduction through Chapter 6, arranged chronologically from Darwin (1859) to Thelen &amp; Smith (1994).</p>
+                        <div class="diagram-stats">33 theories &middot; ~50 connections &middot; 1859&ndash;1994</div>
+                        <span class="open-link">Explore diagram &rarr;</span>
+                    </div>
+                </a>
+            </div>
+        </section>
 
         <main class="post-grid">
             <section class="chapter-section">

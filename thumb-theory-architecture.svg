@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 260" width="600" height="260">
+  <rect width="600" height="260" fill="#0a0a0f"/>
+  <!-- Era bands -->
+  <rect x="30" y="120" width="80" height="8" rx="2" fill="#6b4c3b" opacity="0.25"/>
+  <rect x="120" y="120" width="60" height="8" rx="2" fill="#5c4a5e" opacity="0.25"/>
+  <rect x="190" y="120" width="80" height="8" rx="2" fill="#3d5a4e" opacity="0.25"/>
+  <rect x="280" y="120" width="80" height="8" rx="2" fill="#4a5a3d" opacity="0.25"/>
+  <rect x="370" y="120" width="120" height="8" rx="2" fill="#3d4f6b" opacity="0.25"/>
+  <rect x="500" y="120" width="80" height="8" rx="2" fill="#6b5a3d" opacity="0.25"/>
+  <!-- Node dots -->
+  <g fill="#888" opacity="0.6">
+    <circle cx="40" cy="124" r="3"/><circle cx="55" cy="124" r="3"/><circle cx="70" cy="124" r="3"/><circle cx="85" cy="124" r="3"/>
+    <circle cx="125" cy="124" r="3"/><circle cx="140" cy="124" r="3"/><circle cx="160" cy="124" r="3"/>
+    <circle cx="200" cy="124" r="3"/><circle cx="215" cy="124" r="3"/><circle cx="235" cy="124" r="3"/><circle cx="255" cy="124" r="3"/>
+    <circle cx="290" cy="124" r="3"/><circle cx="310" cy="124" r="3"/><circle cx="330" cy="124" r="3"/><circle cx="350" cy="124" r="3"/>
+    <circle cx="380" cy="124" r="3"/><circle cx="400" cy="124" r="3"/><circle cx="420" cy="124" r="3"/><circle cx="440" cy="124" r="3"/><circle cx="460" cy="124" r="3"/><circle cx="480" cy="124" r="3"/>
+    <circle cx="510" cy="124" r="3"/><circle cx="530" cy="124" r="3"/><circle cx="545" cy="124" r="3"/><circle cx="560" cy="124" r="3"/><circle cx="575" cy="124" r="3"/>
+  </g>
+  <!-- Sample arcs - challenges (red) -->
+  <path d="M 200 124 Q 145 60 85 124" fill="none" stroke="#e07a5f" stroke-width="1.2" opacity="0.35"/>
+  <path d="M 235 124 Q 175 50 125 124" fill="none" stroke="#e07a5f" stroke-width="1.2" opacity="0.35"/>
+  <path d="M 200 124 Q 120 35 40 124" fill="none" stroke="#e07a5f" stroke-width="1.2" opacity="0.3"/>
+  <!-- extends (green) -->
+  <path d="M 290 124 Q 260 75 235 124" fill="none" stroke="#81b29a" stroke-width="1.2" opacity="0.35"/>
+  <path d="M 350 124 Q 290 50 215 124" fill="none" stroke="#81b29a" stroke-width="1.2" opacity="0.3"/>
+  <path d="M 310 124 Q 265 65 200 124" fill="none" stroke="#81b29a" stroke-width="1.2" opacity="0.35"/>
+  <path d="M 575 124 Q 400 25 215 124" fill="none" stroke="#81b29a" stroke-width="1.2" opacity="0.25"/>
+  <!-- instantiates (gold) -->
+  <path d="M 380 124 Q 335 55 290 124" fill="none" stroke="#f2cc8f" stroke-width="1.2" opacity="0.35"/>
+  <path d="M 440 124 Q 380 40 310 124" fill="none" stroke="#f2cc8f" stroke-width="1.2" opacity="0.3"/>
+  <path d="M 460 124 Q 375 30 290 124" fill="none" stroke="#f2cc8f" stroke-width="1.2" opacity="0.3"/>
+  <path d="M 545 124 Q 490 45 440 124" fill="none" stroke="#f2cc8f" stroke-width="1.2" opacity="0.35"/>
+  <!-- crosscut (blue) -->
+  <path d="M 575 124 Q 440 20 290 124" fill="none" stroke="#8ecae6" stroke-width="1.2" opacity="0.3"/>
+  <path d="M 560 124 Q 425 25 310 124" fill="none" stroke="#8ecae6" stroke-width="1.2" opacity="0.25"/>
+  <path d="M 575 124 Q 480 30 380 124" fill="none" stroke="#8ecae6" stroke-width="1.2" opacity="0.3"/>
+  <!-- Title -->
+  <text x="300" y="30" text-anchor="middle" font-family="Georgia, serif" font-size="16" fill="#e8e4d8" font-weight="300" letter-spacing="3">THEORY ARCHITECTURE</text>
+  <text x="300" y="48" text-anchor="middle" font-family="monospace" font-size="8" fill="#666" letter-spacing="2">CHAPTERS 1–6 · 26 CONCEPTS · 33 CONNECTIONS</text>
+  <!-- Legend -->
+  <g transform="translate(100, 220)">
+    <line x1="0" y1="0" x2="16" y2="0" stroke="#e07a5f" stroke-width="2"/><text x="22" y="3" font-family="monospace" font-size="7" fill="#888">CHALLENGES</text>
+    <line x1="110" y1="0" x2="126" y2="0" stroke="#81b29a" stroke-width="2"/><text x="132" y="3" font-family="monospace" font-size="7" fill="#888">EXTENDS</text>
+    <line x1="205" y1="0" x2="221" y2="0" stroke="#f2cc8f" stroke-width="2"/><text x="227" y="3" font-family="monospace" font-size="7" fill="#888">INSTANTIATES</text>
+    <line x1="320" y1="0" x2="336" y2="0" stroke="#8ecae6" stroke-width="2"/><text x="342" y="3" font-family="monospace" font-size="7" fill="#888">CROSS-CUTTING</text>
+  </g>
+  <!-- Chapter labels -->
+  <text x="58" y="145" text-anchor="middle" font-family="monospace" font-size="7" fill="#444">Ch 1</text>
+  <text x="140" y="145" text-anchor="middle" font-family="monospace" font-size="7" fill="#444">Ch 2</text>
+  <text x="225" y="145" text-anchor="middle" font-family="monospace" font-size="7" fill="#444">Ch 3</text>
+  <text x="320" y="145" text-anchor="middle" font-family="monospace" font-size="7" fill="#444">Ch 4</text>
+  <text x="430" y="145" text-anchor="middle" font-family="monospace" font-size="7" fill="#444">Ch 5</text>
+  <text x="540" y="145" text-anchor="middle" font-family="monospace" font-size="7" fill="#444">Ch 6</text>
+</svg>
