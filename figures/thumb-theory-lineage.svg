@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 260" width="600" height="260">
+  <rect width="600" height="260" fill="#0a0a0f"/>
+  <!-- Era bands -->
+  <rect x="15" y="40" width="45" height="180" fill="#1a1520" opacity="0.5"/>
+  <rect x="60" y="40" width="90" height="180" fill="#151a18" opacity="0.5"/>
+  <rect x="150" y="40" width="80" height="180" fill="#1a1818" opacity="0.5"/>
+  <rect x="230" y="40" width="60" height="180" fill="#15181a" opacity="0.5"/>
+  <rect x="290" y="40" width="200" height="180" fill="#181518" opacity="0.5"/>
+  <rect x="490" y="40" width="100" height="180" fill="#181a15" opacity="0.5"/>
+  <!-- Era labels -->
+  <text x="37" y="235" text-anchor="middle" font-family="monospace" font-size="7" fill="#444">19th C</text>
+  <text x="105" y="235" text-anchor="middle" font-family="monospace" font-size="7" fill="#444">EARLY 20th</text>
+  <text x="190" y="235" text-anchor="middle" font-family="monospace" font-size="7" fill="#444">MID-CENTURY</text>
+  <text x="260" y="235" text-anchor="middle" font-family="monospace" font-size="7" fill="#444">1970s</text>
+  <text x="390" y="235" text-anchor="middle" font-family="monospace" font-size="7" fill="#444">1980s</text>
+  <text x="540" y="235" text-anchor="middle" font-family="monospace" font-size="7" fill="#444">1990s</text>
+  <!-- Node line -->
+  <g opacity="0.5">
+    <!-- Challenged nodes (reddish) -->
+    <circle cx="80" cy="130" r="3" fill="#b87060"/>
+    <circle cx="95" cy="130" r="3" fill="#b87060"/>
+    <circle cx="165" cy="130" r="3" fill="#b87060"/>
+    <circle cx="180" cy="130" r="3" fill="#b87060"/>
+    <circle cx="245" cy="130" r="3" fill="#b87060"/>
+    <circle cx="260" cy="130" r="3" fill="#b87060"/>
+    <circle cx="360" cy="130" r="3" fill="#b87060"/>
+    <circle cx="390" cy="130" r="3" fill="#b87060"/>
+    <circle cx="520" cy="130" r="3" fill="#b87060"/>
+    <!-- Adopted nodes (greenish) -->
+    <circle cx="25" cy="130" r="3" fill="#6a9a7a"/>
+    <circle cx="40" cy="130" r="3" fill="#6a9a7a"/>
+    <circle cx="110" cy="130" r="3" fill="#6a9a7a"/>
+    <circle cx="145" cy="130" r="3" fill="#6a9a7a"/>
+    <circle cx="195" cy="130" r="3" fill="#6a9a7a"/>
+    <circle cx="210" cy="130" r="3" fill="#6a9a7a"/>
+    <circle cx="230" cy="130" r="3" fill="#6a9a7a"/>
+    <circle cx="290" cy="130" r="3" fill="#6a9a7a"/>
+    <circle cx="310" cy="130" r="3" fill="#6a9a7a"/>
+    <circle cx="500" cy="130" r="3" fill="#6a9a7a"/>
+    <circle cx="535" cy="130" r="3" fill="#6a9a7a"/>
+    <circle cx="555" cy="130" r="3" fill="#6a9a7a"/>
+    <circle cx="575" cy="130" r="3" fill="#6a9a7a"/>
+    <!-- Mechanism nodes (gold) -->
+    <circle cx="320" cy="130" r="3" fill="#b8a060"/>
+    <circle cx="340" cy="130" r="3" fill="#b8a060"/>
+    <circle cx="375" cy="130" r="3" fill="#b8a060"/>
+    <circle cx="405" cy="130" r="3" fill="#b8a060"/>
+    <circle cx="430" cy="130" r="3" fill="#b8a060"/>
+    <circle cx="455" cy="130" r="3" fill="#b8a060"/>
+    <!-- Parallel (blue) -->
+    <circle cx="350" cy="130" r="3" fill="#6a9ab8"/>
+    <circle cx="475" cy="130" r="3" fill="#6a9ab8"/>
+  </g>
+  <!-- Arcs - long-range challenged -->
+  <path d="M 575 130 Q 330 15 80 130" fill="none" stroke="#e07a5f" stroke-width="1" opacity="0.25"/>
+  <path d="M 575 130 Q 370 20 165 130" fill="none" stroke="#e07a5f" stroke-width="1" opacity="0.25"/>
+  <path d="M 500 130 Q 330 30 165 130" fill="none" stroke="#e07a5f" stroke-width="1" opacity="0.2"/>
+  <!-- Arcs - adopted lineage (green chain) -->
+  <path d="M 110 130 Q 150 85 195 130" fill="none" stroke="#81b29a" stroke-width="1.2" opacity="0.35"/>
+  <path d="M 195 130 Q 225 85 260 130" fill="none" stroke="#81b29a" stroke-width="1.2" opacity="0.35"/>
+  <path d="M 260 130 Q 290 85 310 130" fill="none" stroke="#81b29a" stroke-width="1.2" opacity="0.35"/>
+  <path d="M 310 130 Q 410 30 575 130" fill="none" stroke="#81b29a" stroke-width="1" opacity="0.25"/>
+  <path d="M 25 130 Q 210 20 405 130" fill="none" stroke="#81b29a" stroke-width="1" opacity="0.2"/>
+  <!-- Arcs - mechanism (gold) -->
+  <path d="M 320 130 Q 440 40 575 130" fill="none" stroke="#f2cc8f" stroke-width="1.2" opacity="0.3"/>
+  <path d="M 340 130 Q 455 40 575 130" fill="none" stroke="#f2cc8f" stroke-width="1.2" opacity="0.3"/>
+  <path d="M 375 130 Q 475 45 575 130" fill="none" stroke="#f2cc8f" stroke-width="1.2" opacity="0.3"/>
+  <path d="M 405 130 Q 490 50 575 130" fill="none" stroke="#f2cc8f" stroke-width="1.2" opacity="0.3"/>
+  <path d="M 430 130 Q 500 55 575 130" fill="none" stroke="#f2cc8f" stroke-width="1.2" opacity="0.3"/>
+  <!-- Arcs - parallel (blue) -->
+  <path d="M 350 130 Q 460 50 575 130" fill="none" stroke="#8ecae6" stroke-width="1" opacity="0.25"/>
+  <!-- Title -->
+  <text x="300" y="25" text-anchor="middle" font-family="Georgia, serif" font-size="16" fill="#e8e4d8" font-weight="300" letter-spacing="3">INTELLECTUAL LINEAGE</text>
+  <text x="300" y="40" text-anchor="middle" font-family="monospace" font-size="8" fill="#666" letter-spacing="2">33 THEORIES · 1859–1994 · TEMPORAL ORDER</text>
+</svg>
