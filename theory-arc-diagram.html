@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Theory Architecture | Thelen & Smith (1994)</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=JetBrains+Mono:wght@300;400&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: #0a0a0f;
+            color: #c8c4b8;
+            font-family: 'Crimson Pro', Georgia, serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .page-header {
+            text-align: center;
+            padding: 3rem 2rem 1rem;
+            position: relative;
+        }
+
+        .page-header h1 {
+            font-family: 'Crimson Pro', serif;
+            font-weight: 300;
+            font-size: 2rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: #e8e4d8;
+            margin-bottom: 0.4rem;
+        }
+
+        .page-header .subtitle {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: #666;
+        }
+
+        .legend-container {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            padding: 1rem 2rem 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65rem;
+            letter-spacing: 0.08em;
+            color: #888;
+            text-transform: uppercase;
+        }
+
+        .legend-swatch {
+            width: 24px;
+            height: 3px;
+            border-radius: 1px;
+        }
+
+        #arc-container {
+            width: 100%;
+            overflow-x: auto;
+            overflow-y: visible;
+            padding: 0 1rem;
+        }
+
+        svg {
+            display: block;
+            margin: 0 auto;
+        }
+
+        .node-label {
+            font-family: 'Crimson Pro', serif;
+            font-size: 11px;
+            fill: #999;
+            cursor: pointer;
+            transition: fill 0.3s;
+        }
+
+        .node-label:hover {
+            fill: #e8e4d8;
+        }
+
+        .node-label.active {
+            fill: #e8e4d8;
+            font-weight: 600;
+        }
+
+        .chapter-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 9px;
+            fill: #444;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .node-dot {
+            cursor: pointer;
+            transition: r 0.3s, fill 0.3s;
+        }
+
+        .node-dot:hover {
+            r: 6;
+        }
+
+        .arc {
+            fill: none;
+            stroke-width: 1.2;
+            opacity: 0.35;
+            cursor: pointer;
+            transition: opacity 0.3s, stroke-width 0.3s;
+        }
+
+        .arc:hover, .arc.highlighted {
+            opacity: 0.85;
+            stroke-width: 2.5;
+        }
+
+        .arc.dimmed {
+            opacity: 0.06;
+        }
+
+        .node-dot.dimmed {
+            opacity: 0.2;
+        }
+
+        .node-label.dimmed {
+            opacity: 0.2;
+        }
+
+        .tooltip {
+            position: fixed;
+            background: #1a1a24;
+            border: 1px solid #333;
+            border-radius: 4px;
+            padding: 10px 14px;
+            font-family: 'Crimson Pro', serif;
+            font-size: 13px;
+            color: #c8c4b8;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s;
+            max-width: 320px;
+            line-height: 1.5;
+            z-index: 100;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+
+        .tooltip .link-type {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 4px;
+        }
+
+        .info-panel {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 1.5rem 2rem 3rem;
+            text-align: center;
+        }
+
+        .info-panel p {
+            font-size: 0.95rem;
+            line-height: 1.7;
+            color: #777;
+            font-style: italic;
+        }
+
+        .chapter-divider {
+            stroke: #1a1a24;
+            stroke-width: 1;
+            stroke-dasharray: 2,4;
+        }
+    </style>
+</head>
+<body>
+
+<div class="page-header">
+    <h1>Theory Architecture</h1>
+    <div class="subtitle">Thelen & Smith (1994) &middot; Chapters 1&ndash;6</div>
+</div>
+
+<div class="legend-container">
+    <div class="legend-item">
+        <div class="legend-swatch" style="background: #e07a5f;"></div>
+        Challenges / Replaces
+    </div>
+    <div class="legend-item">
+        <div class="legend-swatch" style="background: #81b29a;"></div>
+        Extends / Builds On
+    </div>
+    <div class="legend-item">
+        <div class="legend-swatch" style="background: #f2cc8f;"></div>
+        Instantiates / Grounds
+    </div>
+    <div class="legend-item">
+        <div class="legend-swatch" style="background: #8ecae6;"></div>
+        Cross-cutting Theme
+    </div>
+</div>
+
+<div id="arc-container"></div>
+
+<div class="tooltip" id="tooltip"></div>
+
+<div class="info-panel">
+    <p>Hover over nodes and arcs to trace the argument. Click a node to isolate its connections.</p>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<script>
+const nodes = [
+    // Ch 1: The Problem (Motor)
+    { id: "teleology", label: "Teleological Assumption", chapter: 1, x: 0 },
+    { id: "infinite_regress", label: "Infinite Regress", chapter: 1, x: 1 },
+    { id: "heterochrony", label: "Heterochrony", chapter: 1, x: 2 },
+    { id: "context_dep", label: "Context Dependence", chapter: 1, x: 3 },
+
+    // Ch 2: The Problem (Cognitive)
+    { id: "comp_perf", label: "Competence–Performance Split", chapter: 2, x: 4 },
+    { id: "nativism", label: "Nativism / Modularity", chapter: 2, x: 5 },
+    { id: "parallel_puzzles", label: "Motor–Cognitive Parallel", chapter: 2, x: 6 },
+
+    // Ch 3: Dynamic Principles
+    { id: "self_org", label: "Self-Organization", chapter: 3, x: 7 },
+    { id: "attractors", label: "Attractors", chapter: 3, x: 8 },
+    { id: "phase_trans", label: "Phase Transitions", chapter: 3, x: 9 },
+    { id: "control_param", label: "Control Parameters", chapter: 3, x: 10 },
+
+    // Ch 4: Applied Principles
+    { id: "variability", label: "Variability as Information", chapter: 4, x: 11 },
+    { id: "timescale", label: "Timescale Continuity", chapter: 4, x: 12 },
+    { id: "degrees_freedom", label: "Degrees of Freedom", chapter: 4, x: 13 },
+    { id: "soft_assembly", label: "Soft Assembly", chapter: 4, x: 14 },
+
+    // Ch 5: Neural Mechanism
+    { id: "chaos", label: "Chaos (Freeman)", chapter: 5, x: 15 },
+    { id: "pop_coding", label: "Population Coding", chapter: 5, x: 16 },
+    { id: "plasticity", label: "Cortical Plasticity", chapter: 5, x: 17 },
+    { id: "tngs", label: "TNGS (Edelman)", chapter: 5, x: 18 },
+    { id: "degeneracy", label: "Degeneracy", chapter: 5, x: 19 },
+    { id: "reentry", label: "Reentrant Mapping", chapter: 5, x: 20 },
+
+    // Ch 6: Cognition
+    { id: "obj_cat_fail", label: "Objectivist Categories Fail", chapter: 6, x: 21 },
+    { id: "embodied_cat", label: "Embodied Categories", chapter: 6, x: 22 },
+    { id: "reeke_edelman", label: "Reeke–Edelman Model", chapter: 6, x: 23 },
+    { id: "traj_knowledge", label: "Knowledge as Trajectory", chapter: 6, x: 24 },
+    { id: "selection", label: "Development as Selection", chapter: 6, x: 25 },
+];
+
+const links = [
+    // Ch 1-2: Problem establishment
+    { source: "teleology", target: "infinite_regress", type: "extends", desc: "Teleological assumptions produce infinite regress: where is the plan stored?" },
+    { source: "heterochrony", target: "context_dep", type: "extends", desc: "Heterochronic development reveals context-dependency at close range" },
+    { source: "parallel_puzzles", target: "heterochrony", type: "extends", desc: "Cognitive development exhibits the same heterochrony as motor development" },
+    { source: "comp_perf", target: "teleology", type: "extends", desc: "Competence–performance distinction preserves teleology by hiding it in abstract competence" },
+    { source: "nativism", target: "infinite_regress", type: "extends", desc: "Nativism dumps the regress problem onto evolutionary theory" },
+
+    // Ch 3: Principles challenge the problem
+    { source: "self_org", target: "teleology", type: "challenges", desc: "Self-organization replaces prescription: order without a planner" },
+    { source: "self_org", target: "infinite_regress", type: "challenges", desc: "Self-organization dissolves infinite regress: no prior structure needed" },
+    { source: "attractors", target: "comp_perf", type: "challenges", desc: "Attractor stability replaces the competence–performance distinction" },
+    { source: "phase_trans", target: "nativism", type: "challenges", desc: "Phase transitions explain qualitative change without innate modules" },
+    { source: "control_param", target: "nativism", type: "challenges", desc: "Control parameters are nonspecific scalars, not genetic switches" },
+
+    // Ch 4: Extends Ch 3
+    { source: "variability", target: "phase_trans", type: "extends", desc: "Enhanced fluctuations at transitions: variability signals instability, not error" },
+    { source: "timescale", target: "self_org", type: "extends", desc: "Same self-organizing principles operate in real-time and developmental time" },
+    { source: "degrees_freedom", target: "control_param", type: "extends", desc: "Bernstein's problem: how does the system compress infinite degrees of freedom?" },
+    { source: "soft_assembly", target: "attractors", type: "extends", desc: "Attractors are soft-assembled from heterogeneous components in context" },
+    { source: "variability", target: "context_dep", type: "crosscut", desc: "Context-dependent variability is theoretically informative, not noise" },
+
+    // Ch 5: Instantiates neural mechanism
+    { source: "chaos", target: "variability", type: "instantiates", desc: "Freeman: chaos provides structured variability as substrate for novel forms" },
+    { source: "chaos", target: "phase_trans", type: "instantiates", desc: "Perception as explosive transitions between chaotic attractor basins" },
+    { source: "pop_coding", target: "soft_assembly", type: "instantiates", desc: "Georgopoulos: movement direction is a vector sum of broadly tuned population activity" },
+    { source: "pop_coding", target: "degrees_freedom", type: "instantiates", desc: "Population vectors compress degrees of freedom into emergent movement direction" },
+    { source: "plasticity", target: "timescale", type: "instantiates", desc: "Merzenich: cortical maps continuously remodeled by experience across timescales" },
+    { source: "plasticity", target: "attractors", type: "instantiates", desc: "Cortical map enlargement = attractor deepening through repeated stimulation" },
+    { source: "tngs", target: "self_org", type: "instantiates", desc: "TNGS: neural organization through selection from diverse primary repertoire" },
+    { source: "degeneracy", target: "soft_assembly", type: "instantiates", desc: "Multiple neural configurations produce same output: neural soft assembly" },
+    { source: "reentry", target: "control_param", type: "instantiates", desc: "Reentrant connections temporally correlate disjunctive neural processes" },
+
+    // Ch 5 internal
+    { source: "tngs", target: "degeneracy", type: "extends", desc: "Degeneracy is the anatomical prerequisite for TNGS to operate" },
+    { source: "tngs", target: "reentry", type: "extends", desc: "Reentry couples heterogeneous neural maps for perceptual categorization" },
+
+    // Ch 6: Extends to cognition
+    { source: "obj_cat_fail", target: "comp_perf", type: "challenges", desc: "Graded structure instability challenges stored-representation models" },
+    { source: "embodied_cat", target: "obj_cat_fail", type: "challenges", desc: "Lakoff: concepts are embodied, not mirrors of objective structure" },
+    { source: "reeke_edelman", target: "tngs", type: "extends", desc: "Reeke–Edelman model: TNGS principles produce self-organizing categorization" },
+    { source: "reeke_edelman", target: "degeneracy", type: "extends", desc: "Two disjunctive processes (feature + trace) coupled through reentrant map" },
+    { source: "reeke_edelman", target: "reentry", type: "extends", desc: "Classification couples demonstrate reentrant mapping at behavioral level" },
+    { source: "traj_knowledge", target: "attractors", type: "extends", desc: "Knowledge is recurring trajectory through perception-action state space" },
+    { source: "traj_knowledge", target: "plasticity", type: "extends", desc: "Repeated trajectories deepen into attractors through Hebbian strengthening" },
+    { source: "selection", target: "variability", type: "crosscut", desc: "Development as selection requires variability as its substrate at every level" },
+    { source: "selection", target: "tngs", type: "crosscut", desc: "Selection operates identically at neural and behavioral levels" },
+    { source: "selection", target: "chaos", type: "crosscut", desc: "Chaos generates the diversity from which selection stabilizes adaptive forms" },
+    { source: "traj_knowledge", target: "timescale", type: "crosscut", desc: "Real-time trajectories accumulate into developmental attractors" },
+];
+
+const chapterColors = {
+    1: "#6b4c3b",
+    2: "#5c4a5e",
+    3: "#3d5a4e",
+    4: "#4a5a3d",
+    5: "#3d4f6b",
+    6: "#6b5a3d"
+};
+
+const chapterNames = {
+    1: "Ch 1: Motor Puzzle",
+    2: "Ch 2: Cognitive Puzzle",
+    3: "Ch 3: Dynamic Principles",
+    4: "Ch 4: Applied Principles",
+    5: "Ch 5: Neural Mechanism",
+    6: "Ch 6: Categories & Cognition"
+};
+
+const arcColors = {
+    challenges: "#e07a5f",
+    extends: "#81b29a",
+    instantiates: "#f2cc8f",
+    crosscut: "#8ecae6"
+};
+
+// Layout
+const margin = { top: 280, right: 60, bottom: 120, left: 60 };
+const nodeSpacing = 62;
+const width = margin.left + margin.right + nodes.length * nodeSpacing;
+const height = margin.top + margin.bottom + 80;
+
+const svg = d3.select("#arc-container")
+    .append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+// Position nodes
+nodes.forEach((n, i) => {
+    n.px = margin.left + i * nodeSpacing + nodeSpacing / 2;
+    n.py = margin.top;
+});
+
+// Chapter dividers
+const chapterBounds = {};
+nodes.forEach(n => {
+    if (!chapterBounds[n.chapter]) chapterBounds[n.chapter] = { min: Infinity, max: -Infinity };
+    chapterBounds[n.chapter].min = Math.min(chapterBounds[n.chapter].min, n.px);
+    chapterBounds[n.chapter].max = Math.max(chapterBounds[n.chapter].max, n.px);
+});
+
+Object.entries(chapterBounds).forEach(([ch, bounds]) => {
+    const x1 = bounds.min - nodeSpacing * 0.4;
+    const x2 = bounds.max + nodeSpacing * 0.4;
+
+    // Chapter background
+    svg.append("rect")
+        .attr("x", x1)
+        .attr("y", margin.top - 12)
+        .attr("width", x2 - x1)
+        .attr("height", 24)
+        .attr("rx", 3)
+        .attr("fill", chapterColors[ch])
+        .attr("opacity", 0.15);
+
+    // Chapter label
+    svg.append("text")
+        .attr("class", "chapter-label")
+        .attr("x", (x1 + x2) / 2)
+        .attr("y", margin.top + 36)
+        .attr("text-anchor", "middle")
+        .text(chapterNames[ch]);
+});
+
+// Draw arcs
+const nodeMap = {};
+nodes.forEach(n => nodeMap[n.id] = n);
+
+const arcGroup = svg.append("g").attr("class", "arcs");
+
+const arcPaths = arcGroup.selectAll("path")
+    .data(links)
+    .enter()
+    .append("path")
+    .attr("class", "arc")
+    .attr("d", d => {
+        const s = nodeMap[d.source];
+        const t = nodeMap[d.target];
+        const x1 = s.px;
+        const x2 = t.px;
+        const mid = (x1 + x2) / 2;
+        const dx = Math.abs(x2 - x1);
+        const arcH = Math.min(dx * 0.55, 240);
+        // Arcs go upward
+        return `M ${x1} ${margin.top} Q ${mid} ${margin.top - arcH} ${x2} ${margin.top}`;
+    })
+    .attr("stroke", d => arcColors[d.type])
+    .on("mouseenter", function(event, d) {
+        showTooltip(event, d);
+        highlightArc(d);
+    })
+    .on("mouseleave", function() {
+        hideTooltip();
+        resetHighlights();
+    });
+
+// Draw node dots
+const dotGroup = svg.append("g").attr("class", "dots");
+
+dotGroup.selectAll("circle")
+    .data(nodes)
+    .enter()
+    .append("circle")
+    .attr("class", "node-dot")
+    .attr("cx", d => d.px)
+    .attr("cy", d => d.py)
+    .attr("r", 4)
+    .attr("fill", d => {
+        const c = chapterColors[d.chapter];
+        return d3.color(c).brighter(1.5);
+    })
+    .attr("stroke", d => {
+        const c = chapterColors[d.chapter];
+        return d3.color(c).brighter(2.5);
+    })
+    .attr("stroke-width", 1)
+    .on("mouseenter", function(event, d) {
+        highlightNode(d);
+    })
+    .on("mouseleave", function() {
+        resetHighlights();
+        hideTooltip();
+    })
+    .on("click", function(event, d) {
+        event.stopPropagation();
+        toggleNodeLock(d);
+    });
+
+// Draw node labels (rotated)
+const labelGroup = svg.append("g").attr("class", "labels");
+
+labelGroup.selectAll("text")
+    .data(nodes)
+    .enter()
+    .append("text")
+    .attr("class", "node-label")
+    .attr("x", d => d.px)
+    .attr("y", d => d.py + 52)
+    .attr("text-anchor", "start")
+    .attr("transform", d => `rotate(55, ${d.px}, ${d.py + 52})`)
+    .text(d => d.label)
+    .on("mouseenter", function(event, d) {
+        highlightNode(d);
+    })
+    .on("mouseleave", function() {
+        resetHighlights();
+        hideTooltip();
+    })
+    .on("click", function(event, d) {
+        event.stopPropagation();
+        toggleNodeLock(d);
+    });
+
+// Tooltip
+const tooltip = d3.select("#tooltip");
+
+function showTooltip(event, d) {
+    const s = nodeMap[d.source];
+    const t = nodeMap[d.target];
+    const typeLabels = {
+        challenges: "Challenges / Replaces",
+        extends: "Extends / Builds On",
+        instantiates: "Instantiates / Grounds",
+        crosscut: "Cross-cutting Theme"
+    };
+    tooltip
+        .style("opacity", 1)
+        .style("left", (event.clientX + 12) + "px")
+        .style("top", (event.clientY - 10) + "px")
+        .html(`
+            <div class="link-type" style="color:${arcColors[d.type]}">${typeLabels[d.type]}</div>
+            <strong>${s.label}</strong> → <strong>${t.label}</strong><br>
+            ${d.desc}
+        `);
+}
+
+function hideTooltip() {
+    tooltip.style("opacity", 0);
+}
+
+// Highlighting
+let lockedNode = null;
+
+function highlightArc(d) {
+    if (lockedNode) return;
+    const involved = new Set([d.source, d.target]);
+    arcPaths.classed("dimmed", l => l !== d);
+    arcPaths.filter(l => l === d).classed("highlighted", true);
+    dotGroup.selectAll("circle").classed("dimmed", n => !involved.has(n.id));
+    labelGroup.selectAll("text").classed("dimmed", n => !involved.has(n.id));
+}
+
+function highlightNode(d) {
+    if (lockedNode) return;
+    applyNodeHighlight(d);
+}
+
+function applyNodeHighlight(d) {
+    const connected = new Set();
+    connected.add(d.id);
+    links.forEach(l => {
+        if (l.source === d.id) connected.add(l.target);
+        if (l.target === d.id) connected.add(l.source);
+    });
+
+    arcPaths.classed("dimmed", l => l.source !== d.id && l.target !== d.id);
+    arcPaths.filter(l => l.source === d.id || l.target === d.id).classed("highlighted", true);
+    dotGroup.selectAll("circle").classed("dimmed", n => !connected.has(n.id));
+    labelGroup.selectAll("text").classed("dimmed", n => !connected.has(n.id));
+    labelGroup.selectAll("text").classed("active", n => n.id === d.id);
+}
+
+function resetHighlights() {
+    if (lockedNode) return;
+    arcPaths.classed("dimmed", false).classed("highlighted", false);
+    dotGroup.selectAll("circle").classed("dimmed", false);
+    labelGroup.selectAll("text").classed("dimmed", false).classed("active", false);
+}
+
+function toggleNodeLock(d) {
+    if (lockedNode === d.id) {
+        lockedNode = null;
+        resetHighlights();
+    } else {
+        lockedNode = d.id;
+        applyNodeHighlight(d);
+    }
+}
+
+// Click on background to unlock
+svg.on("click", function() {
+    lockedNode = null;
+    resetHighlights();
+    hideTooltip();
+});
+</script>
+</body>
+</html>
