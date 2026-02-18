@@ -1,249 +1,643 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dynamic Systems Approach to Development | Ian McDermid</title>
-    <link rel="stylesheet" href="style.css">
-    <style>
-        .diagrams-section {
-            margin: 2rem 0 3rem;
-            padding: 0;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dynamic Systems — Thelen & Smith</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Playfair+Display:ital,wght@0,700;0,900;1,700&display=swap');
 
-        .diagrams-section h2 {
-            font-size: 1.1rem;
-            letter-spacing: 0.08em;
-            text-transform: uppercase;
-            color: #888;
-            margin-bottom: 1.2rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 1px solid #2a2a35;
-        }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-        .diagram-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1.5rem;
-        }
+  :root {
+    --bg: #080a0f;
+    --surface: #0f1117;
+    --border: #1a1f2e;
+    --text: #b8bec8;
+    --dim: #4a5060;
+    --bright: #e8ecf4;
+    --gold: #d4a843;
+    --teal: #2fc4af;
+    --rose: #d44f60;
+    --lavender: #8b76e8;
+    --amber: #d98040;
+  }
 
-        @media (max-width: 700px) {
-            .diagram-grid {
-                grid-template-columns: 1fr;
-            }
-        }
+  html, body {
+    height: 100%;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    overflow-x: hidden;
+  }
 
-        .diagram-card {
-            display: block;
-            background: #0a0a0f;
-            border: 1px solid #1e1e2a;
-            border-radius: 8px;
-            overflow: hidden;
-            text-decoration: none;
-            color: inherit;
-            transition: border-color 0.3s, transform 0.2s, box-shadow 0.3s;
-        }
+  /* ── GRAIN OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+  }
 
-        .diagram-card:hover {
-            border-color: #3a3a4a;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 24px rgba(0,0,0,0.4);
-        }
+  /* ── HERO ── */
+  .hero {
+    position: relative;
+    z-index: 1;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 40px;
+    text-align: center;
+    overflow: hidden;
+  }
 
-        .diagram-thumb {
-            width: 100%;
-            display: block;
-            border-bottom: 1px solid #1e1e2a;
-        }
+  .hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 40% at 20% 50%, rgba(47,196,175,0.06) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 60% at 80% 30%, rgba(212,168,67,0.05) 0%, transparent 70%),
+      radial-gradient(ellipse 50% 50% at 50% 80%, rgba(139,118,232,0.04) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: -1;
+  }
 
-        .diagram-info {
-            padding: 1rem 1.2rem;
-        }
+  /* animated grid */
+  .grid-bg {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 60px 60px;
+    opacity: 0.3;
+    z-index: -1;
+    animation: gridDrift 40s linear infinite;
+  }
 
-        .diagram-info .diagram-type {
-            font-size: 0.65rem;
-            text-transform: uppercase;
-            letter-spacing: 0.15em;
-            color: #8ecae6;
-            margin-bottom: 0.4rem;
-        }
+  @keyframes gridDrift {
+    from { background-position: 0 0, 0 0; }
+    to { background-position: 60px 60px, 60px 60px; }
+  }
 
-        .diagram-info h3 {
-            font-size: 1rem;
-            color: #e0dcd0;
-            margin-bottom: 0.4rem;
-            font-weight: 500;
-        }
+  .eyebrow {
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 20px;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.2s forwards;
+  }
 
-        .diagram-info p {
-            font-size: 0.85rem;
-            color: #777;
-            line-height: 1.5;
-            margin-bottom: 0.6rem;
-        }
+  .hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(36px, 6vw, 72px);
+    font-weight: 900;
+    color: var(--bright);
+    line-height: 1.05;
+    letter-spacing: -1px;
+    max-width: 820px;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.4s forwards;
+  }
 
-        .diagram-info .diagram-stats {
-            font-size: 0.7rem;
-            color: #555;
-            letter-spacing: 0.05em;
-        }
+  .hero-title em {
+    font-style: italic;
+    color: var(--gold);
+  }
 
-        .diagram-info .open-link {
-            display: inline-block;
-            margin-top: 0.5rem;
-            font-size: 0.8rem;
-            color: #81b29a;
-            text-decoration: none;
-            transition: color 0.2s;
-        }
+  .hero-subtitle {
+    margin-top: 20px;
+    font-size: 13px;
+    line-height: 1.8;
+    color: var(--dim);
+    max-width: 520px;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.6s forwards;
+  }
 
-        .diagram-card:hover .open-link {
-            color: #a8d4b8;
-        }
-    </style>
+  .cta-group {
+    margin-top: 44px;
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    justify-content: center;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.8s forwards;
+  }
+
+  .btn-primary {
+    padding: 13px 28px;
+    background: var(--teal);
+    color: #000;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    text-decoration: none;
+    border-radius: 3px;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .btn-primary:hover {
+    background: #3dd6c0;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(47,196,175,0.25);
+  }
+
+  .btn-secondary {
+    padding: 13px 28px;
+    border: 1px solid var(--border);
+    color: var(--dim);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    text-decoration: none;
+    border-radius: 3px;
+    transition: all 0.2s;
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+    transform: translateY(-2px);
+  }
+
+  /* scroll indicator */
+  .scroll-hint {
+    position: absolute;
+    bottom: 36px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    color: var(--dim);
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    animation: fadeUp 1s 1.4s forwards;
+    opacity: 0;
+  }
+
+  .scroll-line {
+    width: 1px;
+    height: 32px;
+    background: linear-gradient(to bottom, var(--dim), transparent);
+    animation: scrollPulse 2s ease-in-out infinite;
+  }
+
+  @keyframes scrollPulse {
+    0%, 100% { opacity: 0.3; transform: scaleY(1); }
+    50% { opacity: 1; transform: scaleY(1.1); }
+  }
+
+  /* ── CHAPTER CARDS ── */
+  .chapters-section {
+    position: relative;
+    z-index: 1;
+    padding: 80px 40px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .section-heading {
+    font-size: 9px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--dim);
+    margin-bottom: 40px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .section-heading::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .chapter-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .chapter-card {
+    background: var(--surface);
+    padding: 28px;
+    transition: background 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .chapter-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px;
+    height: 100%;
+    background: var(--card-color, var(--border));
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .chapter-card:hover {
+    background: #141820;
+  }
+
+  .chapter-card:hover::before {
+    opacity: 1;
+  }
+
+  .card-num {
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--dim);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--bright);
+    line-height: 1.3;
+    margin-bottom: 10px;
+  }
+
+  .card-desc {
+    font-size: 11px;
+    line-height: 1.7;
+    color: var(--dim);
+  }
+
+  .card-tag {
+    margin-top: 16px;
+    font-size: 9px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 2px;
+    display: inline-block;
+  }
+
+  /* ── CONCEPT MAP SECTION ── */
+  .map-section {
+    position: relative;
+    z-index: 1;
+    border-top: 1px solid var(--border);
+    padding: 80px 40px;
+    background: var(--surface);
+  }
+
+  .map-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .map-intro {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: start;
+    margin-bottom: 56px;
+  }
+
+  @media (max-width: 700px) {
+    .map-intro { grid-template-columns: 1fr; }
+  }
+
+  .map-intro-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(24px, 4vw, 40px);
+    font-weight: 900;
+    color: var(--bright);
+    line-height: 1.15;
+  }
+
+  .map-intro-title em {
+    font-style: italic;
+    color: var(--teal);
+  }
+
+  .map-intro-body {
+    font-size: 12px;
+    line-height: 1.85;
+    color: var(--dim);
+  }
+
+  .map-intro-body p + p {
+    margin-top: 14px;
+  }
+
+  .legend-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-top: 24px;
+  }
+
+  .legend-entry {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px;
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    border-left-width: 3px;
+  }
+
+  .legend-entry-text strong {
+    display: block;
+    font-size: 10px;
+    letter-spacing: 0.5px;
+    color: var(--bright);
+    margin-bottom: 2px;
+  }
+
+  .legend-entry-text span {
+    font-size: 10px;
+    color: var(--dim);
+  }
+
+  .map-frame-wrapper {
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .map-frame-label {
+    padding: 10px 20px;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    font-size: 9px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--dim);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .map-frame-dots {
+    display: flex;
+    gap: 5px;
+  }
+
+  .map-frame-dots span {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--border);
+  }
+
+  iframe {
+    width: 100%;
+    height: 680px;
+    border: none;
+    display: block;
+    background: #0a0c10;
+  }
+
+  /* ── ABOUT ── */
+  .about-section {
+    position: relative;
+    z-index: 1;
+    padding: 80px 40px;
+    max-width: 700px;
+    margin: 0 auto;
+    text-align: center;
+    border-top: 1px solid var(--border);
+  }
+
+  .about-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--bright);
+    margin-bottom: 16px;
+  }
+
+  .about-body {
+    font-size: 12px;
+    line-height: 1.9;
+    color: var(--dim);
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 24px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 10px;
+    color: var(--dim);
+    letter-spacing: 0.5px;
+    position: relative;
+    z-index: 1;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
 </head>
 <body>
-    <div class="container">
-        <header class="main-header">
-            <h1>Dynamic Systems Approach to Development</h1>
-            <p class="subtitle">Thelen &amp; Smith (1994)</p>
-            <div class="author-info">
-                <p class="author">Ian McDermid</p>
-                <p class="course">Perception and Action Graduate Seminar</p>
-                <p class="institution">University of Central Oklahoma | Experimental Psychology | Spring 2026</p>
-            </div>
-        </header>
 
-        <!-- Interactive Diagrams Section -->
-        <section class="diagrams-section">
-            <h2>Interactive Theory Maps</h2>
-            <div class="diagram-grid">
-                <a href="theory-arc-diagram.html" class="diagram-card">
-                    <img src="figures/thumb-theory-architecture.svg" alt="Theory Architecture arc diagram preview" class="diagram-thumb">
-                    <div class="diagram-info">
-                        <div class="diagram-type">D3 Arc Diagram</div>
-                        <h3>Theory Architecture</h3>
-                        <p>How concepts build across chapters: from the developmental puzzle through dynamic principles to neural mechanism and cognition.</p>
-                        <div class="diagram-stats">26 concepts &middot; 33 connections &middot; Chapters 1&ndash;6</div>
-                        <span class="open-link">Explore diagram &rarr;</span>
-                    </div>
-                </a>
-                <a href="theory-lineage.html" class="diagram-card">
-                    <img src="figures/thumb-theory-lineage.svg" alt="Intellectual Lineage temporal diagram preview" class="diagram-thumb">
-                    <div class="diagram-info">
-                        <div class="diagram-type">D3 Arc Diagram</div>
-                        <h3>Intellectual Lineage</h3>
-                        <p>Every theory cited from Introduction through Chapter 6, arranged chronologically from Darwin (1859) to Thelen &amp; Smith (1994).</p>
-                        <div class="diagram-stats">33 theories &middot; ~50 connections &middot; 1859&ndash;1994</div>
-                        <span class="open-link">Explore diagram &rarr;</span>
-                    </div>
-                </a>
-            </div>
-        </section>
+<!-- HERO -->
+<section class="hero">
+  <div class="grid-bg"></div>
+  <div class="eyebrow">Experimental Psychology · Dynamic Systems Theory</div>
+  <h1 class="hero-title">
+    A Dynamic Systems Approach<br>to <em>Development</em>
+  </h1>
+  <p class="hero-subtitle">
+    Reading Thelen &amp; Smith's <em>A Dynamic Systems Approach to the Development of
+    Cognition and Action</em> — tracking how theory is built, falsified, and extended
+    through empirical research.
+  </p>
+  <div class="cta-group">
+    <a href="#concept-map" class="btn-primary">
+      <span>→</span> View Concept Map
+    </a>
+    <a href="#chapters" class="btn-secondary">Chapter Notes</a>
+  </div>
+  <div class="scroll-hint">
+    <div class="scroll-line"></div>
+    scroll
+  </div>
+</section>
 
-        <main class="post-grid">
-            <section class="chapter-section">
-                <h2>Chapter 1: The Puzzle of Motor Development</h2>
-                <div class="post-cards">
-                    <article class="post-card">
-                        <div class="post-type">Technical Analysis</div>
-                        <h3>Establishing the Developmental Puzzle</h3>
-                        <p>Analysis of teleological assumptions in developmental theory, the infinite regress problem, and why traditional approaches fail to explain how ordered progressions emerge without prespecified instructions.</p>
-                        <a href="chapter1-analysis.html" class="read-link">Read analysis &rarr;</a>
-                    </article>
-                </div>
-            </section>
+<!-- CHAPTER CARDS -->
+<section class="chapters-section" id="chapters">
+  <div class="section-heading">Chapter Overview</div>
+  <div class="chapter-grid">
 
-            <section class="chapter-section">
-                <h2>Chapter 2: What is Developing?</h2>
-                <div class="post-cards">
-                    <article class="post-card">
-                        <div class="post-type">Technical Analysis</div>
-                        <h3>The Crisis in Cognitive Development</h3>
-                        <p>Examination of how cognitive development exhibits the same paradoxes as motor development: competence-incompetence coexistence, context-dependent performance, and asynchronous trajectories that resist single-cause explanation.</p>
-                        <a href="chapter2-analysis.html" class="read-link">Read analysis &rarr;</a>
-                    </article>
-                </div>
-            </section>
-
-            <section class="chapter-section">
-                <h2>Chapter 3: Exploring Paradigms for Change</h2>
-                <div class="post-cards">
-                    <article class="post-card">
-                        <div class="post-type">Personal Reflection</div>
-                        <h3>Horse Gaits and Developmental Change</h3>
-                        <p>Personal exploration of how phase transitions in horse locomotion illuminate developmental principles: self-organization, attractors, and the emergence of new behavioral forms.</p>
-                        <a href="chapter3-reflection.html" class="read-link">Read reflection &rarr;</a>
-                    </article>
-                    <article class="post-card">
-                        <div class="post-type">Technical Analysis</div>
-                        <h3>Dynamic Systems as Explanatory Framework</h3>
-                        <p>Technical reconstruction of Thelen's argument for rejecting teleological accounts and replacing them with emergence from far-from-equilibrium dynamics and self-organization.</p>
-                        <a href="chapter3-analysis.html" class="read-link">Read analysis &rarr;</a>
-                    </article>
-                </div>
-            </section>
-
-            <section class="chapter-section">
-                <h2>Chapter 4: Dynamic Principles of Development</h2>
-                <div class="post-cards">
-                    <article class="post-card">
-                        <div class="post-type">Personal Reflection</div>
-                        <h3>Drumming, Syntax, and Phase Transitions</h3>
-                        <p>Connecting tempo as control parameter in drumming to developmental transitions, exploring how continuous change produces discontinuous reorganization across cognitive and motor domains.</p>
-                        <a href="chapter4-reflection.html" class="read-link">Read reflection &rarr;</a>
-                    </article>
-                    <article class="post-card">
-                        <div class="post-type">Technical Analysis</div>
-                        <h3>Dynamic Principles Applied to Development</h3>
-                        <p>Analysis of how dynamic systems principles extend from real-time action to developmental timescales, with Bernstein's degrees of freedom problem and infant kicking as paradigm cases.</p>
-                        <a href="chapter4-analysis.html" class="read-link">Read analysis &rarr;</a>
-                    </article>
-                </div>
-            </section>
-
-            <section class="chapter-section">
-                <h2>Chapter 5: Neural Organization and Development</h2>
-                <div class="post-cards">
-                    <article class="post-card">
-                        <div class="post-type">Personal Reflection</div>
-                        <h3>Drumming as Neural Dynamics</h3>
-                        <p>From paradiddle phase transitions to air drumming as internalized reentrant mapping: how Freeman's chaos, Merzenich's plasticity, and Edelman's degeneracy manifest in percussion performance.</p>
-                        <a href="chapter5-reflection.html" class="read-link">Read reflection &rarr;</a>
-                    </article>
-                    <article class="post-card">
-                        <div class="post-type">Technical Analysis</div>
-                        <h3>Neural Mechanisms of Developmental Change</h3>
-                        <p>Examination of Freeman's chaos in olfactory perception, Georgopoulos' population coding, and Edelman's TNGS as neural instantiation of selectionist developmental mechanisms.</p>
-                        <a href="chapter5-analysis.html" class="read-link">Read analysis &rarr;</a>
-                    </article>
-                </div>
-            </section>
-
-            <section class="chapter-section">
-                <h2>Chapter 6: Categories and Dynamic Knowledge</h2>
-                <div class="post-cards">
-                    <article class="post-card">
-                        <div class="post-type">Personal Reflection</div>
-                        <h3>Categories That Teach Themselves</h3>
-                        <p>From driving duplex nails to tie dye attractor landscapes: how categories self-organize through multimodal experience, tool incorporation into body schema, and the degeneracy of concepts like "artificial intelligence."</p>
-                        <a href="chapter6-reflection.html" class="read-link">Read reflection &rarr;</a>
-                    </article>
-                    <article class="post-card">
-                        <div class="post-type">Technical Analysis</div>
-                        <h3>Categories and Dynamic Knowledge</h3>
-                        <p>Thelen's extension of dynamic pattern formation to cognition: the failure of objectivist categories, Reeke and Edelman's self-organizing letter recognition, and knowledge as time-locked trajectories through coupled what/where state spaces.</p>
-                        <a href="chapter6-analysis.html" class="read-link">Read analysis &rarr;</a>
-                    </article>
-                </div>
-            </section>
-        </main>
-
-        <footer class="main-footer">
-            <p>Graduate seminar blog exploring Thelen and Smith's dynamic systems approach to motor and cognitive development</p>
-        </footer>
+    <div class="chapter-card" style="--card-color:#5a6070;">
+      <div class="card-num">Introduction</div>
+      <div class="card-title">The Developmental Puzzle</div>
+      <div class="card-desc">Orderliness at low magnification does not require prescriptive instructions. Thelen identifies the explanatory regress in maturational, learning, and interactionist accounts.</div>
+      <span class="card-tag" style="background:rgba(90,96,112,0.12);color:#5a6070;border:1px solid rgba(90,96,112,0.3);">Problem framing</span>
     </div>
 
-    <script src="script.js"></script>
+    <div class="chapter-card" style="--card-color:#e85b6b;">
+      <div class="card-num">Chapter 1</div>
+      <div class="card-title">Rethinking Development</div>
+      <div class="card-desc">The case against stage theory and maturational clocks. Any account that locates developmental instructions in a pre-existing structure faces infinite regress.</div>
+      <span class="card-tag" style="background:rgba(232,91,107,0.1);color:#e85b6b;border:1px solid rgba(232,91,107,0.3);">Falsification</span>
+    </div>
+
+    <div class="chapter-card" style="--card-color:#3dd6c0;">
+      <div class="card-num">Chapter 2</div>
+      <div class="card-title">A Dynamic Systems Framework</div>
+      <div class="card-desc">Attractors, order parameters, control parameters, and phase transitions imported from physics. These become the analytic tools for developmental data.</div>
+      <span class="card-tag" style="background:rgba(61,214,192,0.1);color:#3dd6c0;border:1px solid rgba(61,214,192,0.3);">Framework import</span>
+    </div>
+
+    <div class="chapter-card" style="--card-color:#f0924a;">
+      <div class="card-num">Chapter 3</div>
+      <div class="card-title">Infant Kicking — Soft Assembly</div>
+      <div class="card-desc">EMG on infant legs shows co-contraction, not CPG reciprocal inhibition. The kick is a spring-mass system. Coordination emerges without neural encoding of the full pattern.</div>
+      <span class="card-tag" style="background:rgba(240,146,74,0.1);color:#f0924a;border:1px solid rgba(240,146,74,0.3);">EMG · Kinematics</span>
+    </div>
+
+    <div class="chapter-card" style="--card-color:#e85b6b;">
+      <div class="card-num">Chapter 4</div>
+      <div class="card-title">Causality and the Developmental System</div>
+      <div class="card-desc">Treadmill, water immersion, and weighted cuffs triple-converge: mass/strength ratio is the control parameter for stepping disappearance. Not cortical inhibition.</div>
+      <span class="card-tag" style="background:rgba(232,91,107,0.1);color:#e85b6b;border:1px solid rgba(232,91,107,0.3);">Converging falsification</span>
+    </div>
+
+    <div class="chapter-card" style="--card-color:#9b87f5;">
+      <div class="card-num">Chapter 5</div>
+      <div class="card-title">The Embodied Mind</div>
+      <div class="card-desc">3D motion capture of infant reaching across longitudinal sessions. Movement units decrease as attractors deepen. Variability indexes developmental state, not noise.</div>
+      <span class="card-tag" style="background:rgba(155,135,245,0.1);color:#9b87f5;border:1px solid rgba(155,135,245,0.3);">Longitudinal kinematics</span>
+    </div>
+
+    <div class="chapter-card" style="--card-color:#3dd6c0;">
+      <div class="card-num">Chapter 6</div>
+      <div class="card-title">Development as Selection</div>
+      <div class="card-desc">Spontaneous movement generates repertoire. The mobile-kick contingency shows selection acts on existing behavior, not instruction. Extends Edelman's Neural Darwinism to development.</div>
+      <span class="card-tag" style="background:rgba(61,214,192,0.1);color:#3dd6c0;border:1px solid rgba(61,214,192,0.3);">Selectionist extension</span>
+    </div>
+
+    <div class="chapter-card" style="--card-color:#d4a843;">
+      <div class="card-num">Chapter 7</div>
+      <div class="card-title">The Ontogeny of Leg Movements</div>
+      <div class="card-desc">Treadmill longitudinal tracking shows the locomotor attractor never disappears. Force plates and anthropometrics locate the developmental transition in body composition, not the brain.</div>
+      <span class="card-tag" style="background:rgba(212,168,67,0.1);color:#d4a843;border:1px solid rgba(212,168,67,0.3);">Synthesis chapter</span>
+    </div>
+
+    <div class="chapter-card" style="--card-color:#9b87f5;">
+      <div class="card-num">Chapter 8</div>
+      <div class="card-title">Knowing the World Through Action</div>
+      <div class="card-desc">Reaching to moving objects, haptic exploration, visual cliff avoidance with cardiac monitoring. Perception and action co-specify — knowing is action-embedded.</div>
+      <span class="card-tag" style="background:rgba(155,135,245,0.1);color:#9b87f5;border:1px solid rgba(155,135,245,0.3);">Perception–action</span>
+    </div>
+
+  </div>
+</section>
+
+<!-- CONCEPT MAP -->
+<section class="map-section" id="concept-map">
+  <div class="map-inner">
+    <div class="map-intro">
+      <div>
+        <div class="map-intro-title">
+          Methods &amp; Theory-Building<br>
+          <em>Interactive Map</em>
+        </div>
+        <div class="legend-grid">
+          <div class="legend-entry" style="border-left-color:#e85b6b;">
+            <div class="legend-entry-text">
+              <strong style="color:#e85b6b;">Falsify</strong>
+              <span>Targets rival theory with empirical evidence</span>
+            </div>
+          </div>
+          <div class="legend-entry" style="border-left-color:#3dd6c0;">
+            <div class="legend-entry-text">
+              <strong style="color:#3dd6c0;">Extend</strong>
+              <span>Builds on allied frameworks</span>
+            </div>
+          </div>
+          <div class="legend-entry" style="border-left-color:#9b87f5;">
+            <div class="legend-entry-text">
+              <strong style="color:#9b87f5;">Explore</strong>
+              <span>Opens new theoretical territory</span>
+            </div>
+          </div>
+          <div class="legend-entry" style="border-left-color:#f0924a;">
+            <div class="legend-entry-text">
+              <strong style="color:#f0924a;">Instrument</strong>
+              <span>Key apparatus highlighted</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="map-intro-body">
+        <p>Each node represents a study or paradigm from the introduction through Chapter 8. The map tracks what Thelen measured, what instrument she used, and what theoretical work the finding performs.</p>
+        <p>Use the filter buttons to isolate any one theory function. Click any node to see the full instrument list, DV, operationalization, and theoretical significance in the right panel.</p>
+        <p>Key instruments include EMG electrodes taped to infant legs (rectus femoris and biceps femoris), motorized treadmills, split-belt treadmills, 3D motion capture with reflective wrist markers, force plates, visual cliff apparatus with cardiac monitoring, and water immersion baths.</p>
+      </div>
+    </div>
+
+    <div class="map-frame-wrapper">
+      <div class="map-frame-label">
+        <span>Thelen &amp; Smith — Intro → Chapter 8</span>
+        <div class="map-frame-dots">
+          <span style="background:#e85b6b;"></span>
+          <span style="background:#3dd6c0;"></span>
+          <span style="background:#9b87f5;"></span>
+        </div>
+      </div>
+      <iframe src="thelen_methods_map.html" title="Thelen Methods & Theory-Building Map" loading="lazy"></iframe>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="about-section">
+  <div class="about-title">About This Project</div>
+  <div class="about-body">
+    Graduate-level reading notes and visual analysis of Thelen &amp; Smith's
+    <em>A Dynamic Systems Approach to the Development of Cognition and Action</em> (1994).
+    The project tracks how theory is built through the accumulation of empirical evidence —
+    which accounts are falsified, which are extended, and what new territory opens under
+    the lens of dynamic systems theory.
+    <br><br>
+    Experimental Psychology · University of Central Oklahoma
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <span>Dynamic Systems Reading Project</span>
+  <span>Thelen &amp; Smith · 1994</span>
+</footer>
+
 </body>
 </html>

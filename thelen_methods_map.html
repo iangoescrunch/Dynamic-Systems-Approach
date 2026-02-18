@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thelen & Smith — Methods & Theory-Building Map</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Playfair+Display:wght@700;900&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0a0c10;
+    --surface: #111318;
+    --border: #1e2230;
+    --text: #c8cdd8;
+    --dim: #5a6070;
+    --accent-gold: #e8b84b;
+    --accent-teal: #3dd6c0;
+    --accent-rose: #e85b6b;
+    --accent-lavender: #9b87f5;
+    --accent-amber: #f0924a;
+
+    /* Category colors */
+    --cat-falsify: #e85b6b;
+    --cat-extend: #3dd6c0;
+    --cat-explore: #9b87f5;
+    --cat-method: #e8b84b;
+    --cat-instrument: #f0924a;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  header {
+    padding: 32px 40px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 20px;
+  }
+
+  .header-title h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 900;
+    color: #fff;
+    letter-spacing: -0.5px;
+    line-height: 1.1;
+  }
+
+  .header-title p {
+    color: var(--dim);
+    font-size: 11px;
+    margin-top: 6px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 20px;
+    align-items: center;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 10px;
+    color: var(--dim);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: color 0.2s;
+  }
+
+  .legend-item:hover { color: var(--text); }
+
+  .legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .legend-dot.falsify { background: var(--cat-falsify); }
+  .legend-dot.extend { background: var(--cat-extend); }
+  .legend-dot.explore { background: var(--cat-explore); }
+  .legend-dot.instrument { background: var(--cat-instrument); }
+
+  .controls {
+    padding: 16px 40px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    border-bottom: 1px solid var(--border);
+    align-items: center;
+  }
+
+  .filter-btn {
+    padding: 5px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--dim);
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .filter-btn:hover, .filter-btn.active {
+    border-color: var(--accent-gold);
+    color: var(--accent-gold);
+    background: rgba(232, 184, 75, 0.08);
+  }
+
+  .filter-btn.active-falsify { border-color: var(--cat-falsify); color: var(--cat-falsify); background: rgba(232,91,107,0.08); }
+  .filter-btn.active-extend { border-color: var(--cat-extend); color: var(--cat-extend); background: rgba(61,214,192,0.08); }
+  .filter-btn.active-explore { border-color: var(--cat-explore); color: var(--cat-explore); background: rgba(155,135,245,0.08); }
+  .filter-btn.active-instrument { border-color: var(--cat-instrument); color: var(--cat-instrument); background: rgba(240,146,74,0.08); }
+
+  .controls-label {
+    color: var(--dim);
+    font-size: 10px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-right: 4px;
+  }
+
+  .main-layout {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    height: calc(100vh - 145px);
+  }
+
+  #timeline-svg {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+
+  .timeline-container {
+    overflow-y: auto;
+    overflow-x: hidden;
+    position: relative;
+    border-right: 1px solid var(--border);
+  }
+
+  .detail-panel {
+    padding: 28px;
+    overflow-y: auto;
+    background: var(--surface);
+  }
+
+  .detail-placeholder {
+    color: var(--dim);
+    font-size: 11px;
+    line-height: 1.8;
+    text-align: center;
+    padding-top: 60px;
+  }
+
+  .detail-placeholder .arrow {
+    font-size: 28px;
+    display: block;
+    margin-bottom: 16px;
+    color: var(--border);
+  }
+
+  .detail-header {
+    margin-bottom: 20px;
+  }
+
+  .detail-chapter {
+    font-size: 10px;
+    color: var(--dim);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .detail-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1.2;
+    margin-bottom: 12px;
+  }
+
+  .detail-category-tag {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 9px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-weight: 500;
+    margin-bottom: 18px;
+  }
+
+  .detail-section {
+    margin-bottom: 20px;
+  }
+
+  .detail-section-label {
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--dim);
+    margin-bottom: 8px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .detail-section-content {
+    font-size: 12px;
+    line-height: 1.75;
+    color: var(--text);
+  }
+
+  .instrument-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 10px;
+    border-radius: 4px;
+    background: rgba(240,146,74,0.12);
+    border: 1px solid rgba(240,146,74,0.3);
+    color: var(--cat-instrument);
+    font-size: 10px;
+    margin: 3px;
+    letter-spacing: 0.3px;
+  }
+
+  .theory-chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 9px;
+    border-radius: 4px;
+    font-size: 10px;
+    margin: 3px;
+  }
+
+  .chip-falsify { background: rgba(232,91,107,0.1); border: 1px solid rgba(232,91,107,0.3); color: var(--cat-falsify); }
+  .chip-extend { background: rgba(61,214,192,0.1); border: 1px solid rgba(61,214,192,0.3); color: var(--cat-extend); }
+  .chip-explore { background: rgba(155,135,245,0.1); border: 1px solid rgba(155,135,245,0.3); color: var(--cat-explore); }
+
+  /* SVG styles */
+  .chapter-group { cursor: default; }
+  
+  .timeline-spine {
+    stroke: var(--border);
+    stroke-width: 1.5;
+  }
+
+  .chapter-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    fill: var(--dim);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .chapter-title-label {
+    font-family: 'Playfair Display', serif;
+    font-size: 13px;
+    fill: #fff;
+    font-weight: 700;
+  }
+
+  .node-group {
+    cursor: pointer;
+  }
+
+  .node-group:hover .node-circle {
+    filter: brightness(1.3);
+  }
+
+  .node-connector {
+    stroke: var(--border);
+    stroke-width: 1;
+    stroke-dasharray: 3,3;
+  }
+
+  .node-label-text {
+    font-family: 'DM Mono', monospace;
+    font-size: 10.5px;
+    fill: var(--text);
+    font-weight: 400;
+  }
+
+  .node-dv-text {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    fill: var(--dim);
+  }
+
+  .chapter-divider {
+    stroke: var(--border);
+    stroke-width: 0.5;
+  }
+
+  .chapter-band {
+    fill: rgba(255,255,255,0.01);
+    rx: 4;
+  }
+
+  .chapter-band:nth-child(even) {
+    fill: rgba(255,255,255,0.025);
+  }
+
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-title">
+    <h1>Thelen & Smith — Methods & Theory-Building</h1>
+    <p>Introduction → Chapter 8 &nbsp;·&nbsp; Instruments, Measurements, DVs, Theory Functions</p>
+  </div>
+  <div class="legend">
+    <div class="legend-item" onclick="filterCategory('falsify')">
+      <div class="legend-dot falsify"></div> Falsifies rival theory
+    </div>
+    <div class="legend-item" onclick="filterCategory('extend')">
+      <div class="legend-dot extend"></div> Extends allied theory
+    </div>
+    <div class="legend-item" onclick="filterCategory('explore')">
+      <div class="legend-dot explore"></div> Explores new territory
+    </div>
+    <div class="legend-item" onclick="filterCategory('instrument')">
+      <div class="legend-dot instrument"></div> Key instrument / apparatus
+    </div>
+  </div>
+</header>
+
+<div class="controls">
+  <span class="controls-label">Filter:</span>
+  <button class="filter-btn active" id="btn-all" onclick="filterCategory('all')">All</button>
+  <button class="filter-btn" id="btn-falsify" onclick="filterCategory('falsify')">Falsify</button>
+  <button class="filter-btn" id="btn-extend" onclick="filterCategory('extend')">Extend</button>
+  <button class="filter-btn" id="btn-explore" onclick="filterCategory('explore')">Explore</button>
+  <button class="filter-btn" id="btn-instrument" onclick="filterCategory('instrument')">Instruments</button>
+</div>
+
+<div class="main-layout">
+  <div class="timeline-container" id="timeline-container">
+    <svg id="timeline-svg"></svg>
+  </div>
+  <div class="detail-panel" id="detail-panel">
+    <div class="detail-placeholder">
+      <span class="arrow">←</span>
+      Click any node on the<br>timeline to see full details:<br><br>
+      · What was measured<br>
+      · What instrument was used<br>
+      · What the finding does<br>theoretically
+    </div>
+  </div>
+</div>
+
+<script>
+const CATEGORY_COLORS = {
+  falsify: '#e85b6b',
+  extend: '#3dd6c0',
+  explore: '#9b87f5',
+  instrument: '#f0924a',
+};
+
+const data = [
+  {
+    chapter: "Intro",
+    title: "The Developmental Puzzle",
+    nodes: [
+      {
+        id: "i1",
+        label: "Walking Sequence Observation",
+        dv: "Age-of-onset distributions across infants",
+        instruments: ["Direct observation", "Developmental norms (Gesell/McGraw)"],
+        measured: "Timing and sequence of motor milestones across infants",
+        function: "falsify",
+        functionLabel: "Falsifies maturation-as-clock",
+        theory: "Establishes the paradox: orderliness at low magnification does not require prescriptive instructions. Sets the falsification target against stage-maturation accounts.",
+      },
+      {
+        id: "i2",
+        label: "Newborn Reflex Stepping",
+        dv: "Step frequency, coordination pattern",
+        instruments: ["Supported-upright posture paradigm", "Observational coding"],
+        measured: "Spontaneous alternating leg movements in neonate held upright",
+        function: "explore",
+        functionLabel: "Opens new explanatory territory",
+        theory: "The existence of coordinated stepping before corticospinal maturation demands an alternative to 'maturation enables behavior.' Frames the whole program.",
+      },
+    ]
+  },
+  {
+    chapter: "Ch 1",
+    title: "Rethinking Development",
+    nodes: [
+      {
+        id: "c1n1",
+        label: "Historical Case Analysis",
+        dv: "Logical structure of explanatory frameworks",
+        instruments: ["Conceptual / meta-theoretical analysis"],
+        measured: "Explanatory regress in maturational, learning, and interactionist accounts",
+        function: "falsify",
+        functionLabel: "Falsifies all three standard frameworks",
+        theory: "Demonstrates that preexisting structure cannot explain emergent structure without infinite regress. Establishes NDS as the logical alternative.",
+      },
+    ]
+  },
+  {
+    chapter: "Ch 2",
+    title: "A Dynamic Systems Framework",
+    nodes: [
+      {
+        id: "c2n1",
+        label: "Phase Portrait / Attractor Basin",
+        dv: "Trajectory in state space; attractor topology",
+        instruments: ["Phase plane analysis (mathematical formalism from physics)"],
+        measured: "Stability and qualitative states of dynamical systems",
+        function: "extend",
+        functionLabel: "Extends Haken, Kelso, Kugler work",
+        theory: "Imports attractor landscape formalism into developmental theory. The tools for describing pattern stability and transitions become the backbone of empirical claims.",
+      },
+      {
+        id: "c2n2",
+        label: "Order Parameter & Control Parameter",
+        dv: "Collective variable (observable pattern); parameter that shifts the landscape",
+        instruments: ["Conceptual formalism from synergetics (Haken)"],
+        measured: "System-level behavioral pattern vs. underlying driver of change",
+        function: "explore",
+        functionLabel: "Redefines developmental causation",
+        theory: "Separates 'what changes' (order parameter) from 'what drives the change' (control parameter). This distinction restructures what counts as an experiment in developmental science.",
+      },
+    ]
+  },
+  {
+    chapter: "Ch 3",
+    title: "A Dynamic Systems Account of Infant Kicking",
+    nodes: [
+      {
+        id: "c3n1",
+        label: "Surface EMG on Infant Legs",
+        dv: "Flexor & extensor muscle activation timing and amplitude",
+        instruments: ["EMG electrodes taped to bilateral rectus femoris (flexor) and biceps femoris (extensor)", "Ink-on-paper kymograph / analog recording"],
+        measured: "Co-activation patterns at flexion vs. extension phase of spontaneous kicks",
+        function: "falsify",
+        functionLabel: "Falsifies CPG alternation model",
+        theory: "CPG predicts reciprocal flexor/extensor inhibition. EMG showed co-contraction at flexion, passive recoil at extension. The kick is not a neural toggle—it is a spring-mass system.",
+      },
+      {
+        id: "c3n2",
+        label: "Joint Angle Kinematics",
+        dv: "Hip, knee, ankle angular displacement & velocity over kick cycle",
+        instruments: ["High-speed film / video with reflective markers", "Frame-by-frame digitization"],
+        measured: "Spatiotemporal trajectory of limb segments during spontaneous supine kicking",
+        function: "explore",
+        functionLabel: "Describes the emergent trajectory",
+        theory: "Quantifies the collective variable of kicking. Phase plane plots of angle vs. angular velocity reveal spring-like limit cycle attractor — stability without encoding.",
+      },
+      {
+        id: "c3n3",
+        label: "Interlimb Coupling Analysis",
+        dv: "Phase relationship between left and right kicks",
+        instruments: ["Video frame coding of bilateral leg timing", "Circular statistics for phase angles"],
+        measured: "Preferred phase relationships (synchrony, alternation) and their variability",
+        function: "extend",
+        functionLabel: "Extends Kelso coupled oscillator model",
+        theory: "Preferred in-phase coupling with occasional alternation matches predictions from coupled oscillator dynamics, extending Kelso's HKB model to infant development.",
+      },
+    ]
+  },
+  {
+    chapter: "Ch 4",
+    title: "Causality and the Developmental System",
+    nodes: [
+      {
+        id: "c4n1",
+        label: "Treadmill Paradigm — Leg Load Manipulation",
+        dv: "Step rate, interlimb coordination on moving treadmill",
+        instruments: ["Motorized infant treadmill", "Video-based step counting", "Weighted leg cuffs"],
+        measured: "Stepping in infants who had 'lost' reflex stepping (2–4 months)",
+        function: "falsify",
+        functionLabel: "Falsifies cortical inhibition account",
+        theory: "McGraw/Gesell: stepping vanishes because immature cortex is superseded. Treadmill restores stepping in the 'no-step' period. Neural maturation is not the cause; biomechanical loading is the control parameter.",
+      },
+      {
+        id: "c4n2",
+        label: "Water Immersion — Buoyancy Manipulation",
+        dv: "Stepping frequency before/after leg unloading",
+        instruments: ["Warm water bath", "Video recording"],
+        measured: "Step rate change when limb mass effectively reduced by buoyancy",
+        function: "falsify",
+        functionLabel: "Falsifies cortical inhibition — converging evidence",
+        theory: "Independent manipulation of the same proposed control parameter (limb mass relative to strength). Unloading legs restores stepping. Converges with treadmill result — mass/strength ratio is the control parameter, not neural maturation.",
+      },
+      {
+        id: "c4n3",
+        label: "Weighted Ankle Cuffs on Newborns",
+        dv: "Step frequency change with added limb mass",
+        instruments: ["Small weighted cuffs on newborn ankles", "Video step counting"],
+        measured: "Effect of increasing limb mass on newborn step rate",
+        function: "extend",
+        functionLabel: "Extends control-parameter logic",
+        theory: "If mass is a control parameter, adding mass to stepping newborns should reduce step rate. It does. Confirms bidirectional control: mass reduction restores, mass addition suppresses.",
+      },
+    ]
+  },
+  {
+    chapter: "Ch 5",
+    title: "The Embodied Mind: From Neurons to Neighborhoods",
+    nodes: [
+      {
+        id: "c5n1",
+        label: "Longitudinal Kinematics of Reaching",
+        dv: "Hand path, velocity profile, number of movement units",
+        instruments: ["3D motion capture (Optotrak or equivalent)", "Reflective wrist/hand markers"],
+        measured: "Reaching trajectories in infants from 3 to 52 weeks across longitudinal sessions",
+        function: "explore",
+        functionLabel: "Maps developmental landscape of reaching",
+        theory: "Documents the high variability → lower variability trajectory. Movement units (velocity submovements) decrease as attractors stabilize. Variability is theoretically informative — it indexes proximity to attractor.",
+      },
+      {
+        id: "c5n2",
+        label: "Object Weight Manipulation in Reaching",
+        dv: "Grip force, trajectory adjustments, velocity scaling",
+        instruments: ["Instrumented objects of varying mass", "Force plate or strain gauges"],
+        measured: "How infants scale motor output to object properties",
+        function: "explore",
+        functionLabel: "Reveals context-sensitive assembly",
+        theory: "No motor program for 'reaching' is retrieved — each reach is soft-assembled to the specific object. Anticipatory force scaling emerges gradually, indexing attractor learning.",
+      },
+    ]
+  },
+  {
+    chapter: "Ch 6",
+    title: "Development as Selection",
+    nodes: [
+      {
+        id: "c6n1",
+        label: "Edelman Selectionist Framework",
+        dv: "Repertoire diversity in early spontaneous movements",
+        instruments: ["Video coding of spontaneous movement variety", "Classification schemes for movement types"],
+        measured: "Variety and frequency of spontaneous limb and trunk movements in neonates",
+        function: "extend",
+        functionLabel: "Extends Neural Darwinism (Edelman)",
+        theory: "Spontaneous movement generates movement repertoire for selection. Diversity is not noise — it is the substrate for learning. Extends selectionism from neural to behavioral level.",
+      },
+      {
+        id: "c6n2",
+        label: "Mobile Conjugate Reinforcement",
+        dv: "Rate of leg kicking when kick moves mobile vs. baseline",
+        instruments: ["Ribbon connecting infant ankle to crib mobile", "Frequency coding from video"],
+        measured: "Learning rate and retention of kick-mobile contingency",
+        function: "explore",
+        functionLabel: "Explores selection of movement forms",
+        theory: "Infants differentially activate the movement that produces environmental consequences — selection acts on existing repertoire, not instruction. Supports selectionist/NDS account of learning.",
+      },
+      {
+        id: "c6n3",
+        label: "Variability Measures During Transition Periods",
+        dv: "Standard deviation of collective variable around mean at different developmental points",
+        instruments: ["Kinematic time series from existing reach/step data"],
+        measured: "Behavioral variability as a function of developmental age / proximity to transition",
+        function: "extend",
+        functionLabel: "Extends NDS prediction: instability precedes transition",
+        theory: "NDS predicts: weaker attractor → more variability. Transition periods should show heightened variability. This is data taken seriously as evidence, not treated as measurement error.",
+      },
+    ]
+  },
+  {
+    chapter: "Ch 7",
+    title: "The Ontogeny of Leg Movements",
+    nodes: [
+      {
+        id: "c7n1",
+        label: "Treadmill Stepping — Longitudinal Study",
+        dv: "Step rate, interlimb phase, step cycle duration across age",
+        instruments: ["Motorized treadmill (speed-adjustable)", "Video with bilateral lateral views", "Frame-by-frame kinematic coding"],
+        measured: "Stepping patterns from neonate through independent walking onset",
+        function: "explore",
+        functionLabel: "Maps the full developmental landscape",
+        theory: "Continuous treadmill stepping across the 'gap' in spontaneous walking proves locomotor pattern never disappears — only the biomechanical context changes. Tracks attractor re-emergence as control parameter (mass/strength) shifts.",
+      },
+      {
+        id: "c7n2",
+        label: "Body Fat & Leg Mass Anthropometrics",
+        dv: "Leg volume, adiposity estimates, muscle cross-section",
+        instruments: ["Anthropometric calipers", "Leg volume by water displacement", "Skinfold measurements"],
+        measured: "Rate of fat deposition vs. muscle development across months 1–8",
+        function: "falsify",
+        functionLabel: "Explains the disappearance — no neural story needed",
+        theory: "Fat accumulates faster than muscle strengthens in months 2–5. Mass/strength ratio is the control parameter driving the 'disappearance.' This is a biomechanical, not neural, story.",
+      },
+      {
+        id: "c7n3",
+        label: "Split-Belt Treadmill",
+        dv: "Interlimb coordination asymmetry; adaptation rate",
+        instruments: ["Split-belt treadmill (two belts at different speeds)"],
+        measured: "Compensation when each leg receives different treadmill speeds",
+        function: "extend",
+        functionLabel: "Extends coupled oscillator / CPG research",
+        theory: "Asymmetric treadmill forces interlimb coordination to adapt in real time — demonstrates that the pattern is dynamically assembled, not retrieved from a stored program.",
+      },
+      {
+        id: "c7n4",
+        label: "Ground Reaction Force — Force Plate Walking",
+        dv: "Vertical GRF profile, heel-strike patterns, push-off timing",
+        instruments: ["Force plate embedded in floor", "Synchronized video"],
+        measured: "Force profiles during early independent walking vs. mature gait",
+        function: "explore",
+        functionLabel: "Describes attractor topology of mature walking",
+        theory: "Mature gait has a distinctive double-peaked GRF signature. Early walkers show immature flat profile — the attractor for mature walking is not present at onset, it must be discovered through experience.",
+      },
+    ]
+  },
+  {
+    chapter: "Ch 8",
+    title: "Knowing the World Through Action",
+    nodes: [
+      {
+        id: "c8n1",
+        label: "Reaching to Moving vs. Stationary Objects",
+        dv: "Trajectory curvature, timing of reach initiation, success rate",
+        instruments: ["3D motion capture", "Objects on motorized pendulum or conveyor", "Video coding"],
+        measured: "Prospective control — does reach account for object motion?",
+        function: "falsify",
+        functionLabel: "Falsifies feed-forward representation model",
+        theory: "If motor programs are retrieved representations, reaching to a moving object requires a stored 'moving object program.' NDS predicts prospective control assembled online. Infants reach prospectively before formal cognitive representation can be attributed.",
+      },
+      {
+        id: "c8n2",
+        label: "Haptic Exploration of Object Properties",
+        dv: "Mouthing, fingering, visual inspection duration and type",
+        instruments: ["Video coding of exploratory hand/mouth contact", "Objects varying in texture, rigidity, weight"],
+        measured: "Whether exploration mode matches object property",
+        function: "explore",
+        functionLabel: "Frames perception-action as active construction",
+        theory: "Infants differentiate exploration strategy by object property before symbolic thought is plausible. Knowing is action-embedded, not representation-based. Extends Gibson's ecological realism into development.",
+      },
+      {
+        id: "c8n3",
+        label: "Cliff, Drop, Surface-Texture Avoidance",
+        dv: "Crawling over vs. avoidance at drop-off; heart rate change",
+        instruments: ["Visual cliff apparatus (glass-covered drop)", "Foam vs. rigid surface boards", "Cardiac monitor (HR as index of wariness)"],
+        measured: "Depth perception and behavioral avoidance as function of locomotor experience",
+        function: "extend",
+        functionLabel: "Extends Campos locomotor-experience work",
+        theory: "Locomotor experience drives perceptual differentiation of depth — not maturation of depth perception. Heart rate shows wariness, avoidance shows action-appropriate use of depth information. NDS: perception and action co-specify each other.",
+      },
+    ]
+  },
+];
+
+let activeFilter = 'all';
+let selectedNode = null;
+
+function getColor(category) {
+  return CATEGORY_COLORS[category] || '#888';
+}
+
+function renderTimeline() {
+  const container = document.getElementById('timeline-container');
+  const svgEl = document.getElementById('timeline-svg');
+  
+  const paddingLeft = 60;
+  const spineX = 110;
+  const nodeStartX = 140;
+  const nodeWidth = 480;
+  const rowH = 72;
+  const chapterHeaderH = 44;
+  const chapterPaddingBottom = 16;
+
+  // Calculate total height
+  let totalH = 30;
+  const chapterLayouts = [];
+  data.forEach(chapter => {
+    const visibleNodes = chapter.nodes.filter(n => activeFilter === 'all' || n.function === activeFilter);
+    const chY = totalH;
+    totalH += chapterHeaderH;
+    const nodeLayouts = [];
+    visibleNodes.forEach((node, ni) => {
+      nodeLayouts.push({ node, y: totalH + ni * rowH + rowH/2 });
+    });
+    totalH += Math.max(visibleNodes.length, 0) * rowH + chapterPaddingBottom;
+    chapterLayouts.push({ chapter, visibleNodes, chY, nodeLayouts });
+  });
+  totalH += 40;
+
+  const svgWidth = nodeStartX + nodeWidth + 40;
+  svgEl.setAttribute('viewBox', `0 0 ${svgWidth} ${totalH}`);
+  svgEl.setAttribute('width', svgWidth);
+  svgEl.setAttribute('height', totalH);
+  svgEl.style.height = totalH + 'px';
+
+  const svg = d3.select('#timeline-svg');
+  svg.selectAll('*').remove();
+
+  // Background
+  svg.append('rect').attr('width', svgWidth).attr('height', totalH).attr('fill', '#0a0c10');
+
+  // Spine line
+  svg.append('line')
+    .attr('x1', spineX).attr('y1', 20)
+    .attr('x2', spineX).attr('y2', totalH - 20)
+    .attr('stroke', '#1e2230').attr('stroke-width', 1.5);
+
+  chapterLayouts.forEach(({ chapter, visibleNodes, chY, nodeLayouts }) => {
+    const g = svg.append('g').attr('class', 'chapter-group');
+
+    // Chapter band
+    const bandH = chapterHeaderH + Math.max(visibleNodes.length, 0) * rowH + chapterPaddingBottom;
+    g.append('rect')
+      .attr('x', 0).attr('y', chY)
+      .attr('width', svgWidth).attr('height', bandH)
+      .attr('fill', 'rgba(255,255,255,0.012)');
+
+    // Chapter dot on spine
+    g.append('circle')
+      .attr('cx', spineX).attr('cy', chY + 22)
+      .attr('r', 5)
+      .attr('fill', '#1e2230')
+      .attr('stroke', '#3a4050')
+      .attr('stroke-width', 1.5);
+
+    // Chapter label
+    g.append('text')
+      .attr('x', spineX - 16).attr('y', chY + 26)
+      .attr('text-anchor', 'end')
+      .attr('class', 'chapter-label')
+      .text(chapter.chapter);
+
+    // Chapter title
+    g.append('text')
+      .attr('x', spineX + 16).attr('y', chY + 20)
+      .attr('class', 'chapter-title-label')
+      .text(chapter.title);
+
+    // Chapter subtitle (DV type)
+    g.append('text')
+      .attr('x', spineX + 16).attr('y', chY + 34)
+      .attr('class', 'chapter-label')
+      .attr('fill', '#3a4050')
+      .text(visibleNodes.length === 0 ? '(no matches for current filter)' : `${visibleNodes.length} study node${visibleNodes.length !== 1 ? 's' : ''}`);
+
+    nodeLayouts.forEach(({ node, y }) => {
+      const nodeG = g.append('g')
+        .attr('class', 'node-group')
+        .on('click', () => selectNode(node));
+
+      const color = getColor(node.function);
+      const isSelected = selectedNode && selectedNode.id === node.id;
+
+      // Connector from spine to node
+      nodeG.append('line')
+        .attr('x1', spineX + 5).attr('y1', y)
+        .attr('x2', nodeStartX - 12).attr('y2', y)
+        .attr('stroke', isSelected ? color : '#1e2230')
+        .attr('stroke-width', isSelected ? 1.5 : 1)
+        .attr('stroke-dasharray', '3,3')
+        .attr('class', 'node-connector');
+
+      // Node circle
+      nodeG.append('circle')
+        .attr('cx', nodeStartX - 12).attr('cy', y)
+        .attr('r', isSelected ? 8 : 6)
+        .attr('fill', isSelected ? color : 'transparent')
+        .attr('stroke', color)
+        .attr('stroke-width', isSelected ? 0 : 1.5)
+        .attr('class', 'node-circle');
+
+      // Node background pill
+      nodeG.append('rect')
+        .attr('x', nodeStartX).attr('y', y - 22)
+        .attr('width', nodeWidth - 20).attr('height', 44)
+        .attr('rx', 4)
+        .attr('fill', isSelected ? `${color}15` : 'rgba(255,255,255,0.02)')
+        .attr('stroke', isSelected ? color : '#1e2230')
+        .attr('stroke-width', isSelected ? 1.5 : 0.5);
+
+      // Node label
+      nodeG.append('text')
+        .attr('x', nodeStartX + 12).attr('y', y - 6)
+        .attr('class', 'node-label-text')
+        .attr('fill', isSelected ? '#fff' : '#c8cdd8')
+        .text(node.label);
+
+      // DV line
+      nodeG.append('text')
+        .attr('x', nodeStartX + 12).attr('y', y + 10)
+        .attr('class', 'node-dv-text')
+        .text('DV: ' + node.dv.substring(0, 65) + (node.dv.length > 65 ? '…' : ''));
+
+      // Function tag
+      const tagW = node.functionLabel.length * 6.2 + 16;
+      const tagX = nodeStartX + nodeWidth - tagW - 24;
+      nodeG.append('rect')
+        .attr('x', tagX).attr('y', y - 11)
+        .attr('width', tagW).attr('height', 20)
+        .attr('rx', 10)
+        .attr('fill', `${color}20`)
+        .attr('stroke', `${color}60`)
+        .attr('stroke-width', 0.8);
+
+      nodeG.append('text')
+        .attr('x', tagX + tagW/2).attr('y', y + 3)
+        .attr('text-anchor', 'middle')
+        .attr('font-family', 'DM Mono, monospace')
+        .attr('font-size', '8.5')
+        .attr('fill', color)
+        .text(node.functionLabel);
+    });
+
+    // Chapter divider
+    g.append('line')
+      .attr('x1', 0).attr('y1', chY + bandH)
+      .attr('x2', svgWidth).attr('y2', chY + bandH)
+      .attr('stroke', '#1e2230').attr('stroke-width', 0.5);
+  });
+}
+
+function selectNode(node) {
+  selectedNode = node;
+  renderTimeline();
+  renderDetail(node);
+}
+
+function renderDetail(node) {
+  const panel = document.getElementById('detail-panel');
+  const color = getColor(node.function);
+  
+  const chapterObj = data.find(ch => ch.nodes.some(n => n.id === node.id));
+  const chapterTitle = chapterObj ? `${chapterObj.chapter}: ${chapterObj.title}` : '';
+
+  const instrumentsHtml = node.instruments.map(i =>
+    `<span class="instrument-chip">⚙ ${i}</span>`
+  ).join('');
+
+  const functionClass = `chip-${node.function}`;
+
+  panel.innerHTML = `
+    <div class="detail-header">
+      <div class="detail-chapter">${chapterTitle}</div>
+      <div class="detail-title">${node.label}</div>
+      <span class="detail-category-tag ${functionClass}" style="background:${color}15;border:1px solid ${color}50;color:${color};">${node.functionLabel}</span>
+    </div>
+
+    <div class="detail-section">
+      <div class="detail-section-label">Instruments / Apparatus</div>
+      <div class="detail-section-content">${instrumentsHtml}</div>
+    </div>
+
+    <div class="detail-section">
+      <div class="detail-section-label">What Was Measured (DV)</div>
+      <div class="detail-section-content">${node.dv}</div>
+    </div>
+
+    <div class="detail-section">
+      <div class="detail-section-label">Operationalization</div>
+      <div class="detail-section-content">${node.measured}</div>
+    </div>
+
+    <div class="detail-section">
+      <div class="detail-section-label">Theory-Building Function</div>
+      <div class="detail-section-content" style="color:#fff;line-height:1.8;">${node.theory}</div>
+    </div>
+  `;
+}
+
+function filterCategory(cat) {
+  activeFilter = cat;
+  selectedNode = null;
+
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active', 'active-falsify', 'active-extend', 'active-explore', 'active-instrument'));
+  const btn = document.getElementById('btn-' + cat);
+  if (btn) {
+    btn.classList.add('active');
+    if (cat !== 'all') btn.classList.add('active-' + cat);
+  }
+
+  document.getElementById('detail-panel').innerHTML = `
+    <div class="detail-placeholder">
+      <span class="arrow">←</span>
+      Click any node on the<br>timeline to see full details.
+    </div>`;
+  
+  renderTimeline();
+}
+
+// Init
+renderTimeline();
+</script>
+</body>
+</html>
