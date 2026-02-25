@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thelen &amp; Smith (1994) — Master Concept Map</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap');
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0a0f;color:#c8c4b8;font-family:'Crimson Pro',Georgia,serif;overflow:hidden;height:100vh}
+.top-bar{display:flex;align-items:center;gap:12px;padding:8px 16px;background:#0e0e16;border-bottom:1px solid #252535;z-index:10}
+.top-bar h1{font-size:15px;font-weight:600;color:#e8b84b;white-space:nowrap;font-family:'JetBrains Mono',monospace}
+.top-bar input[type=text]{background:#12121a;border:1px solid #252535;color:#c8c4b8;padding:4px 10px;border-radius:4px;font-size:13px;width:180px;font-family:'JetBrains Mono',monospace}
+.top-bar .stats{font-size:11px;color:#666;font-family:'JetBrains Mono',monospace;margin-left:auto;white-space:nowrap}
+.filter-bar{display:flex;gap:6px;padding:6px 16px;background:#0c0c14;border-bottom:1px solid #1a1a28;flex-wrap:wrap;align-items:center}
+.filter-bar label{font-size:11px;color:#888;font-family:'JetBrains Mono',monospace;margin-right:4px}
+.fbtn{font-size:11px;padding:3px 8px;border-radius:3px;border:1px solid #252535;background:#12121a;color:#888;cursor:pointer;font-family:'JetBrains Mono',monospace;transition:all .2s}
+.fbtn.active{color:#e8e4d8;border-color:#555}
+.fbtn[data-type=concept].active{border-color:#e8b84b;color:#e8b84b}
+.fbtn[data-type=finding].active{border-color:#2fc4af;color:#2fc4af}
+.fbtn[data-type=rival].active{border-color:#e85b6b;color:#e85b6b}
+.fbtn[data-type=external].active{border-color:#9b87f5;color:#9b87f5}
+.fbtn[data-type=method].active{border-color:#f0924a;color:#f0924a}
+.main{display:flex;flex:1;overflow:hidden;height:calc(100vh - 112px)}
+#graph-container{flex:1;position:relative;overflow:hidden}
+#graph-svg{width:100%;height:100%}
+.legend{position:absolute;bottom:12px;left:12px;background:rgba(10,10,15,.92);border:1px solid #252535;border-radius:6px;padding:10px 14px;font-size:11px;font-family:'JetBrains Mono',monospace}
+.legend .row{display:flex;align-items:center;gap:6px;margin:3px 0;color:#888}
+.legend .dot{width:10px;height:10px;border-radius:50%}
+.legend .line{width:18px;height:2px;border-radius:1px}
+#tooltip{position:absolute;display:none;background:rgba(18,18,26,.95);border:1px solid #252535;padding:6px 10px;border-radius:4px;font-size:12px;pointer-events:none;max-width:280px;z-index:100}
+#tooltip .tt-ch{font-size:10px;color:#666;font-family:'JetBrains Mono',monospace}
+#tooltip .tt-title{color:#e8e4d8;font-weight:600}
+#detail-panel{width:440px;background:#0e0e16;border-left:1px solid #252535;overflow-y:auto;transition:width .3s}
+.dp-inner{padding:16px}
+.dp-ph{text-align:center;color:#444;margin-top:80px;line-height:1.8;font-size:14px}
+.dp-title{font-size:18px;font-weight:700;color:#e8e4d8;margin-bottom:4px}
+.dp-ch{font-size:11px;color:#666;font-family:'JetBrains Mono',monospace;margin-bottom:8px}
+.dp-type{display:inline-block;font-size:10px;padding:2px 8px;border-radius:3px;font-family:'JetBrains Mono',monospace;margin-bottom:10px}
+.dp-desc{font-size:14px;line-height:1.6;margin-bottom:14px;color:#b8b4a8}
+.dp-section{margin-bottom:14px}
+.dp-section-title{font-size:12px;font-weight:600;color:#e8b84b;font-family:'JetBrains Mono',monospace;margin-bottom:6px;padding-bottom:3px;border-bottom:1px solid #1a1a28}
+.dp-field{margin:4px 0;font-size:13px;line-height:1.5}
+.dp-field-label{color:#888;font-family:'JetBrains Mono',monospace;font-size:11px}
+.dp-field-value{color:#c8c4b8}
+.dp-provenance{font-size:10px;padding:3px 8px;border-radius:3px;margin-bottom:10px;font-family:'JetBrains Mono',monospace;display:inline-block}
+.dp-provenance.verified{background:rgba(47,196,175,.12);color:#2fc4af;border:1px solid rgba(47,196,175,.25)}
+.dp-provenance.book{background:rgba(232,184,75,.1);color:#e8b84b;border:1px solid rgba(232,184,75,.2)}
+.dp-provenance.training{background:rgba(150,140,130,.1);color:#999;border:1px solid rgba(150,140,130,.2)}
+.dp-conn{cursor:pointer;padding:3px 0;color:#888;font-size:12px;transition:color .2s}
+.dp-conn:hover{color:#e8e4d8}
+.dp-cite{font-size:12px;color:#9b87f5;font-style:italic;margin:6px 0}
+.dp-cite a{color:#9b87f5;text-decoration:none}
+.dp-cite a:hover{text-decoration:underline}
+.timeline-bar{display:flex;align-items:center;gap:12px;padding:6px 16px;background:#0c0c14;border-top:1px solid #1a1a28}
+.timeline-bar .tl{font-size:11px;color:#666;font-family:'JetBrains Mono',monospace}
+.timeline-bar input[type=range]{flex:1;accent-color:#e8b84b}
+.timeline-bar .tv{font-size:12px;color:#e8b84b;font-family:'JetBrains Mono',monospace;min-width:70px}
+/* References panel */
+#ref-panel{display:none;position:fixed;top:0;right:0;width:520px;height:100vh;background:#0e0e16;border-left:2px solid #e8b84b;z-index:200;overflow-y:auto;padding:24px;box-shadow:-4px 0 20px rgba(0,0,0,.5)}
+#ref-panel h2{font-size:16px;color:#e8b84b;font-family:'JetBrains Mono',monospace;margin-bottom:16px}
+#ref-panel .ref-entry{font-size:13px;line-height:1.6;margin-bottom:12px;padding-left:28px;text-indent:-28px;color:#c8c4b8}
+#ref-panel .ref-entry a{color:#9b87f5;text-decoration:none}
+#ref-panel .ref-entry a:hover{text-decoration:underline}
+#ref-close{position:absolute;top:12px;right:16px;background:none;border:1px solid #444;color:#c8c4b8;padding:4px 10px;border-radius:3px;cursor:pointer;font-family:'JetBrains Mono',monospace;font-size:12px}
+#ref-toggle{font-size:11px;padding:3px 8px;border-radius:3px;border:1px solid #9b87f5;background:transparent;color:#9b87f5;cursor:pointer;font-family:'JetBrains Mono',monospace;margin-left:8px}
+#ref-toggle:hover{background:rgba(155,135,245,.15)}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <h1>Thelen &amp; Smith (1994) Master Concept Map</h1>
+  <input type="text" id="search-box" placeholder="Search nodes…">
+  <button id="ref-toggle">References</button>
+  <span class="stats" id="stats"></span>
+</div>
+
+<div class="filter-bar">
+  <label>CH:</label>
+  <button class="fbtn active" data-ch="all">All</button>
+  <button class="fbtn" data-ch="1">1</button><button class="fbtn" data-ch="2">2</button>
+  <button class="fbtn" data-ch="3">3</button><button class="fbtn" data-ch="4">4</button>
+  <button class="fbtn" data-ch="5">5</button><button class="fbtn" data-ch="6">6</button>
+  <button class="fbtn" data-ch="7">7</button><button class="fbtn" data-ch="8">8</button>
+  <button class="fbtn" data-ch="9">9</button><button class="fbtn" data-ch="10">10</button>
+  <button class="fbtn" data-ch="11">11</button>
+  <span style="margin:0 6px;color:#333">|</span>
+  <label>TYPE:</label>
+  <button class="fbtn active" data-type="concept">Concept</button>
+  <button class="fbtn active" data-type="finding">Finding</button>
+  <button class="fbtn active" data-type="rival">Rival</button>
+  <button class="fbtn active" data-type="external">External</button>
+  <button class="fbtn active" data-type="method">Method</button>
+</div>
+
+<div class="main">
+  <div id="graph-container">
+    <svg id="graph-svg"></svg>
+    <div class="legend" id="legend"></div>
+    <div id="tooltip"></div>
+  </div>
+  <div id="detail-panel">
+    <div class="dp-inner" id="dp-content">
+      <div class="dp-ph">Click any node to see<br>full details, connections,<br>and experiment design.</div>
+    </div>
+  </div>
+</div>
+
+<div class="timeline-bar">
+  <span class="tl">Build Timeline</span>
+  <input type="range" id="timeline-slider" min="1" max="11" value="11" step="1">
+  <span class="tv" id="timeline-value">Ch 1 — 11</span>
+</div>
+
+<div id="ref-panel">
+  <button id="ref-close">✕ Close</button>
+  <h2>Full References (APA 7th)</h2>
+  <div id="ref-list"></div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+// REFERENCES — Full APA with DOI links
+// ═══════════════════════════════════════════════════════
+const REFS = {
+  "adolph_1993": {
+    apa: "Adolph, K. E., Eppler, M. A., & Gibson, E. J. (1993). Crawling versus walking infants' perception of affordances for locomotion over sloping surfaces. <i>Child Development, 64</i>(4), 1158–1174.",
+    doi: "https://doi.org/10.2307/1131332"
+  },
+  "baillargeon_1987": {
+    apa: "Baillargeon, R. (1987). Object permanence in 3½- and 4½-month-old infants. <i>Developmental Psychology, 23</i>(5), 655–664.",
+    doi: "https://doi.org/10.1037/0012-1649.23.5.655"
+  },
+  "baillargeon_1986": {
+    apa: "Baillargeon, R. (1986). Representing the existence and the location of hidden objects: Object permanence in 6- and 8-month-old infants. <i>Cognition, 23</i>(1), 21–41.",
+    doi: "https://doi.org/10.1016/0010-0277(86)90052-1"
+  },
+  "clark_phillips_1993": {
+    apa: "Clark, J. E., & Phillips, S. J. (1993). A longitudinal study of intralimb coordination in the first year of independent walking: A dynamical systems analysis. <i>Child Development, 64</i>(4), 1143–1157.",
+    doi: "https://doi.org/10.2307/1131331"
+  },
+  "haken_kelso_bunz_1985": {
+    apa: "Haken, H., Kelso, J. A. S., & Bunz, H. (1985). A theoretical model of phase transitions in human hand movements. <i>Biological Cybernetics, 51</i>(5), 347–356.",
+    doi: "https://doi.org/10.1007/BF00336922"
+  },
+  "landau_smith_jones_1988": {
+    apa: "Landau, B., Smith, L. B., & Jones, S. S. (1988). The importance of shape in early lexical learning. <i>Cognitive Development, 3</i>(3), 299–321.",
+    doi: "https://doi.org/10.1016/0885-2014(88)90014-7"
+  },
+  "reeke_edelman_1988": {
+    apa: "Reeke, G. N., & Edelman, G. M. (1988). Real brains and artificial intelligence. <i>Daedalus, 117</i>(1), 143–173.",
+    doi: null
+  },
+  "schneider_1990": {
+    apa: "Schneider, K., Zernicke, R. F., Ulrich, B. D., Jensen, J. L., & Thelen, E. (1990). Understanding movement control in infants through the analysis of limb intersegmental dynamics. <i>Journal of Motor Behavior, 22</i>(4), 493–520.",
+    doi: "https://doi.org/10.1080/00222895.1990.10735524"
+  },
+  "smith_jones_landau_1992": {
+    apa: "Smith, L. B., Jones, S. S., & Landau, B. (1992). Count nouns, adjectives, and perceptual properties in children's novel word interpretations. <i>Developmental Psychology, 28</i>(2), 273–286.",
+    doi: "https://doi.org/10.1037/0012-1649.28.2.273"
+  },
+  "smith_thelen_titzer_1999": {
+    apa: "Smith, L. B., Thelen, E., Titzer, R., & McLin, D. (1999). Knowing in the context of acting: The task dynamics of the A-not-B error. <i>Psychological Review, 106</i>(2), 235–260.",
+    doi: "https://doi.org/10.1037/0033-295X.106.2.235"
+  },
+  "spencer_smith_thelen_2001": {
+    apa: "Spencer, J. P., Smith, L. B., & Thelen, E. (2001). Tests of a dynamic systems account of the A-not-B error: The influence of prior experience on the spatial memory abilities of two-year-olds. <i>Child Development, 72</i>(5), 1327–1346.",
+    doi: "https://doi.org/10.1111/1467-8624.00351"
+  },
+  "thelen_fisher_1982": {
+    apa: "Thelen, E., & Fisher, D. M. (1982). Newborn stepping: An explanation for a 'disappearing' reflex. <i>Developmental Psychology, 18</i>(5), 760–775.",
+    doi: "https://doi.org/10.1037/0012-1649.18.5.760"
+  },
+  "thelen_fisher_ridley_1984": {
+    apa: "Thelen, E., Fisher, D. M., & Ridley-Johnson, R. (1984). The relationship between physical growth and a newborn reflex. <i>Infant Behavior and Development, 7</i>(4), 479–493.",
+    doi: "https://doi.org/10.1016/S0163-6383(84)80007-7"
+  },
+  "thelen_ulrich_1991": {
+    apa: "Thelen, E., & Ulrich, B. D. (1991). Hidden skills: A dynamic systems analysis of treadmill stepping during the first year. <i>Monographs of the Society for Research in Child Development, 56</i>(1, Serial No. 223).",
+    doi: "https://doi.org/10.2307/1166099"
+  },
+  "thelen_ulrich_niles_1987": {
+    apa: "Thelen, E., Ulrich, B. D., & Niles, D. (1987). Bilateral coordination in human infants: Stepping on a split-belt treadmill. <i>Journal of Experimental Psychology: Human Perception and Performance, 13</i>(3), 405–410.",
+    doi: "https://doi.org/10.1037/0096-1523.13.3.405"
+  },
+  "thelen_corbetta_1993": {
+    apa: "Thelen, E., Corbetta, D., Kamm, K., Spencer, J. P., Schneider, K., & Zernicke, R. F. (1993). The transition to reaching: Mapping intention to intrinsic dynamics. <i>Child Development, 64</i>(4), 1058–1098.",
+    doi: "https://doi.org/10.2307/1131327"
+  },
+  "thelen_schoner_2001": {
+    apa: "Thelen, E., Schöner, G., Scheier, C., & Smith, L. B. (2001). The dynamics of embodiment: A field theory of infant perseverative reaching. <i>Behavioral and Brain Sciences, 24</i>(1), 1–34.",
+    doi: "https://doi.org/10.1017/S0140525X01003910"
+  },
+  "thelen_smith_1994": {
+    apa: "Thelen, E., & Smith, L. B. (1994). <i>A dynamic systems approach to the development of cognition and action</i>. MIT Press.",
+    doi: "https://doi.org/10.7551/mitpress/2524.001.0001"
+  },
+  "wellman_1987": {
+    apa: "Wellman, H. M., Cross, D., & Bartsch, K. (1987). Infant search and object permanence: A meta-analysis of the A-not-B error. <i>Monographs of the Society for Research in Child Development, 51</i>(3, Serial No. 214).",
+    doi: "https://doi.org/10.2307/1166103"
+  },
+  "edelman_1987": {
+    apa: "Edelman, G. M. (1987). <i>Neural Darwinism: The theory of neuronal group selection</i>. Basic Books.",
+    doi: null
+  },
+  "marcovitch_zelazo_1999": {
+    apa: "Marcovitch, S., & Zelazo, P. D. (1999). The A-not-B error: Results from a logistic meta-analysis. <i>Child Development, 70</i>(6), 1297–1313.",
+    doi: "https://doi.org/10.1111/1467-8624.00095"
+  }
+};
+
+// ═══════════════════════════════════════════════════════
+// DATA MODEL — NODES (44 nodes)
+// ═══════════════════════════════════════════════════════
+const NODES = [
+  // — CH 1 —
+  {id:"c1_heterochrony",ch:1,label:"Heterochrony",type:"concept",
+   desc:"Component subsystems develop at different rates. No single clock governs developmental timing. Walking emerges when the slowest relevant subsystem reaches threshold."},
+  {id:"c1_stepping_disappear",ch:1,label:"Stepping 'Disappearance'",type:"finding",
+   desc:"Newborn stepping reflex vanishes around 2 months, then reappears as voluntary walking near 12 months. Maturationist accounts attributed this to cortical inhibition of spinal reflexes.",
+   experimentDesign:{
+     refs:["thelen_fisher_1982","thelen_fisher_ridley_1984"],
+     sourceType:"verified",sourceNote:"Design details confirmed from original publications via web search and corroborated against Ch 1 book description.",
+     participants:{n:"Multiple cohorts",ageRange:"Newborn–12 months",design:"Longitudinal + cross-sectional"},
+     iv:["Age (weekly observations)","Body posture (upright vs. supine)","Limb loading (weights added to ankles)","Buoyancy (water immersion)"],
+     dv:["Step rate (steps/min)","Step duration","Interlimb coordination (phase lag)"],
+     instruments:["Motorized treadmill (infant-sized)","Ankle weights (graduated)","Water immersion tank","Video recording (60 fps)","Goniometers"],
+     procedure:"Infants held upright over treadmill belt or flat surface. Stepping elicited and recorded. Weights added/removed. Water immersion to reduce effective limb mass.",
+     trials:"Multiple 30–60 s trials per session across weekly visits",
+     analysis:"Within-subject comparisons of step rate across conditions; qualitative phase-shift identification",
+     keyResult:"Adding weight suppressed stepping; water immersion restored it. Pattern was masked by biomechanics, not lost by neural inhibition."
+   }},
+  {id:"c1_treadmill",ch:1,label:"Treadmill Stepping",type:"finding",
+   desc:"Infants who had 'lost' stepping produced coordinated alternating steps on a moving treadmill belt, falsifying cortical inhibition accounts.",
+   experimentDesign:{
+     refs:["thelen_ulrich_1991"],
+     sourceType:"verified",sourceNote:"Monograph-length study; design confirmed from Thelen & Ulrich (1991) SRCD Monographs and corroborated with Ch 1.",
+     participants:{n:"~12 infants per age group",ageRange:"1–7 months",design:"Longitudinal"},
+     iv:["Belt speed (slow/medium/fast)","Split-belt condition (asymmetric speeds)","Age"],
+     dv:["Alternating step frequency","Stance/swing duration ratio","Interlimb phase coupling"],
+     instruments:["Custom infant treadmill (dual-belt capable)","Overhead harness support system","High-speed video (60 fps)","EMG surface electrodes on quadriceps and hamstrings"],
+     procedure:"Infant held upright in harness over treadmill. Belt activated at varying speeds. Both legs recorded simultaneously.",
+     trials:"6–10 trials per speed condition per session; weekly sessions for 6 months",
+     analysis:"Frame-by-frame kinematic coding; relative phase analysis between limbs; EMG burst patterns",
+     keyResult:"Even 1-month-olds who no longer stepped spontaneously produced well-coordinated alternating steps. Split-belt elicited independent leg timing."
+   }},
+  {id:"c1_distributed_cause",ch:1,label:"Distributed Causation",type:"concept",
+   desc:"No single component is the privileged cause of walking onset. Behavior emerges from the cooperative state of all subsystems within task constraints."},
+
+  // — CH 2 —
+  {id:"c2_crisis",ch:2,label:"Crisis in Cognitive Development",type:"concept",
+   desc:"Current theories cannot reconcile global developmental order with local variability and context-sensitivity. Stage theories, nativist modules, and information processing all face this contradiction."},
+  {id:"c2_nativism",ch:2,label:"Nativist Core Knowledge",type:"rival",
+   desc:"Innate domain-specific modules provide core knowledge of objects, number, and agency from birth. Development is maturation of preexisting structures."},
+  {id:"c2_piaget_stages",ch:2,label:"Piagetian Stage Theory",type:"rival",
+   desc:"Development proceeds through universal, domain-general stages driven by equilibration. Knowledge is constructed through sensorimotor action."},
+  {id:"c2_connectionism",ch:2,label:"Connectionism",type:"external",
+   desc:"Neural network models demonstrate emergent pattern recognition without explicit rules. Learning by weight adjustment in distributed representations."},
+
+  // — CH 3 —
+  {id:"c3_self_org",ch:3,label:"Self-Organization",type:"concept",
+   desc:"Global order emerges from local interactions without a blueprint. Pattern formation in physical, chemical, and biological systems demonstrates this principle."},
+  {id:"c3_attractor",ch:3,label:"Attractor Dynamics",type:"concept",
+   desc:"Stable behavioral states are attractors in a dynamical landscape. Systems settle into attractors and resist perturbation proportional to attractor depth."},
+  {id:"c3_control_param",ch:3,label:"Control Parameter",type:"concept",
+   desc:"A variable that, when continuously scaled, drives the system through qualitative phase transitions without itself prescribing the new pattern."},
+  {id:"c3_phase_shift",ch:3,label:"Phase Shift",type:"concept",
+   desc:"Abrupt qualitative reorganization of behavior when a control parameter crosses a critical threshold. Preceded by increased variability (critical fluctuations)."},
+  {id:"c3_order_param",ch:3,label:"Order Parameter",type:"concept",
+   desc:"A low-dimensional collective variable that captures the macroscopic pattern of the system. Compresses high-dimensional components into measurable behavioral description."},
+  {id:"c3_hkb",ch:3,label:"Haken-Kelso-Bunz Model",type:"external",
+   desc:"Formal dynamical model of bimanual coordination showing phase transitions from anti-phase to in-phase coupling as frequency increases.",
+   experimentDesign:{
+     refs:["haken_kelso_bunz_1985"],
+     sourceType:"training",sourceNote:"HKB model details from training knowledge of canonical NDS literature. Core parameters described in Ch 3.",
+     participants:{n:"Adult participants",ageRange:"Adults",design:"Within-subjects"},
+     iv:["Movement frequency (continuously scaled upward)"],
+     dv:["Relative phase between fingers (order parameter)","Phase variability (SD of relative phase)"],
+     instruments:["Metronome/pacing signal","Motion tracking of finger movements"],
+     procedure:"Participants begin in anti-phase bimanual coordination. Pacing frequency increases continuously.",
+     trials:"Multiple frequency sweeps per participant",
+     analysis:"Relative phase computation; bifurcation analysis; potential landscape reconstruction",
+     keyResult:"At critical frequency, spontaneous transition from anti-phase (180°) to in-phase (0°) coordination. Transition preceded by increased variability."
+   }},
+
+  // — CH 4 —
+  {id:"c4_landscape",ch:4,label:"Developmental Landscape",type:"concept",
+   desc:"Waddington's epigenetic landscape reinterpreted as a state space of attractor dynamics that evolves over developmental time. Not a metaphor but a formal description."},
+  {id:"c4_soft_assembly",ch:4,label:"Soft Assembly",type:"concept",
+   desc:"Behavior is assembled in real time from available components and task demands, not retrieved from stored motor programs. The same outcome can be achieved via different component configurations."},
+  {id:"c4_newborn_kick",ch:4,label:"Newborn Kicking Dynamics",type:"finding",
+   desc:"Spontaneous kicking in newborns exploits passive dynamics—gravity and inertia do much of the work, with minimal active muscle contribution.",
+   experimentDesign:{
+     refs:["schneider_1990"],
+     sourceType:"book",sourceNote:"Inverse dynamics decomposition described in detail in Ch 4. Schneider et al. (1990) is the original source; torque partition method confirmed via book text.",
+     participants:{n:"~8 infants",ageRange:"3-month-olds",design:"Cross-sectional"},
+     iv:["Limb segment (thigh, shank, foot)","Kick phase (flexion vs. extension)"],
+     dv:["Net joint torque (NET)","Gravitational torque (GRA)","Motion-dependent torque (MDT)","Muscle torque (MUS)"],
+     instruments:["3D motion capture (reflective markers on limb landmarks)","Inverse dynamics software","Anthropometric measurements for segment parameters"],
+     procedure:"Supine infants recorded during spontaneous kicking. 3D kinematics digitized. Inverse dynamics computed NET = GRA + MDT + MUS for each joint.",
+     trials:"Multiple spontaneous kicks per infant",
+     analysis:"Torque decomposition at each joint across kick cycle; comparison of MUS contribution to passive (GRA + MDT) forces",
+     keyResult:"Passive dynamics (gravity + inertia) account for large proportion of kick trajectory. Muscle torque is a relatively small fraction—the system exploits physics."
+   }},
+  {id:"c4_interlimb_coord",ch:4,label:"Interlimb Coordination Development",type:"finding",
+   desc:"Developmental shift from tight in-phase coupling of legs in early infancy toward more variable and independent coordination patterns.",
+   experimentDesign:{
+     refs:["thelen_ulrich_niles_1987","clark_phillips_1993"],
+     sourceType:"book",sourceNote:"Relative phase analysis described in Ch 4. Clark & Phillips (1993) added longitudinal walking data; Thelen et al. (1987) provided split-belt treadmill evidence.",
+     participants:{n:"~8–12 infants per study",ageRange:"Newborn–12 months",design:"Longitudinal"},
+     iv:["Age","Locomotor condition (treadmill vs. spontaneous kicking vs. walking)"],
+     dv:["Relative phase between limbs","Coefficient of variation of relative phase"],
+     instruments:["Infant treadmill","Video-based motion capture","Frame-by-frame digitizing"],
+     procedure:"Bilateral limb movements recorded during spontaneous kicking, treadmill stepping, and early walking at multiple ages.",
+     trials:"Multiple movement bouts per session; weekly or monthly sessions",
+     analysis:"Relative phase computed between bilateral limbs; CV as measure of coupling stability",
+     keyResult:"Early kicking shows tight in-phase coupling. Transition to walking shows increased variability in relative phase—hallmark of a phase transition region."
+   }},
+
+  // — CH 5 —
+  {id:"c5_tngs",ch:5,label:"Theory of Neuronal Group Selection",type:"external",
+   desc:"Edelman's selectionist theory of brain development: neural repertoires are generated by variation, then selected by experience through differential strengthening of synaptic connections.",
+   experimentDesign:{
+     refs:["edelman_1987"],
+     sourceType:"book",sourceNote:"TNGS described at length in Ch 5 as a compatible framework. Core concepts (primary/secondary repertoires, reentrant mapping, degeneracy, value) from Edelman (1987).",
+     participants:{n:"N/A (theoretical framework)",ageRange:"N/A",design:"Computational/theoretical"},
+     iv:["N/A"],dv:["N/A"],instruments:["N/A"],
+     procedure:"Theoretical framework proposing three stages: (1) developmental selection forming primary repertoire of neuronal groups, (2) experiential selection strengthening/weakening groups via behavior, (3) reentrant signaling coordinating distributed maps.",
+     trials:"N/A",analysis:"N/A",
+     keyResult:"Brain organization arises from selection among variable neural groups, not instruction. Provides neural substrate for self-organization principles."
+   }},
+  {id:"c5_reentry",ch:5,label:"Reentrant Mapping",type:"concept",
+   desc:"Reciprocal signaling between brain maps that creates coherent perception-action categories without a central executive. The mechanism for binding distributed processing."},
+  {id:"c5_degeneracy",ch:5,label:"Degeneracy",type:"concept",
+   desc:"Multiple structurally different neural groups can produce the same functional output. The biological basis for soft assembly and equifinality."},
+  {id:"c5_value",ch:5,label:"Value Systems",type:"concept",
+   desc:"Diffuse ascending neuromodulatory systems (noradrenergic, dopaminergic, cholinergic) that signal salience and drive selection of neuronal groups."},
+
+  // — CH 6 —
+  {id:"c6_dynamic_cat",ch:6,label:"Dynamic Categories",type:"concept",
+   desc:"Categories are not stored templates but stable attractor states in high-dimensional perceptual-motor space. They form, dissolve, and reform through experience."},
+  {id:"c6_reeke_edelman",ch:6,label:"Reeke-Edelman Letter Recognition",type:"finding",
+   desc:"Darwin III automaton demonstrates that a selectionist architecture with reentrant mapping can learn to categorize 26 letter shapes without explicit instruction.",
+   experimentDesign:{
+     refs:["reeke_edelman_1988"],
+     sourceType:"book",sourceNote:"Simulation described in Ch 6 as evidence for selectionist categorization. Details reconstructed from book description of Darwin III architecture.",
+     participants:{n:"N/A (simulation)",ageRange:"N/A",design:"Computational simulation"},
+     iv:["Letter stimuli (26 categories)","Presentation order"],
+     dv:["Correct classification rate","Generalization to novel exemplars"],
+     instruments:["Darwin III automaton (reentrant architecture with simulated eye/arm)"],
+     procedure:"Automaton presented with letter stimuli. Reentrant connections between 'what' and 'where' subsystems bind shape features with spatial location. Value signals reinforce successful categorizations.",
+     trials:"Multiple presentations of each letter category",
+     analysis:"Classification accuracy; analysis of degeneracy (multiple groups recognizing same letter)",
+     keyResult:"System learned to categorize all 26 letters and generalized to novel exemplars. Multiple structurally different neuronal groups responded to same letter—demonstrating degeneracy."
+   }},
+  {id:"c6_coupled_systems",ch:6,label:"Coupled What/Where Systems",type:"concept",
+   desc:"Object identity ('what') and spatial location ('where') are processed by coupled but distinguishable neural subsystems bound through reentrant signaling."},
+
+  // — CH 7 —
+  {id:"c7_multimodal_unity",ch:7,label:"Primitive Multimodal Unity",type:"concept",
+   desc:"Neonates have primitive capacity to detect amodal invariants (intensity, temporal pattern, rhythm) across sensory modalities. This is not learned but exploited and refined."},
+  {id:"c7_movement_categories",ch:7,label:"Movement Forms as Categories",type:"concept",
+   desc:"Action categories (reaching, crawling, walking) are attractor states in the movement system. Like perceptual categories, they form through experience and constrain future behavior."},
+  {id:"c7_context_memory",ch:7,label:"Context-Dependent Memory",type:"concept",
+   desc:"Memory is not retrieved from a fixed store but reconstructed from the current state of the organism-environment system. Recall is state-dependent and context-sensitive."},
+
+  // — CH 8 —
+  {id:"c8_slopes",ch:8,label:"Slopes: Crawlers vs. Walkers",type:"finding",
+   desc:"Walkers explored, hesitated, and adopted alternative strategies on steep slopes; crawlers plunged headfirst. Learning does not transfer across locomotor postures.",
+   experimentDesign:{
+     refs:["adolph_1993"],
+     sourceType:"verified",sourceNote:"Design confirmed from Adolph et al. (1993) abstract and PubMed record via web search. Slope angles, age groups, and key behavioral results verified.",
+     participants:{n:"~16 per locomotor group",ageRange:"8.5-month crawlers; 14-month walkers",design:"Between-groups (locomotor status)"},
+     iv:["Slope angle (10°, 20°, 30°, 40°)","Direction (ascent vs. descent)","Locomotor status (crawler vs. walker)"],
+     dv:["Go/no-go decision","Falls","Hesitation duration","Tactile exploration (touches to slope surface)","Alternative strategies (sliding, backing)"],
+     instruments:["Adjustable sloping walkway","Safety spotters positioned at slope bottom","2-angle video recording"],
+     procedure:"Infants encouraged to traverse slopes of increasing steepness. Caregivers and toys at far end provided incentive. Safety spotters ensured no injuries.",
+     trials:"Multiple trials at each slope angle; ascending then descending",
+     analysis:"Proportion attempting descent at each angle by locomotor group; exploration behaviors coded from video",
+     keyResult:"Walkers explored, hesitated, and slid at steep slopes. Crawlers plunged headfirst at 30–40° and never explored alternative positions. Learning is posture-specific."
+   }},
+  {id:"c8_baillargeon_screen",ch:8,label:"Rotating Screen / Impossible Events",type:"finding",
+   desc:"4.5-month-olds looked longer at an 'impossible' 180° screen rotation that should have been blocked by a hidden box, suggesting early object representation.",
+   experimentDesign:{
+     refs:["baillargeon_1987"],
+     sourceType:"verified",sourceNote:"Design confirmed from Baillargeon (1987) Developmental Psychology via web search. Sample size, ANOVA statistics, and habituation procedure verified from original.",
+     participants:{n:"22 per condition (possible vs. impossible)",ageRange:"4.5 months",design:"Between-subjects"},
+     iv:["Box present vs. absent","Rotation extent: possible (112°) vs. impossible (180°)","Habituation speed"],
+     dv:["Looking time","Number of habituation trials to criterion"],
+     instruments:["Drawbridge apparatus (hinged screen rotating 0–180°)","Wooden box placed behind screen","Peephole observer","Stopwatch","Overhead lights","Muslin side frames to occlude mechanism"],
+     procedure:"Infants habituated to 180° screen rotation (no box). Then box placed behind screen. Test: possible event (screen stops at 112° where box blocks it) vs. impossible event (screen completes full 180° as if box absent).",
+     trials:"Infant-controlled habituation (criterion: 50% decline over 3 consecutive trials), then 4–6 test trial pairs",
+     analysis:"ANOVA: Condition × Event interaction F(1,126) = 8.50, p < .005",
+     keyResult:"4.5-month-olds looked significantly longer at impossible event, suggesting they represented the hidden box and expected the screen to stop."
+   }},
+  {id:"c8_baillargeon_car",ch:8,label:"Car-Behind-Screen Task",type:"finding",
+   desc:"6.5–8-month-olds looked longer when a car appeared to pass through a hidden box on an inclined ramp, converging with rotating screen evidence.",
+   experimentDesign:{
+     refs:["baillargeon_1986"],
+     sourceType:"verified",sourceNote:"Design confirmed from Baillargeon (1986) Cognition via web search. Age range, apparatus, and basic paradigm verified.",
+     participants:{n:"24 per experiment",ageRange:"6.5–8 months",design:"Between-subjects"},
+     iv:["Box present vs. absent behind screen","Event type: possible (car stops) vs. impossible (car passes through)"],
+     dv:["Looking time"],
+     instruments:["Inclined ramp","Toy car","Occluding screen","Box placed on track behind screen"],
+     procedure:"Infants watched car roll down ramp and behind occluding screen. In possible event, car stops where box is. In impossible event, car appears to pass through the box location.",
+     trials:"Habituation then test trials (infant-controlled)",
+     analysis:"Looking time comparison between possible and impossible events",
+     keyResult:"Infants looked longer at impossible event, converging with drawbridge findings to suggest early hidden-object representation."
+   }},
+  {id:"c8_novel_words",ch:8,label:"Novel Word Interpretation",type:"finding",
+   desc:"When novel objects are labeled with count nouns, 2-year-olds extend by shape; adjective frames shift attention to texture. Linguistic context reshapes perceptual categories.",
+   experimentDesign:{
+     refs:["smith_jones_landau_1992","landau_smith_jones_1988"],
+     sourceType:"training",sourceNote:"Design reconstructed from training knowledge of Smith, Jones & Landau (1992) and Landau et al. (1988). Core paradigm described in Ch 8.",
+     participants:{n:"16–24 per condition",ageRange:"24–36 months",design:"Between-subjects (syntactic frame)"},
+     iv:["Syntactic frame (count noun 'a dax' vs. adjective 'daxy')","Object properties (shape, color, texture varied independently)"],
+     dv:["Choice proportion: shape vs. color vs. texture match"],
+     instruments:["Custom-fabricated novel objects varying independently in shape, color, and texture","Distinctive containers"],
+     procedure:"Children shown novel object, labeled with either count noun or adjective frame. Then given forced-choice among objects matching on shape, color, or texture.",
+     trials:"Multiple trials per child across stimulus sets",
+     analysis:"Proportion of choices for each dimension by syntactic frame condition",
+     keyResult:"Count nouns elicited shape bias; adjective frames shifted attention toward texture. Demonstrates that syntactic context modulates perceptual category formation."
+   }},
+  {id:"c8_posture_specific",ch:8,label:"Posture-Specific Learning",type:"concept",
+   desc:"Perceptual-motor learning does not transfer across postural contexts. What an infant learns while crawling must be relearned when walking begins."},
+
+  // — CH 9 —
+  {id:"c9_reach_longitudinal",ch:9,label:"Learning to Reach (Longitudinal)",type:"finding",
+   desc:"Four infants tracked weekly from 3–30 weeks showed radically different trajectories to reaching, converging on the same outcome from opposite dynamic starting points.",
+   experimentDesign:{
+     refs:["thelen_corbetta_1993"],
+     sourceType:"verified",sourceNote:"Design confirmed from Thelen et al. (1993) Child Development via web search. ELITE system, EMG sites, 4 individual infants, and inverse dynamics approach verified.",
+     participants:{n:"4 (Nathan, Gabriel, Hannah, Justin)",ageRange:"3–30 weeks (weekly); biweekly to 52 weeks for Nathan",design:"Longitudinal case studies"},
+     iv:["Age (weekly)","Toy position (shoulder height, midline)","Toy type"],
+     dv:["3D hand trajectory","Velocity profiles","Movement units (smoothness index)","Joint angles","Torque components (NET, GRA, MDT, MUS)","EMG patterns","Arm stiffness"],
+     instruments:["ELITE optoelectronic motion capture system","Surface EMG (5 sites: biceps, triceps, deltoid, trapezius, spinal extensors)","Anthropometric calipers","Custom infant seat with trunk support","Standardized toys"],
+     procedure:"Infant seated with trunk support. Toy presented at shoulder height, midline. 3D kinematics via reflective markers. EMG from 5 muscle sites. Anthropometrics each session for inverse dynamics.",
+     trials:"10–20 reach attempts per weekly session; 27 weeks then biweekly to 52",
+     analysis:"Individual trajectory analysis (no group statistics); inverse dynamics torque decomposition; velocity profile analysis; phase-plane plots; qualitative phase-shift identification",
+     keyResult:"Gabriel (high-energy flapper) damped movements to reach; Hannah (quiet mover) amplified. Both converged on reaching via opposite dynamical routes. No stereotyped motor program."
+   }},
+  {id:"c9_stiffness_control",ch:9,label:"Stiffness as Control Parameter",type:"concept",
+   desc:"Arm stiffness functions as a control parameter for the transition to reaching. Both increasing and decreasing stiffness can drive the system through a phase transition depending on starting dynamics."},
+  {id:"c9_exploration_selection",ch:9,label:"Exploration-Selection Dynamics",type:"concept",
+   desc:"Development proceeds by generating variability (exploration) then stabilizing successful patterns (selection). Parallels TNGS at the behavioral level."},
+
+  // — CH 10 —
+  {id:"c10_anb_meta",ch:10,label:"A-not-B Meta-Analysis",type:"finding",
+   desc:"Meta-analytic aggregation showed the A-not-B error is systematically modulated by continuous task variables (age, delay, number of locations), not an all-or-nothing competence.",
+   experimentDesign:{
+     refs:["wellman_1987","marcovitch_zelazo_1999"],
+     sourceType:"verified",sourceNote:"Wellman et al. (1987) SRCD Monographs confirmed via web search. Marcovitch & Zelazo (1999) later challenged 'number of A trials' finding; both cited for completeness.",
+     participants:{n:"100+ studies aggregated",ageRange:"7–12 months",design:"Meta-analysis"},
+     iv:["Infant age","Delay duration (0–10+ s)","Number of A trials","Number of hiding locations (2–5)","Location distinctiveness"],
+     dv:["Proportion searching correctly on B trial","Proportion perseverating"],
+     instruments:["Standard A-not-B apparatus (2+ hiding wells with covers)","Delay timer","Video coding"],
+     procedure:"Meta-analytic aggregation of standard A-not-B paradigm: object hidden at A across trials, then at B with delay.",
+     trials:"Varied: typically 4–6 A trials then B trials",
+     analysis:"Multiple regression: age, delay, and number of locations were significant predictors. Number of A trials not significant in Wellman et al. (1987)—later challenged by Marcovitch & Zelazo (1999).",
+     keyResult:"Error systematically modulated by task variables—supports continuous dynamic account over discrete competence model."
+   }},
+  {id:"c10_dynamic_field",ch:10,label:"Dynamic Field Theory",type:"concept",
+   desc:"Formalized neural-field model of A-not-B: activation in a continuous spatial planning field integrates task input, specific (hiding) input, and memory of prior reaches."},
+  {id:"c10_posture_reset",ch:10,label:"Posture Manipulation",type:"finding",
+   desc:"Changing infant's body posture between A and B hidings disrupted perseveration, supporting a coupled perception-action account over purely cognitive explanations.",
+   experimentDesign:{
+     refs:["smith_thelen_titzer_1999"],
+     sourceType:"book",sourceNote:"Smith et al. (1999) experiment described in Ch 10. Design reconstructed from book description; core manipulation and results corroborated with book text.",
+     participants:{n:"24",ageRange:"8–10 months",design:"Within-subjects"},
+     iv:["Posture change (same vs. repositioned between A and B hiding)","Delay"],
+     dv:["Proportion perseverative reaches","Reach latency"],
+     instruments:["Standard 2-location A-not-B apparatus","Rotatable infant seat","Video coding"],
+     procedure:"Standard A-not-B protocol. Between A and B hiding, infants either maintained posture or were repositioned (stood up, turned, reseated), disrupting body-centered motor memory.",
+     trials:"3–4 A trials then B trials with posture manipulation",
+     analysis:"Within-subjects comparison of perseveration rates: same posture vs. repositioned",
+     keyResult:"Posture change significantly reduced perseveration—supports coupled perception-action account, challenges purely representational theories."
+   }},
+  {id:"c10_diamond_frontal",ch:10,label:"Diamond: Frontal Maturation",type:"rival",
+   desc:"A-not-B error attributed to immaturity of dorsolateral prefrontal cortex. Inhibitory control develops with frontal maturation. Challenged by DFT's task-dynamic account."},
+  {id:"c10_locomotion_cp",ch:10,label:"Self-Locomotion as Control Parameter",type:"concept",
+   desc:"Onset of self-locomotion functions as a control parameter that reorganizes spatial cognition by providing new optic flow patterns and body-centered spatial updating."},
+
+  // — CH 10 EXTENSION: Spencer, Smith & Thelen (2001) —
+  {id:"c10_spencer_sandbox",ch:10,label:"Sandbox A-not-B (2-Year-Olds)",type:"finding",
+   desc:"2-year-olds showed A-not-B-type errors in a sandbox task, demonstrating that perseverative spatial biases are a general phenomenon not limited to infancy or the canonical task.",
+   experimentDesign:{
+     refs:["spencer_smith_thelen_2001"],
+     sourceType:"verified",sourceNote:"Full text of Spencer, Smith & Thelen (2001) provided by user as uploaded document. All design details extracted directly from the paper.",
+     participants:{n:"Total N = 92 across 5 experiments (Exp 1: n=12, Exp 2: n=28, Exp 3: n=12, Exp 4: n=12, Exp 5: n=28)",ageRange:"18–31 months (M ≈ 27 months across experiments)",design:"Between-subjects (location assignment); within-subjects (A vs. B trials)"},
+     iv:["Hiding location (A vs. B; 8–10 inches apart)","Number of A trials (1 vs. 3 in Exp 4)","A location variability (fixed vs. variable in Exp 5)","A/B spatial layout relative to sandbox center (Exp 2: inside vs. outside)","Delay (3 s on A trials; 10 s on B trials)"],
+     dv:["Distance error (inches from correct hiding location)","Direction of error (toward A vs. toward center)"],
+     instruments:["Rectangular sandbox (60 × 16 × 18 in, green plywood, false bottom, sterile play sand)","1-inch interval markings on experimenter-facing inner wall","Tape measure on outer wall","Small toys (~5 × 3 cm)","Standing mat with footprints at sandbox center","Curtains to conceal external landmarks","Video camera behind experimenter"],
+     procedure:"Child stood at center of sandbox on marked mat. 3 training trials with decreasing visibility (toy on top → partially buried → fully buried). 3 A trials: toy fully buried, sand smoothed, 3 s delay with gaze-redirection. 2 B trials: toy buried at new location 10 in. away, 10 s delay. Scorer behind experimenter recorded hand contact location to nearest inch.",
+     trials:"3 training + 3 A + 2 B trials per child (Exp 1 standard protocol; varied in Exps 2–5)",
+     analysis:"Condition × Trial ANOVAs; one-sample t-tests against zero; inter-rater reliability (mean deviation = 0.3 in, max = 1 in). Exp 1: Condition F(1,10) = 31.54, p < .001. Exp 2: Condition F(3,24) = 38.21, p < .001. Exp 4: 1-A vs. 3-A manipulation.",
+     keyResult:"Children's searches on B trials were systematically biased 5+ inches toward Location A. Bias decreased with fewer A trials and with repeated B trials. A-not-B error is a general phenomenon extending to 2-year-olds in a non-canonical task."
+   }},
+
+  // — CH 10 EXTENSION: Thelen, Schöner, Scheier & Smith (2001) —
+  {id:"c10_dft_formal",ch:10,label:"DFT Formal Model (Thelen et al., 2001)",type:"method",
+   desc:"Formal dynamic field theory model of infant perseverative reaching. A continuous neural field with self-sustaining activation peaks integrates task input, specific (hiding) input, and memory of prior reaches.",
+   experimentDesign:{
+     refs:["thelen_schoner_2001","smith_thelen_titzer_1999"],
+     sourceType:"verified",sourceNote:"Thelen et al. (2001) BBS target article confirmed via web search (DOI: 10.1017/S0140525X01003910). Model formalism, simulations, and embedded experiments verified.",
+     participants:{n:"Model simulations + empirical experiments from Smith et al. (1999): N = 48+ across conditions",ageRange:"8- and 10-month-olds (model parameterized to both ages)",design:"Computational model with empirical validation"},
+     iv:["Number of A trials","Delay duration (3 s for 8-mo; 5 s for 10-mo)","Lid distinctiveness (same color vs. different color)","Posture change","Presence/absence of hidden object","Age (modeled as resting level of field)"],
+     dv:["Model: activation profile in motor planning field","Empirical: reach direction (A vs. B), reach latency, looking direction"],
+     instruments:["Dynamic neural field simulation (1D activation field over continuous spatial dimension)","Standard A-not-B box apparatus (empirical component)","Video coding of reaches and looks"],
+     procedure:"Model: 1D planning field receives 3 inputs—task (stationary cues), specific (phasic hiding event), memory (accumulated prior reach traces). Self-excitation + lateral inhibition produce self-sustaining peaks. Empirical: standard A-not-B with manipulations of lids, objects, delay, posture.",
+     trials:"Model: simulated across parameter variations. Empirical: standard 6-A + 2-B trial structure",
+     analysis:"Model fits to empirical data; qualitative comparison of activation dynamics to observed reaching patterns; simulations of context effects (no toy, lids only, posture change, distinctive lids)",
+     keyResult:"Single model accounts for: perseveration, delay effect, posture-change disruption, lid distinctiveness effect, looking-reaching decalage, and age-related changes—all from coupled dynamics without invoking object concept or inhibition deficit."
+   }},
+
+  // — CH 11 —
+  {id:"c11_motivation",ch:11,label:"Motivation / Value Primitives",type:"concept",
+   desc:"Intrinsic motivational states (interest, pleasure, frustration) act as value signals that bias exploration-selection dynamics. Not separate from cognition but constitutive of it."},
+  {id:"c11_lewin",ch:11,label:"Lewin's Force Fields",type:"external",
+   desc:"Kurt Lewin's topological psychology: behavior as movement through a field of forces (approach/avoidance gradients). Historical precursor to dynamical landscape metaphor."},
+  {id:"c11_embodied",ch:11,label:"Embodied Cognition",type:"concept",
+   desc:"Cognition is not disembodied computation but is constituted by the body's sensorimotor interactions with the environment. Thinking is acting-in-the-world."},
+  {id:"c11_social_construction",ch:11,label:"Social Construction of Cognition",type:"concept",
+   desc:"Social interaction provides scaffolding, cultural tools, and shared attention that softly assemble cognitive processes. Vygotskian zone of proximal development reinterpreted dynamically."},
+  {id:"c11_language_thought",ch:11,label:"Language-Thought Relations",type:"concept",
+   desc:"Language does not merely express pre-formed thoughts but actively shapes category formation through syntactic and semantic constraints on perception."},
+  {id:"c11_metacognition",ch:11,label:"Metacognition as Dynamic",type:"concept",
+   desc:"Self-monitoring and strategic control are not executive homunculi but emergent properties of reentrant processing—the system monitoring its own activation patterns."}
+];
+
+// ═══════════════════════════════════════════════════════
+// DATA MODEL — EDGES (62 edges)
+// ═══════════════════════════════════════════════════════
+const EDGES = [
+  // challenges
+  {source:"c1_treadmill",target:"c2_piaget_stages",type:"challenges",label:"Competence without stage prerequisites"},
+  {source:"c2_crisis",target:"c2_nativism",type:"challenges",label:"Context-sensitivity contradicts innate modules"},
+  {source:"c2_crisis",target:"c2_piaget_stages",type:"challenges",label:"Décalage contradicts domain-general stages"},
+  {source:"c6_coupled_systems",target:"c2_nativism",type:"challenges",label:"Coupled systems vs. encapsulated modules"},
+  {source:"c8_baillargeon_screen",target:"c2_nativism",type:"challenges",label:"Reinterpreted: habituation dynamics, not core knowledge"},
+  {source:"c10_anb_meta",target:"c2_piaget_stages",type:"challenges",label:"Continuous modulation vs. discrete stage transition"},
+  {source:"c10_dynamic_field",target:"c10_diamond_frontal",type:"challenges",label:"Task dynamics vs. frontal maturation"},
+  {source:"c10_spencer_sandbox",target:"c2_piaget_stages",type:"challenges",label:"A-not-B at 2 years contradicts Stage 4 specificity"},
+  {source:"c10_dft_formal",target:"c10_diamond_frontal",type:"challenges",label:"Single-field model replaces inhibition-deficit account"},
+  // extends
+  {source:"c1_stepping_disappear",target:"c1_treadmill",type:"extends",label:"Treadmill restores 'lost' pattern"},
+  {source:"c2_connectionism",target:"c3_self_org",type:"extends",label:"Emergence in neural networks ≈ self-organization"},
+  {source:"c3_attractor",target:"c4_landscape",type:"extends",label:"Attractor layout evolves over development"},
+  {source:"c4_newborn_kick",target:"c1_stepping_disappear",type:"extends",label:"Kicking and stepping share dynamic substrate"},
+  {source:"c5_tngs",target:"c3_self_org",type:"extends",label:"Neural selection is self-organization in cortex"},
+  {source:"c7_movement_categories",target:"c6_dynamic_cat",type:"extends",label:"Action categories are dynamic categories"},
+  {source:"c7_context_memory",target:"c4_soft_assembly",type:"extends",label:"Memory is softly assembled from current state"},
+  {source:"c8_slopes",target:"c7_movement_categories",type:"extends",label:"Locomotor categories are posture-specific"},
+  {source:"c8_baillargeon_screen",target:"c6_dynamic_cat",type:"extends",label:"Object knowledge as dynamic category formation"},
+  {source:"c8_baillargeon_car",target:"c8_baillargeon_screen",type:"extends",label:"Converging violation-of-expectation paradigm"},
+  {source:"c8_novel_words",target:"c6_dynamic_cat",type:"extends",label:"Linguistic frame reshapes perceptual category"},
+  {source:"c8_novel_words",target:"c7_movement_categories",type:"extends",label:"Language extends action-based categories"},
+  {source:"c9_exploration_selection",target:"c5_tngs",type:"extends",label:"Behavioral exploration parallels neural selection"},
+  {source:"c9_reach_longitudinal",target:"c4_soft_assembly",type:"extends",label:"Reaching assembled differently per infant"},
+  {source:"c9_reach_longitudinal",target:"c1_distributed_cause",type:"extends",label:"Individual routes prove distributed causation"},
+  {source:"c10_dynamic_field",target:"c6_coupled_systems",type:"extends",label:"Planning field couples spatial and motor subsystems"},
+  {source:"c10_posture_reset",target:"c8_posture_specific",type:"extends",label:"Posture disruption proves body-centred coding"},
+  {source:"c10_locomotion_cp",target:"c8_slopes",type:"extends",label:"Locomotor onset reorganizes slope perception"},
+  {source:"c10_spencer_sandbox",target:"c10_anb_meta",type:"extends",label:"Error generalizes beyond infancy to 2 years"},
+  {source:"c10_dft_formal",target:"c10_dynamic_field",type:"extends",label:"Formalizes conceptual DFT into neural field equations"},
+  {source:"c10_dft_formal",target:"c9_reach_longitudinal",type:"extends",label:"Models goal-directed reaching as field activation"},
+  {source:"c11_motivation",target:"c5_value",type:"extends",label:"Behavioral value parallels neural value systems"},
+  {source:"c11_lewin",target:"c4_landscape",type:"extends",label:"Force fields prefigure attractor landscapes"},
+  {source:"c11_embodied",target:"c6_dynamic_cat",type:"extends",label:"Categories grounded in sensorimotor dynamics"},
+  {source:"c11_social_construction",target:"c4_soft_assembly",type:"extends",label:"Social scaffolding softly assembles cognition"},
+  {source:"c11_language_thought",target:"c8_novel_words",type:"extends",label:"Language actively shapes category boundaries"},
+  {source:"c11_metacognition",target:"c5_reentry",type:"extends",label:"Self-monitoring via reentrant processing"},
+  // instantiates
+  {source:"c1_treadmill",target:"c1_distributed_cause",type:"instantiates",label:"No single cause: biomechanics mask intact CPG"},
+  {source:"c1_stepping_disappear",target:"c3_control_param",type:"instantiates",label:"Body mass ratio as control parameter"},
+  {source:"c1_distributed_cause",target:"c3_self_org",type:"instantiates",label:"Walking self-organizes from distributed components"},
+  {source:"c3_hkb",target:"c3_order_param",type:"instantiates",label:"Relative phase as order parameter"},
+  {source:"c3_hkb",target:"c3_phase_shift",type:"instantiates",label:"Anti-phase → in-phase transition"},
+  {source:"c4_newborn_kick",target:"c4_soft_assembly",type:"instantiates",label:"Kick exploits passive dynamics: not programmed"},
+  {source:"c4_interlimb_coord",target:"c3_phase_shift",type:"instantiates",label:"Coordination shift = developmental phase transition"},
+  {source:"c6_dynamic_cat",target:"c6_reeke_edelman",type:"instantiates",label:"Simulated selectionist categorization"},
+  {source:"c8_slopes",target:"c8_posture_specific",type:"instantiates",label:"Crawlers and walkers learn independently"},
+  {source:"c9_reach_longitudinal",target:"c9_stiffness_control",type:"instantiates",label:"Stiffness changes precede reaching onset"},
+  {source:"c9_reach_longitudinal",target:"c9_exploration_selection",type:"instantiates",label:"Individual paths = exploration then selection"},
+  {source:"c9_stiffness_control",target:"c3_control_param",type:"instantiates",label:"Stiffness as control parameter for reaching"},
+  {source:"c10_posture_reset",target:"c10_dynamic_field",type:"instantiates",label:"Posture change resets motor planning field"},
+  {source:"c10_locomotion_cp",target:"c3_control_param",type:"instantiates",label:"Self-locomotion as control parameter"},
+  {source:"c10_spencer_sandbox",target:"c10_dynamic_field",type:"instantiates",label:"Sandbox results predicted by field dynamics"},
+  {source:"c10_dft_formal",target:"c10_posture_reset",type:"instantiates",label:"Model reproduces posture-change disruption"},
+  // informs
+  {source:"c1_heterochrony",target:"c1_distributed_cause",type:"informs",label:"Different rates → distributed causation"},
+  {source:"c3_self_org",target:"c3_attractor",type:"informs",label:"Self-organized states are attractors"},
+  {source:"c3_attractor",target:"c3_phase_shift",type:"informs",label:"Attractors dissolve/form at transitions"},
+  {source:"c3_control_param",target:"c3_phase_shift",type:"informs",label:"Continuous scaling → discontinuous shift"},
+  {source:"c3_phase_shift",target:"c4_landscape",type:"informs",label:"Landscape reshapes at transitions"},
+  {source:"c4_landscape",target:"c4_soft_assembly",type:"informs",label:"Assembly depends on current landscape"},
+  {source:"c5_tngs",target:"c5_reentry",type:"informs",label:"Reentry is binding mechanism of TNGS"},
+  {source:"c5_tngs",target:"c5_degeneracy",type:"informs",label:"Degeneracy ensures robustness in selection"},
+  {source:"c5_tngs",target:"c5_value",type:"informs",label:"Value drives selection among groups"},
+  {source:"c5_reentry",target:"c6_dynamic_cat",type:"informs",label:"Reentry creates coherent categories"},
+  {source:"c5_reentry",target:"c7_multimodal_unity",type:"informs",label:"Cross-modal binding via reentry"},
+  {source:"c6_dynamic_cat",target:"c6_coupled_systems",type:"informs",label:"Category formation requires what/where coupling"},
+  {source:"c7_context_memory",target:"c8_posture_specific",type:"informs",label:"Context-dependence predicts posture specificity"},
+  {source:"c10_anb_meta",target:"c10_dynamic_field",type:"informs",label:"Task-variable effects motivate field model"}
+];
+
+// ═══════════════════════════════════════════════════════
+// VISUALIZATION
+// ═══════════════════════════════════════════════════════
+const TYPE_COLORS = {concept:"#e8b84b",finding:"#2fc4af",rival:"#e85b6b",external:"#9b87f5",method:"#f0924a"};
+const EDGE_COLORS = {challenges:"#e85b6b",extends:"#2fc4af",instantiates:"#e8b84b",informs:"#9b87f5"};
+const svg = d3.select("#graph-svg");
+const container = document.getElementById("graph-container");
+let W, H, g, simulation;
+
+// References panel
+function buildRefPanel(){
+  const el = document.getElementById("ref-list");
+  const sorted = Object.entries(REFS).sort((a,b)=>a[1].apa.localeCompare(b[1].apa));
+  el.innerHTML = sorted.map(([k,v])=>{
+    const doiLink = v.doi ? ` <a href="${v.doi}" target="_blank" rel="noopener">${v.doi}</a>` : "";
+    return `<div class="ref-entry" id="ref-${k}">${v.apa}${doiLink}</div>`;
+  }).join("");
+}
+buildRefPanel();
+document.getElementById("ref-toggle").onclick=()=>{document.getElementById("ref-panel").style.display="block"};
+document.getElementById("ref-close").onclick=()=>{document.getElementById("ref-panel").style.display="none"};
+
+function initGraph(){
+  W = container.clientWidth;
+  H = container.clientHeight;
+  svg.selectAll("*").remove();
+  g = svg.append("g");
+
+  // Zoom
+  const zoom = d3.zoom().scaleExtent([.2,5]).on("zoom",e=>g.attr("transform",e.transform));
+  svg.call(zoom);
+  svg.call(zoom.transform, d3.zoomIdentity.translate(W*.15,H*.1).scale(.7));
+
+  // Arrowheads
+  const defs = svg.append("defs");
+  Object.entries(EDGE_COLORS).forEach(([t,c])=>{
+    defs.append("marker").attr("id","arrow-"+t).attr("viewBox","0 0 10 6").attr("refX",22).attr("refY",3)
+      .attr("markerWidth",8).attr("markerHeight",6).attr("orient","auto")
+      .append("path").attr("d","M0,0L10,3L0,6Z").attr("fill",c).attr("opacity",.6);
+  });
+
+  // Force simulation
+  simulation = d3.forceSimulation(NODES)
+    .force("link",d3.forceLink(EDGES).id(d=>d.id).distance(d=>d.source.ch===d.target.ch?80:140).strength(.25))
+    .force("charge",d3.forceManyBody().strength(-300).distanceMax(400))
+    .force("center",d3.forceCenter(W/2,H/2).strength(.05))
+    .force("collision",d3.forceCollide().radius(30))
+    .force("x",d3.forceX(d=>{const s=.08;return W*(.1+.073*(d.ch-1))}).strength(.08))
+    .force("y",d3.forceY(d=>{
+      const m={concept:.4,finding:.6,rival:.25,external:.75,method:.5};
+      return H*(m[d.type]||.5);
+    }).strength(.06))
+    .alphaDecay(.015);
+
+  // Links
+  const linkG = g.append("g");
+  const links = linkG.selectAll("line").data(EDGES).join("line")
+    .attr("stroke",d=>EDGE_COLORS[d.type]).attr("stroke-width",1.2).attr("stroke-opacity",.2)
+    .attr("marker-end",d=>"url(#arrow-"+d.type+")");
+
+  // Nodes
+  const nodeG = g.append("g");
+  const nodes = nodeG.selectAll("circle").data(NODES).join("circle")
+    .attr("r",d=>d.type==="finding"?9:d.type==="rival"?8:d.type==="method"?8:7)
+    .attr("fill",d=>TYPE_COLORS[d.type]).attr("stroke","#0a0a0f").attr("stroke-width",1.5)
+    .attr("cursor","pointer").attr("opacity",.85);
+
+  // Labels
+  const labelG = g.append("g");
+  const labels = labelG.selectAll("text").data(NODES).join("text")
+    .text(d=>d.label).attr("font-size",10).attr("fill","#888").attr("font-family","'JetBrains Mono',monospace")
+    .attr("text-anchor","middle").attr("dy",-14).attr("pointer-events","none");
+
+  // Drag
+  nodes.call(d3.drag().on("start",(e,d)=>{if(!e.active)simulation.alphaTarget(.3).restart();d.fx=d.x;d.fy=d.y})
+    .on("drag",(e,d)=>{d.fx=e.x;d.fy=e.y}).on("end",(e,d)=>{if(!e.active)simulation.alphaTarget(0);d.fx=null;d.fy=null}));
+
+  // Tooltip
+  const tip = document.getElementById("tooltip");
+  nodes.on("mouseover",(e,d)=>{
+    tip.innerHTML=`<div class="tt-ch">Ch ${d.ch} · ${d.type}</div><div class="tt-title">${d.label}</div>`;
+    tip.style.display="block";tip.style.left=(e.offsetX+12)+"px";tip.style.top=(e.offsetY-10)+"px";
+  }).on("mousemove",(e)=>{tip.style.left=(e.offsetX+12)+"px";tip.style.top=(e.offsetY-10)+"px"})
+    .on("mouseout",()=>{tip.style.display="none"});
+
+  // Click: detail panel
+  let selectedId = null;
+  nodes.on("click",(e,d)=>{
+    selectedId = d.id;
+    showDetail(d);
+    // Highlight neighborhood
+    const neighbors = new Set();
+    EDGES.forEach(edge=>{
+      const s=typeof edge.source==="object"?edge.source.id:edge.source;
+      const t=typeof edge.target==="object"?edge.target.id:edge.target;
+      if(s===d.id){neighbors.add(t);neighbors.add(s)}
+      if(t===d.id){neighbors.add(s);neighbors.add(t)}
+    });
+    nodes.transition().duration(300).attr("opacity",n=>neighbors.has(n.id)?.95:.15);
+    labels.transition().duration(300).attr("fill",n=>neighbors.has(n.id)?"#e8e4d8":"#333");
+    links.transition().duration(300).attr("stroke-opacity",edge=>{
+      const s=typeof edge.source==="object"?edge.source.id:edge.source;
+      const t=typeof edge.target==="object"?edge.target.id:edge.target;
+      return (s===d.id||t===d.id)?.65:.04;
+    });
+  });
+
+  svg.on("click",(e)=>{
+    if(e.target.tagName==="svg"||e.target.tagName==="SVG"){
+      selectedId=null;
+      nodes.transition().duration(300).attr("opacity",.85);
+      labels.transition().duration(300).attr("fill","#888");
+      links.transition().duration(300).attr("stroke-opacity",.2);
+    }
+  });
+
+  simulation.on("tick",()=>{
+    links.attr("x1",d=>d.source.x).attr("y1",d=>d.source.y).attr("x2",d=>d.target.x).attr("y2",d=>d.target.y);
+    nodes.attr("cx",d=>d.x).attr("cy",d=>d.y);
+    labels.attr("x",d=>d.x).attr("y",d=>d.y);
+  });
+
+  // Stats
+  document.getElementById("stats").textContent=`${NODES.length} nodes · ${EDGES.length} edges`;
+
+  // Legend
+  document.getElementById("legend").innerHTML=
+    `<div style="margin-bottom:6px;color:#888;font-weight:600">Node Types</div>`+
+    Object.entries(TYPE_COLORS).map(([t,c])=>`<div class="row"><span class="dot" style="background:${c}"></span>${t}</div>`).join("")+
+    `<div style="margin:8px 0 6px;color:#888;font-weight:600">Edge Types</div>`+
+    Object.entries(EDGE_COLORS).map(([t,c])=>`<div class="row"><span class="line" style="background:${c}"></span>${t}</div>`).join("");
+
+  // Store references for filtering
+  window._nodes=nodes; window._labels=labels; window._links=links;
+  window._selectNode = (id)=>{
+    const nd = NODES.find(n=>n.id===id);
+    if(nd){nodes.filter(n=>n.id===id).dispatch("click")}
+  };
+}
+
+// ═══════════════════════════════════════════════════════
+// DETAIL PANEL
+// ═══════════════════════════════════════════════════════
+function showDetail(node){
+  const dp = document.getElementById("dp-content");
+  const tc = TYPE_COLORS[node.type];
+  let h = `<div class="dp-ch">Chapter ${node.ch}</div>`;
+  h += `<div class="dp-title">${node.label}</div>`;
+  h += `<div class="dp-type" style="background:${tc}22;color:${tc};border:1px solid ${tc}44">${node.type}</div>`;
+  h += `<div class="dp-desc">${node.desc}</div>`;
+
+  if(node.experimentDesign){
+    const ed = node.experimentDesign;
+    // Provenance badge
+    const pClass = ed.sourceType==="verified"?"verified":ed.sourceType==="book"?"book":"training";
+    const pLabel = ed.sourceType==="verified"?"✓ Verified from original paper":ed.sourceType==="book"?"◉ Reconstructed from book text":"△ Training knowledge";
+    h += `<div class="dp-provenance ${pClass}">${pLabel}</div>`;
+    h += `<div style="font-size:11px;color:#666;margin-bottom:10px;line-height:1.5">${ed.sourceNote}</div>`;
+
+    // Short APA citations with DOI links
+    if(ed.refs && ed.refs.length){
+      h += `<div class="dp-cite">`;
+      ed.refs.forEach((rk,i)=>{
+        const ref = REFS[rk];
+        if(ref){
+          const link = ref.doi ? `<a href="${ref.doi}" target="_blank" rel="noopener">${ref.apa}</a>` : ref.apa;
+          h += `<div style="margin-bottom:4px">${link}</div>`;
+        }
+      });
+      h += `</div>`;
+    }
+
+    // Design fields
+    const fields = [
+      ["Participants",typeof ed.participants==="object"?`N = ${ed.participants.n}; Age: ${ed.participants.ageRange}; Design: ${ed.participants.design}`:ed.participants],
+      ["IV",Array.isArray(ed.iv)?ed.iv.join("; "):ed.iv],
+      ["DV",Array.isArray(ed.dv)?ed.dv.join("; "):ed.dv],
+      ["Instruments",Array.isArray(ed.instruments)?ed.instruments.join("; "):ed.instruments],
+      ["Procedure",ed.procedure],
+      ["Trials",ed.trials],
+      ["Analysis",ed.analysis],
+      ["Key Result",ed.keyResult]
+    ];
+    h += `<div class="dp-section"><div class="dp-section-title">EXPERIMENT DESIGN</div>`;
+    fields.forEach(([label,val])=>{
+      if(val && val!=="N/A") h += `<div class="dp-field"><span class="dp-field-label">${label}:</span> <span class="dp-field-value">${val}</span></div>`;
+    });
+    h += `</div>`;
+  }
+
+  // Connections
+  const conns = [];
+  EDGES.forEach(edge=>{
+    const s=typeof edge.source==="object"?edge.source.id:edge.source;
+    const t=typeof edge.target==="object"?edge.target.id:edge.target;
+    if(s===node.id){
+      const tn=NODES.find(n=>n.id===t);
+      if(tn) conns.push({id:t,label:tn.label,dir:"→",type:edge.type,edgeLabel:edge.label});
+    }
+    if(t===node.id){
+      const sn=NODES.find(n=>n.id===s);
+      if(sn) conns.push({id:s,label:sn.label,dir:"←",type:edge.type,edgeLabel:edge.label});
+    }
+  });
+  if(conns.length){
+    h += `<div class="dp-section"><div class="dp-section-title">CONNECTIONS (${conns.length})</div>`;
+    conns.forEach(c=>{
+      const ec = EDGE_COLORS[c.type];
+      h += `<div class="dp-conn" onclick="window._selectNode('${c.id}')" title="${c.edgeLabel}">`;
+      h += `<span style="color:${ec}">${c.dir} ${c.type}</span> ${c.label}`;
+      h += `<div style="font-size:10px;color:#555;margin-left:16px">${c.edgeLabel}</div></div>`;
+    });
+    h += `</div>`;
+  }
+  dp.innerHTML = h;
+}
+
+// ═══════════════════════════════════════════════════════
+// FILTERS + TIMELINE + SEARCH
+// ═══════════════════════════════════════════════════════
+let activeCh = "all";
+const activeTypes = new Set(["concept","finding","rival","external","method"]);
+
+function applyFilters(){
+  const maxCh = parseInt(document.getElementById("timeline-slider").value);
+  const query = document.getElementById("search-box").value.toLowerCase();
+  NODES.forEach(n=>{
+    const chOk = (activeCh==="all"||n.ch===parseInt(activeCh)) && n.ch<=maxCh;
+    const typeOk = activeTypes.has(n.type);
+    const searchOk = !query || n.label.toLowerCase().includes(query) || (n.desc&&n.desc.toLowerCase().includes(query));
+    n._visible = chOk && typeOk && searchOk;
+  });
+  if(window._nodes){
+    window._nodes.transition().duration(300).attr("opacity",d=>d._visible?.85:.06).attr("r",d=>d._visible?(d.type==="finding"?9:d.type==="rival"||d.type==="method"?8:7):3);
+    window._labels.transition().duration(300).attr("fill",d=>d._visible?"#888":"transparent");
+    window._links.transition().duration(300).attr("stroke-opacity",d=>{
+      const s=typeof d.source==="object"?d.source:NODES.find(n=>n.id===d.source);
+      const t=typeof d.target==="object"?d.target:NODES.find(n=>n.id===d.target);
+      return (s&&s._visible&&t&&t._visible)?.2:.02;
+    });
+  }
+}
+
+document.querySelectorAll('.fbtn[data-ch]').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.fbtn[data-ch]').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    activeCh = btn.dataset.ch;
+    applyFilters();
+  });
+});
+document.querySelectorAll('.fbtn[data-type]').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    btn.classList.toggle('active');
+    const t=btn.dataset.type;
+    if(activeTypes.has(t))activeTypes.delete(t);else activeTypes.add(t);
+    applyFilters();
+  });
+});
+document.getElementById("timeline-slider").addEventListener("input",e=>{
+  const v=e.target.value;
+  document.getElementById("timeline-value").textContent=`Ch 1 — ${v}`;
+  applyFilters();
+});
+document.getElementById("search-box").addEventListener("input",()=>applyFilters());
+
+initGraph();
+window.addEventListener("resize",()=>{initGraph();applyFilters()});
+</script>
+</body>
+</html>
