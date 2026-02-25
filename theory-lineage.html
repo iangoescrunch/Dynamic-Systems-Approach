@@ -1,485 +1,681 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Temporal Theory Map | Thelen & Smith (1994)</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=JetBrains+Mono:wght@300;400&display=swap');
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Intellectual Lineage | Thelen & Smith (1994) and Beyond</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=JetBrains+Mono:wght@300;400;500&display=swap');
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+*{margin:0;padding:0;box-sizing:border-box}
 
-        body {
-            background: #0a0a0f;
-            color: #c8c4b8;
-            font-family: 'Crimson Pro', Georgia, serif;
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
+:root {
+  --bg: #08090d;
+  --surface: #0f1017;
+  --card: #13141c;
+  --border: #1c1e2a;
+  --text: #b8b4a8;
+  --dim: #555;
+  --bright: #e8e4d8;
+  --challenged: #d4645a;
+  --adopted: #5aad7a;
+  --mechanism: #d4a84a;
+  --parallel: #5a9abd;
+  --legacy: #b07ad4;
+}
 
-        .page-header {
-            text-align: center;
-            padding: 2.5rem 2rem 0.8rem;
-        }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Crimson Pro', Georgia, serif;
+  min-height: 100vh;
+}
 
-        .page-header h1 {
-            font-family: 'Crimson Pro', serif;
-            font-weight: 300;
-            font-size: 1.8rem;
-            letter-spacing: 0.15em;
-            text-transform: uppercase;
-            color: #e8e4d8;
-            margin-bottom: 0.3rem;
-        }
+/* ─── HEADER ─── */
+header {
+  text-align: center;
+  padding: 2.2rem 2rem 1rem;
+  border-bottom: 1px solid var(--border);
+}
+header h1 {
+  font-weight: 300;
+  font-size: 1.7rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--bright);
+}
+header .sub {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--dim);
+  margin-top: 0.3rem;
+}
 
-        .page-header .subtitle {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.65rem;
-            letter-spacing: 0.3em;
-            text-transform: uppercase;
-            color: #666;
-        }
+/* ─── LEGEND ─── */
+.legend {
+  display: flex;
+  justify-content: center;
+  gap: 1.4rem;
+  padding: 0.7rem 1rem;
+  flex-wrap: wrap;
+  border-bottom: 1px solid var(--border);
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #666;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.legend-item:hover { color: var(--bright); }
+.legend-swatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
 
-        .legend-container {
-            display: flex;
-            justify-content: center;
-            gap: 1.8rem;
-            padding: 0.8rem 2rem 0.5rem;
-            flex-wrap: wrap;
-        }
+/* ─── MAIN LAYOUT ─── */
+.main {
+  display: grid;
+  grid-template-columns: 1fr 420px;
+  height: calc(100vh - 120px);
+}
 
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.6rem;
-            letter-spacing: 0.08em;
-            color: #888;
-            text-transform: uppercase;
-        }
+/* ─── TIMELINE PANEL ─── */
+.timeline-panel {
+  overflow-y: auto;
+  border-right: 1px solid var(--border);
+  padding: 1.5rem 0;
+}
+.timeline-panel::-webkit-scrollbar { width: 4px; }
+.timeline-panel::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 
-        .legend-swatch {
-            width: 24px;
-            height: 3px;
-            border-radius: 1px;
-        }
+/* Era section */
+.era {
+  position: relative;
+  padding: 0 2rem 0 5rem;
+  margin-bottom: 0.5rem;
+}
+.era-label {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  background: var(--bg);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.55rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #333;
+  padding: 0.5rem 0 0.3rem;
+  border-bottom: 1px solid #1a1b24;
+  margin-left: -2rem;
+  padding-left: 2rem;
+}
 
-        #arc-container {
-            width: 100%;
-            overflow-x: auto;
-            overflow-y: visible;
-            padding: 0 0.5rem;
-        }
+/* Spine */
+.era::before {
+  content: '';
+  position: absolute;
+  left: 3rem;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: #1a1b24;
+}
 
-        .tooltip {
-            position: fixed;
-            background: #1a1a24;
-            border: 1px solid #333;
-            border-radius: 4px;
-            padding: 10px 14px;
-            font-family: 'Crimson Pro', serif;
-            font-size: 13px;
-            color: #c8c4b8;
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.2s;
-            max-width: 360px;
-            line-height: 1.5;
-            z-index: 100;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-        }
+/* Node */
+.node {
+  position: relative;
+  padding: 0.55rem 0 0.55rem 1.8rem;
+  cursor: pointer;
+  transition: background 0.2s;
+  border-radius: 3px;
+}
+.node:hover { background: rgba(255,255,255,0.02); }
+.node.active { background: rgba(255,255,255,0.04); }
+.node.dimmed { opacity: 0.12; }
 
-        .tooltip .tt-type {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 9px;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            margin-bottom: 4px;
-        }
+/* Node dot */
+.node::before {
+  content: '';
+  position: absolute;
+  left: -2.05rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  border: 1.5px solid var(--dot-color, #555);
+  background: var(--bg);
+  transition: background 0.2s, transform 0.2s;
+}
+.node.active::before {
+  background: var(--dot-color, #555);
+  transform: translateY(-50%) scale(1.3);
+}
 
-        .tooltip .tt-year {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 10px;
-            color: #888;
-        }
+.node-name {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--bright);
+  line-height: 1.2;
+}
+.node-meta {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.55rem;
+  color: var(--dim);
+  letter-spacing: 0.04em;
+  margin-top: 0.15rem;
+}
+.node-desc {
+  font-size: 0.78rem;
+  color: #777;
+  line-height: 1.5;
+  margin-top: 0.2rem;
+  font-style: italic;
+}
 
-        .info-panel {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 1rem 2rem 2.5rem;
-            text-align: center;
-        }
+/* ─── CONNECTION PANEL ─── */
+.conn-panel {
+  overflow-y: auto;
+  background: var(--surface);
+  padding: 1.5rem;
+}
+.conn-panel::-webkit-scrollbar { width: 4px; }
+.conn-panel::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 
-        .info-panel p {
-            font-size: 0.9rem;
-            line-height: 1.7;
-            color: #666;
-            font-style: italic;
-        }
+.conn-placeholder {
+  text-align: center;
+  padding-top: 4rem;
+  color: var(--dim);
+  font-size: 0.8rem;
+  line-height: 1.8;
+}
+.conn-placeholder .arrow { font-size: 1.6rem; color: #222; display: block; margin-bottom: 1rem; }
 
-        .arc { fill: none; stroke-width: 1.1; opacity: 0.3; cursor: pointer; transition: opacity 0.3s, stroke-width 0.3s; }
-        .arc:hover, .arc.highlighted { opacity: 0.85; stroke-width: 2.5; }
-        .arc.dimmed { opacity: 0.04; }
-        .node-dot { cursor: pointer; transition: r 0.3s; }
-        .node-dot:hover { r: 6; }
-        .node-dot.dimmed { opacity: 0.15; }
-        .node-label { font-family: 'Crimson Pro', serif; font-size: 10.5px; fill: #888; cursor: pointer; transition: fill 0.3s, opacity 0.3s; }
-        .node-label:hover, .node-label.active { fill: #e8e4d8; }
-        .node-label.dimmed { opacity: 0.12; }
-        .year-label { font-family: 'JetBrains Mono', monospace; font-size: 8px; fill: #555; letter-spacing: 0.05em; }
-        .year-label.dimmed { opacity: 0.12; }
-        .era-band { opacity: 0.06; }
-    </style>
+/* Active node header in panel */
+.panel-header {
+  margin-bottom: 1.2rem;
+  padding-bottom: 0.8rem;
+  border-bottom: 1px solid var(--border);
+}
+.panel-node-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--bright);
+}
+.panel-node-year {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.6rem;
+  color: var(--dim);
+  margin-top: 0.2rem;
+}
+.panel-node-desc {
+  font-size: 0.82rem;
+  color: #888;
+  margin-top: 0.4rem;
+  line-height: 1.6;
+  font-style: italic;
+}
+
+/* Section label */
+.conn-section-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.5rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #444;
+  margin: 1rem 0 0.5rem;
+  padding-bottom: 0.2rem;
+  border-bottom: 1px solid #1a1b24;
+}
+
+/* Connection card */
+.conn-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 0.7rem 0.8rem;
+  margin-bottom: 0.5rem;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s;
+  border-left: 3px solid var(--conn-color, #555);
+}
+.conn-card:hover {
+  border-color: var(--conn-color, #555);
+  background: rgba(255,255,255,0.02);
+}
+
+.conn-card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.3rem;
+}
+.conn-direction {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.6rem;
+  color: var(--conn-color);
+  flex-shrink: 0;
+}
+.conn-target-name {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--bright);
+}
+.conn-target-year {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.5rem;
+  color: var(--dim);
+}
+.conn-type-badge {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.48rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 2px 6px;
+  border-radius: 3px;
+  color: var(--conn-color);
+  background: color-mix(in srgb, var(--conn-color) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--conn-color) 25%, transparent);
+}
+.conn-desc {
+  font-size: 0.75rem;
+  color: #888;
+  line-height: 1.55;
+  margin-top: 0.2rem;
+}
+
+/* Filter active state */
+.legend-item.active .legend-swatch {
+  box-shadow: 0 0 6px currentColor;
+}
+</style>
 </head>
 <body>
 
-<div class="page-header">
-    <h1>Intellectual Lineage</h1>
-    <div class="subtitle">Theories cited in Thelen & Smith (1994) &middot; Introduction through Chapter 6</div>
+<header>
+  <h1>Intellectual Lineage</h1>
+  <div class="sub">Theories cited in Thelen & Smith (1994) · Chapters 1–11 + Post-1994 Extensions</div>
+</header>
+
+<div class="legend" id="legend">
+  <div class="legend-item" data-filter="all"><div class="legend-swatch" style="background:#888;"></div>All</div>
+  <div class="legend-item" data-filter="challenged"><div class="legend-swatch" style="background:var(--challenged);"></div>Challenged</div>
+  <div class="legend-item" data-filter="adopted"><div class="legend-swatch" style="background:var(--adopted);"></div>Adopted / Extended</div>
+  <div class="legend-item" data-filter="mechanism"><div class="legend-swatch" style="background:var(--mechanism);"></div>Provides Mechanism</div>
+  <div class="legend-item" data-filter="parallel"><div class="legend-swatch" style="background:var(--parallel);"></div>Parallel / Converges</div>
+  <div class="legend-item" data-filter="legacy"><div class="legend-swatch" style="background:var(--legacy);"></div>Post-1994 Legacy</div>
 </div>
 
-<div class="legend-container">
-    <div class="legend-item"><div class="legend-swatch" style="background:#e07a5f;"></div>Challenged by T&S</div>
-    <div class="legend-item"><div class="legend-swatch" style="background:#81b29a;"></div>Adopted / Extended</div>
-    <div class="legend-item"><div class="legend-swatch" style="background:#f2cc8f;"></div>Provides Mechanism</div>
-    <div class="legend-item"><div class="legend-swatch" style="background:#8ecae6;"></div>Parallel / Converges</div>
+<div class="main">
+  <div class="timeline-panel" id="timeline"></div>
+  <div class="conn-panel" id="conn-panel">
+    <div class="conn-placeholder">
+      <span class="arrow">←</span>
+      Click any theorist on the<br>timeline to see connections.<br><br>
+      Cards show relationship type,<br>direction, and description.
+    </div>
+  </div>
 </div>
 
-<div id="arc-container"></div>
-<div class="tooltip" id="tooltip"></div>
-
-<div class="info-panel">
-    <p>Theories arranged by date of origin. Arcs show how each theory connects to concepts as presented in the book. Hover for details; click to lock.</p>
-</div>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
 <script>
-// Nodes: theories/theorists in temporal order by origin date
-// role: "challenged" | "adopted" | "mechanism" | "parallel"
+// ═══════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════
 const nodes = [
-    // Pre-20th century foundations
-    { id: "darwin", label: "Darwin", year: 1859, desc: "Evolutionary theory: selection from variation without design", role: "adopted", chapter: "Intro" },
-    { id: "thermodynamics", label: "Second Law of Thermodynamics", year: 1865, desc: "Clausius: entropy increases in closed systems; equilibrium = maximum disorder", role: "adopted", chapter: "Ch 3" },
+  // Pre-20th century
+  { id:"darwin", label:"Darwin", year:1859, desc:"Evolutionary theory: selection from variation without design", role:"adopted", ch:"Intro" },
+  { id:"thermodynamics", label:"Second Law / Clausius", year:1865, desc:"Entropy increases in closed systems; equilibrium = maximum disorder", role:"adopted", ch:"Ch 3" },
 
-    // Early 20th century developmental
-    { id: "gesell", label: "Gesell", year: 1929, desc: "Maturational stages of motor development; 23 stages of prone behavior", role: "challenged", chapter: "Ch 1" },
-    { id: "bernstein", label: "Bernstein", year: 1935, desc: "Degrees of freedom problem: how does the CNS control redundant motor systems?", role: "adopted", chapter: "Ch 4" },
-    { id: "mcgraw", label: "McGraw", year: 1935, desc: "Seven phases of erect locomotion; cortical maturation drives motor development", role: "challenged", chapter: "Ch 1" },
-    { id: "lorenz", label: "Lorenz / Ethology", year: 1937, desc: "Fixed action patterns and innate releasing mechanisms in animal behavior", role: "challenged", chapter: "Ch 4" },
+  // Early 20th century
+  { id:"gesell", label:"Gesell", year:1929, desc:"Maturational stages of motor development; 23 stages of prone behavior", role:"challenged", ch:"Ch 1" },
+  { id:"bernstein", label:"Bernstein", year:1935, desc:"Degrees-of-freedom problem: how does the CNS control redundant motor systems?", role:"adopted", ch:"Ch 4" },
+  { id:"mcgraw", label:"McGraw", year:1935, desc:"Seven phases of erect locomotion; cortical maturation drives motor development", role:"challenged", ch:"Ch 1" },
+  { id:"lorenz", label:"Lorenz / Ethology", year:1937, desc:"Fixed action patterns and innate releasing mechanisms in animal behavior", role:"challenged", ch:"Ch 4" },
 
-    // Mid-century
-    { id: "piaget", label: "Piaget", year: 1952, desc: "Logicomathematical stages: sensorimotor → preoperational → concrete → formal operations", role: "challenged", chapter: "Ch 2" },
-    { id: "waddington", label: "Waddington", year: 1957, desc: "Epigenetic landscape: canalization, creodes, developmental buffering", role: "adopted", chapter: "Intro" },
-    { id: "chomsky", label: "Chomsky / Nativism", year: 1959, desc: "Universal grammar; innate language acquisition device; poverty of stimulus argument", role: "challenged", chapter: "Ch 2" },
-    { id: "bertalanffy", label: "von Bertalanffy", year: 1968, desc: "General systems theory: open systems, equifinality, wholeness, self-regulation", role: "adopted", chapter: "Intro" },
+  // Mid-century
+  { id:"piaget", label:"Piaget", year:1952, desc:"Logicomathematical stages: sensorimotor → preoperational → concrete → formal", role:"challenged", ch:"Ch 2, 10" },
+  { id:"waddington", label:"Waddington", year:1957, desc:"Epigenetic landscape: canalization, creodes, developmental buffering", role:"adopted", ch:"Intro" },
+  { id:"chomsky", label:"Chomsky / Nativism", year:1959, desc:"Universal grammar; innate LAD; poverty-of-stimulus argument", role:"challenged", ch:"Ch 2" },
+  { id:"bertalanffy", label:"von Bertalanffy", year:1968, desc:"General systems theory: open systems, equifinality, wholeness", role:"adopted", ch:"Intro" },
 
-    // 1970s
-    { id: "gibson", label: "E. J. Gibson", year: 1969, desc: "Ecological psychology: affordances, direct perception, exploratory activity", role: "adopted", chapter: "Intro" },
-    { id: "rosch", label: "Rosch", year: 1973, desc: "Prototype theory: graded category structure, typicality effects", role: "adopted", chapter: "Ch 6" },
-    { id: "grillner", label: "Grillner / CPG Theory", year: 1975, desc: "Central pattern generators: spinal cord circuits for locomotor patterns", role: "challenged", chapter: "Ch 1" },
-    { id: "fodor", label: "Fodor / Modularity", year: 1975, desc: "Language of Thought; later (1983) modularity of mind: encapsulated input systems", role: "challenged", chapter: "Ch 2" },
-    { id: "haken", label: "Haken / Synergetics", year: 1977, desc: "Order parameters and slaving principle: macroscopic order from microscopic components", role: "adopted", chapter: "Ch 3" },
+  // 1970s
+  { id:"gibson", label:"E. J. Gibson", year:1969, desc:"Ecological psychology: affordances, direct perception, exploratory activity", role:"adopted", ch:"Intro, Ch 8" },
+  { id:"rosch", label:"Rosch", year:1973, desc:"Prototype theory: graded category structure, typicality effects", role:"adopted", ch:"Ch 6" },
+  { id:"grillner", label:"Grillner / CPG Theory", year:1975, desc:"Central pattern generators: spinal circuits for locomotor patterns", role:"challenged", ch:"Ch 1" },
+  { id:"fodor", label:"Fodor / Modularity", year:1975, desc:"Language of Thought; modularity of mind (1983): encapsulated input systems", role:"challenged", ch:"Ch 2" },
+  { id:"haken", label:"Haken / Synergetics", year:1977, desc:"Order parameters and slaving principle: macroscopic order from microscopic components", role:"adopted", ch:"Ch 3" },
 
-    // Late 1970s - early 1980s
-    { id: "kugler_turvey", label: "Kugler & Turvey", year: 1980, desc: "Dissipative structures in motor control: thermodynamic basis for coordination", role: "adopted", chapter: "Ch 3" },
-    { id: "freeman", label: "Freeman", year: 1981, desc: "Chaos in olfactory perception: EEG amplitude patterns, nerve cell assemblies, chaotic attractors", role: "mechanism", chapter: "Ch 5" },
-    { id: "kelso", label: "Kelso / HKB Model", year: 1984, desc: "Bimanual coordination: phase transitions between in-phase and anti-phase at critical frequency", role: "adopted", chapter: "Ch 3-4" },
-    { id: "georgopoulos", label: "Georgopoulos", year: 1982, desc: "Population vectors: movement direction from distributed activity of broadly tuned cortical neurons", role: "mechanism", chapter: "Ch 5" },
-    { id: "merzenich", label: "Merzenich", year: 1983, desc: "Adult cortical plasticity: somatosensory maps reorganize with experience, amputation, differential stimulation", role: "mechanism", chapter: "Ch 5" },
-    { id: "zelazo", label: "Zelazo", year: 1984, desc: "Higher-order cognitive influence on stepping; practice retention of newborn stepping", role: "challenged", chapter: "Ch 1" },
-    { id: "prigogine", label: "Prigogine & Stengers", year: 1984, desc: "Dissipative structures: order from fluctuations in far-from-equilibrium open systems", role: "adopted", chapter: "Ch 3" },
-    { id: "reeke_edelman", label: "Reeke & Edelman", year: 1984, desc: "Self-organizing letter recognition without teacher: two disjunctive processes + reentrant coupling", role: "mechanism", chapter: "Ch 6" },
-    { id: "oyama", label: "Oyama", year: 1985, desc: "Ontogeny of Information: no preexisting plan; information constructed in development", role: "adopted", chapter: "Intro" },
-    { id: "forssberg", label: "Forssberg", year: 1985, desc: "Phylogenetic spinal pattern generator hypothesis for newborn stepping", role: "challenged", chapter: "Ch 1" },
+  // Late 1970s – early 1980s
+  { id:"kugler_turvey", label:"Kugler & Turvey", year:1980, desc:"Dissipative structures in motor control: thermodynamic basis for coordination", role:"adopted", ch:"Ch 3" },
+  { id:"freeman", label:"Freeman", year:1981, desc:"Chaos in olfactory perception: EEG amplitude patterns, chaotic attractors in neural populations", role:"mechanism", ch:"Ch 5" },
+  { id:"thelen_stepping", label:"Thelen (Stepping)", year:1982, desc:"Stepping disappearance due to biomechanical factors (leg mass), not cortical inhibition", role:"adopted", ch:"Ch 1" },
+  { id:"georgopoulos", label:"Georgopoulos", year:1982, desc:"Population vectors: movement direction from distributed activity of broadly tuned neurons", role:"mechanism", ch:"Ch 5" },
+  { id:"merzenich", label:"Merzenich", year:1983, desc:"Adult cortical plasticity: somatosensory maps reorganize with experience and amputation", role:"mechanism", ch:"Ch 5" },
+  { id:"kelso", label:"Kelso / HKB Model", year:1984, desc:"Bimanual coordination: phase transitions between in-phase and anti-phase at critical frequency", role:"adopted", ch:"Ch 3–4" },
+  { id:"zelazo", label:"Zelazo", year:1984, desc:"Higher-order cognitive influence on stepping; practice retention of newborn stepping", role:"challenged", ch:"Ch 1" },
+  { id:"prigogine", label:"Prigogine & Stengers", year:1984, desc:"Dissipative structures: order from fluctuations in far-from-equilibrium open systems", role:"adopted", ch:"Ch 3" },
+  { id:"reeke_edelman", label:"Reeke & Edelman", year:1984, desc:"Self-organizing letter recognition without teacher: disjunctive processes + reentrant coupling", role:"mechanism", ch:"Ch 6" },
+  { id:"oyama", label:"Oyama", year:1985, desc:"Ontogeny of Information: no preexisting plan; information constructed in development", role:"adopted", ch:"Intro" },
+  { id:"forssberg", label:"Forssberg", year:1985, desc:"Phylogenetic spinal pattern generator hypothesis for newborn stepping", role:"challenged", ch:"Ch 1" },
+  { id:"connectionism", label:"Connectionism / PDP", year:1986, desc:"Rumelhart & McClelland: distributed representations, learning by weight adjustment", role:"parallel", ch:"Ch 2" },
+  { id:"thelen_treadmill", label:"Thelen (Treadmill)", year:1986, desc:"7-month-olds step on treadmill: locomotor pattern available months before walking", role:"adopted", ch:"Ch 1, 7" },
+  { id:"diamond", label:"Diamond", year:1988, desc:"A-not-B error as frontal cortex inhibition failure; dorsolateral PFC maturation account", role:"challenged", ch:"Ch 10" },
 
-    // Late 1980s
-    { id: "edelman", label: "Edelman / TNGS", year: 1987, desc: "Theory of Neuronal Group Selection: developmental selection, degeneracy, reentrant mapping, value systems", role: "mechanism", chapter: "Ch 5" },
-    { id: "lakoff", label: "Lakoff", year: 1987, desc: "Embodied cognition: categories grounded in bodily experience; radial structure of 'mother'", role: "adopted", chapter: "Ch 6" },
-    { id: "singer", label: "Singer", year: 1989, desc: "Synchronous oscillations in visual cortex: zero phase lag, stimulus-specific coherence", role: "mechanism", chapter: "Ch 5" },
-    { id: "connectionism", label: "Connectionism", year: 1986, desc: "Rumelhart & McClelland: distributed representations, learning by weight adjustment, PDP", role: "parallel", chapter: "Ch 2" },
-    { id: "spelke", label: "Spelke", year: 1990, desc: "Core knowledge: innate principles constraining infant physics; object segregation by common motion", role: "challenged", chapter: "Ch 2, Ch 6" },
+  // Late 1980s
+  { id:"edelman", label:"Edelman / TNGS", year:1987, desc:"Theory of Neuronal Group Selection: developmental selection, degeneracy, reentrant mapping, value", role:"mechanism", ch:"Ch 5–6" },
+  { id:"lakoff", label:"Lakoff & Johnson", year:1987, desc:"Embodied cognition: categories grounded in bodily experience; image schemas", role:"adopted", ch:"Ch 6, 11" },
+  { id:"singer", label:"Singer", year:1989, desc:"Synchronous oscillations in visual cortex: zero-phase-lag, stimulus-specific coherence", role:"mechanism", ch:"Ch 5" },
+  { id:"spelke", label:"Spelke / Core Knowledge", year:1990, desc:"Innate principles constraining infant physics; object segregation by common motion", role:"challenged", ch:"Ch 2, 6, 8" },
+  { id:"baillargeon", label:"Baillargeon", year:1987, desc:"Drawbridge/impossible events: looking-time evidence for early object permanence", role:"challenged", ch:"Ch 8, 10" },
 
-    // Thelen's own empirical work
-    { id: "thelen_stepping", label: "Thelen (Stepping)", year: 1982, desc: "Stepping disappearance due to biomechanical factors (leg mass), not cortical inhibition", role: "adopted", chapter: "Ch 1" },
-    { id: "thelen_treadmill", label: "Thelen (Treadmill)", year: 1986, desc: "7-month-olds step on treadmill: locomotor pattern available months before independent walking", role: "adopted", chapter: "Ch 1" },
-    { id: "thelen_kicking", label: "Thelen (Kicking Studies)", year: 1991, desc: "Longitudinal studies of infant kicking dynamics: coordination, variability, attractor states", role: "adopted", chapter: "Ch 4" },
-    { id: "thelen_smith", label: "Thelen & Smith", year: 1994, desc: "Dynamic Systems Approach: development without prescription, selection from variability, embodied cognition", role: "adopted", chapter: "Book" },
+  // Early 1990s
+  { id:"rovee_collier", label:"Rovee-Collier", year:1990, desc:"Mobile conjugate reinforcement: infant memory is context-specific, action-bound, not abstract", role:"adopted", ch:"Ch 6–7" },
+  { id:"thelen_kicking", label:"Thelen (Kicking)", year:1991, desc:"Longitudinal kicking dynamics: coordination, variability, attractor states", role:"adopted", ch:"Ch 3–4" },
+  { id:"adolph", label:"Adolph", year:1993, desc:"Slopes: locomotor knowledge is mode-specific; no transfer from crawling to walking", role:"adopted", ch:"Ch 8" },
+  { id:"van_gelder", label:"van Gelder", year:1995, desc:"Watt governor: intelligence without representation; dynamical vs. computational hypothesis", role:"adopted", ch:"Ch 11" },
+  { id:"campos", label:"Campos & Kermoian", year:1992, desc:"Self-produced locomotion drives spatial cognition; crawling experience predicts search success", role:"adopted", ch:"Ch 10" },
+
+  // THE BOOK
+  { id:"thelen_smith", label:"Thelen & Smith (1994)", year:1994, desc:"A Dynamic Systems Approach to the Development of Cognition and Action — the synthesis", role:"adopted", ch:"Book" },
+
+  // Post-1994 work
+  { id:"smith_thelen_anb", label:"Smith, Thelen et al.", year:1999, desc:"Knowing in the context of acting: task dynamics of the A-not-B error. 3 coupled systems model.", role:"legacy", ch:"Post" },
+  { id:"thelen_schoner_dft", label:"Thelen, Schöner et al.", year:2001, desc:"Dynamic Field Theory: neural field model of perseverative reaching; activation, memory trace, self-excitation", role:"legacy", ch:"Post" },
+  { id:"spencer_sandbox", label:"Spencer, Smith & Thelen", year:2001, desc:"A-not-B-type errors in 2-year-olds in sandbox task; 5 experiments confirming general process account", role:"legacy", ch:"Post" },
+  { id:"smith_shape_bias", label:"Smith (Shape Bias)", year:2002, desc:"Shape bias as attentional learning: 17-month training study accelerates vocabulary development", role:"legacy", ch:"Post" },
+  { id:"schoner_dineva", label:"Schöner & Dineva", year:2007, desc:"Dynamic instabilities as mechanisms for emergence: DFT formalized as general developmental theory", role:"legacy", ch:"Post" },
+  { id:"adolph_locomotion", label:"Adolph & Tamis-LeMonda", year:2014, desc:"Embodied developmental psychology: motor development cascades into cognition, language, social development", role:"legacy", ch:"Post" },
+  { id:"spencer_dft_book", label:"Spencer, Schöner et al.", year:2022, desc:"Dynamic Thinking: A Primer on DFT — full textbook formalizing the mathematical framework", role:"legacy", ch:"Post" },
 ];
 
-// Links showing how theories connect
 const links = [
-    // Gesell & McGraw: maturationism challenged
-    { source: "gesell", target: "thelen_stepping", type: "challenged", desc: "Thelen's stepping data refute maturational stage theory: biomechanics, not cortex, explain disappearance" },
-    { source: "mcgraw", target: "thelen_stepping", type: "challenged", desc: "McGraw's cortical inhibition hypothesis undermined by context-sensitivity of stepping" },
-    { source: "mcgraw", target: "thelen_treadmill", type: "challenged", desc: "Treadmill stepping shows locomotor patterns available far earlier than McGraw's phases predict" },
+  // ─── CHALLENGED LINKS ───
+  { source:"gesell", target:"thelen_stepping", type:"challenged", desc:"Thelen's stepping data refute maturational stage theory: biomechanics, not cortex, explain disappearance" },
+  { source:"mcgraw", target:"thelen_stepping", type:"challenged", desc:"McGraw's cortical inhibition hypothesis undermined by context-sensitivity of stepping" },
+  { source:"mcgraw", target:"thelen_treadmill", type:"challenged", desc:"Treadmill stepping shows locomotor patterns available far earlier than McGraw's phases predict" },
+  { source:"piaget", target:"thelen_smith", type:"challenged", desc:"Logicomathematical stages fail at close range: context-dependency, décalage, fragile competence" },
+  { source:"piaget", target:"baillargeon", type:"challenged", desc:"Baillargeon's looking-time data challenge Piaget's claim that object permanence appears only at 8–9 months" },
+  { source:"chomsky", target:"fodor", type:"adopted", desc:"Fodor extends Chomsky's nativism into modular architecture of mind" },
+  { source:"fodor", target:"thelen_smith", type:"challenged", desc:"Modularity studied only in adults; encapsulation may develop rather than being innate" },
+  { source:"spelke", target:"thelen_smith", type:"challenged", desc:"'Innate ideas' is not biologically plausible; cedes the question of origins to other disciplines" },
+  { source:"grillner", target:"thelen_stepping", type:"challenged", desc:"CPG is impoverished essence: spinal cats cannot walk; real locomotion needs peripheral dialogue" },
+  { source:"forssberg", target:"thelen_treadmill", type:"challenged", desc:"Phylogenetic pattern generator hypothesis undermined by context-dependent developmental trajectories" },
+  { source:"zelazo", target:"thelen_stepping", type:"challenged", desc:"Cognitive capture hypothesis challenged: practice effect is biomechanical, not cognitive" },
+  { source:"lorenz", target:"thelen_stepping", type:"challenged", desc:"Fixed action patterns challenged: newborn stepping is context-sensitive, not a fixed motor program" },
+  { source:"diamond", target:"thelen_smith", type:"challenged", desc:"Frontal maturation account of A-not-B error challenged: posture change eliminates error; locomotor experience predicts success" },
+  { source:"baillargeon", target:"thelen_smith", type:"challenged", desc:"Impossible-event looking reinterpreted: trajectory capture in what/where systems, not abstract object knowledge" },
 
-    // Piaget challenged
-    { source: "piaget", target: "thelen_smith", type: "challenged", desc: "Logicomathematical stages fail at close range: context-dependency, asynchrony, fragile competence" },
-    { source: "piaget", target: "waddington", type: "adopted", desc: "Piaget adapted equilibration from Waddington's embryological concepts, but never operationalized the process" },
+  // ─── ADOPTED / EXTENDED LINKS ───
+  { source:"darwin", target:"edelman", type:"adopted", desc:"TNGS extends Darwinian selection to neural development: variation + selection without instruction" },
+  { source:"darwin", target:"thelen_smith", type:"adopted", desc:"Development as selection without design parallels evolution as selection without design" },
+  { source:"waddington", target:"thelen_smith", type:"adopted", desc:"Epigenetic landscape reinterpreted as attractor dynamics: canalization = deep attractors" },
+  { source:"piaget", target:"waddington", type:"adopted", desc:"Piaget adapted equilibration from Waddington but never operationalized the process" },
+  { source:"bertalanffy", target:"thelen_smith", type:"adopted", desc:"General systems principles (wholeness, self-organization, equifinality) formalized through dynamics" },
+  { source:"gibson", target:"thelen_smith", type:"adopted", desc:"Ecological psychology: affordances, direct perception, exploration as developmental engine" },
+  { source:"gibson", target:"adolph", type:"adopted", desc:"Adolph extends Gibson's affordance perception into locomotor development: perceiving-acting fit" },
+  { source:"thermodynamics", target:"prigogine", type:"adopted", desc:"Prigogine extends thermodynamics: far-from-equilibrium systems create order (dissipative structures)" },
+  { source:"prigogine", target:"haken", type:"adopted", desc:"Both develop frameworks for self-organization; Haken focuses on order parameters and slaving" },
+  { source:"haken", target:"kelso", type:"adopted", desc:"Kelso applies synergetics to bimanual coordination: order parameter (relative phase), control parameter (frequency)" },
+  { source:"kelso", target:"thelen_smith", type:"adopted", desc:"HKB model provides the template: phase transitions, hysteresis, enhanced fluctuations applied to development" },
+  { source:"kugler_turvey", target:"kelso", type:"adopted", desc:"Dissipative structures framework for motor control feeds directly into Kelso's coordination dynamics" },
+  { source:"bernstein", target:"kugler_turvey", type:"adopted", desc:"Bernstein's degrees-of-freedom problem formalized through thermodynamic coordination principles" },
+  { source:"bernstein", target:"thelen_smith", type:"adopted", desc:"Degrees of freedom as central developmental problem: how does the system compress infinite possibilities?" },
+  { source:"oyama", target:"thelen_smith", type:"adopted", desc:"Constructivist interactionism: information not preset in genes or environment but constructed in development" },
+  { source:"rosch", target:"lakoff", type:"adopted", desc:"Rosch's graded structure findings extended by Lakoff into embodied, radial category theory" },
+  { source:"lakoff", target:"thelen_smith", type:"adopted", desc:"Embodied cognition: categories are perception-action assemblies, not abstract representations" },
+  { source:"rovee_collier", target:"thelen_smith", type:"adopted", desc:"Context-specific infant memory supports action-embedded knowledge account; memory is not abstract retrieval" },
+  { source:"adolph", target:"thelen_smith", type:"adopted", desc:"Mode-specific locomotor knowledge: no transfer from crawling to walking. Context makes knowledge." },
+  { source:"campos", target:"thelen_smith", type:"adopted", desc:"Self-produced locomotion drives spatial cognition and A-not-B success; action causes neural change" },
+  { source:"van_gelder", target:"thelen_smith", type:"adopted", desc:"Watt governor provides existence proof: intelligent regulation without computation or representation" },
 
-    // Nativism / modularity challenged
-    { source: "chomsky", target: "fodor", type: "adopted", desc: "Fodor extends Chomsky's nativism into modular architecture of mind" },
-    { source: "fodor", target: "thelen_smith", type: "challenged", desc: "Modularity studied only in adults; encapsulation may develop rather than being innate" },
-    { source: "spelke", target: "thelen_smith", type: "challenged", desc: "'Innate ideas' is not biologically plausible; concedes origins of knowledge to other disciplines" },
-    { source: "nativism_general", target: "oyama", type: "challenged", desc: "Oyama: invoking any preexisting plan produces infinite regress; information is constructed" },
+  // ─── THELEN'S OWN WORK BUILDING ───
+  { source:"thelen_stepping", target:"thelen_treadmill", type:"adopted", desc:"Stepping data motivate treadmill: if biomechanics explain disappearance, what elicits reappearance?" },
+  { source:"thelen_treadmill", target:"thelen_kicking", type:"adopted", desc:"Treadmill extends to kicking: attractors, variability, developmental timescales" },
+  { source:"thelen_kicking", target:"thelen_smith", type:"adopted", desc:"Empirical program crystallizes into dynamic systems theory of development" },
 
-    // CPG challenged
-    { source: "grillner", target: "thelen_stepping", type: "challenged", desc: "CPG is impoverished essence: spinal cats cannot walk; real locomotion requires peripheral dialogue" },
-    { source: "forssberg", target: "thelen_treadmill", type: "challenged", desc: "Phylogenetic pattern generator hypothesis undermined by context-dependent developmental trajectories" },
-    { source: "zelazo", target: "thelen_stepping", type: "challenged", desc: "Cognitive capture hypothesis challenged: practice effect explained by biomechanical, not cognitive, factors" },
+  // ─── MECHANISM LINKS ───
+  { source:"freeman", target:"edelman", type:"mechanism", desc:"Chaos provides variability substrate; TNGS provides the selection mechanism operating on it" },
+  { source:"freeman", target:"thelen_smith", type:"mechanism", desc:"Chaotic dynamics as source of novel forms: structured variability, not random noise" },
+  { source:"georgopoulos", target:"thelen_smith", type:"mechanism", desc:"Population coding: distributed causality; no single neuron commands movement direction" },
+  { source:"merzenich", target:"thelen_smith", type:"mechanism", desc:"Experience-driven map reorganization: cortical plasticity as neural analog of attractor deepening" },
+  { source:"edelman", target:"thelen_smith", type:"mechanism", desc:"TNGS provides homunculus-free neural mechanism: selection from degeneracy via reentrant mapping" },
+  { source:"edelman", target:"reeke_edelman", type:"mechanism", desc:"TNGS principles implemented computationally: self-organizing categorization without teacher" },
+  { source:"singer", target:"edelman", type:"mechanism", desc:"Synchronous oscillations provide temporal binding mechanism consistent with reentrant integration" },
+  { source:"reeke_edelman", target:"thelen_smith", type:"mechanism", desc:"Demonstration proof: categorization without teacher, template, or feedback; only disjunctive coupling" },
 
-    // Precursors adopted
-    { source: "darwin", target: "edelman", type: "adopted", desc: "TNGS extends Darwinian selection to neural development: variation + selection without instruction" },
-    { source: "darwin", target: "thelen_smith", type: "adopted", desc: "Development as selection without design parallels evolution as selection without design" },
-    { source: "waddington", target: "thelen_smith", type: "adopted", desc: "Epigenetic landscape reinterpreted as attractor dynamics: canalization = deep attractors" },
-    { source: "bertalanffy", target: "thelen_smith", type: "adopted", desc: "General systems principles (wholeness, self-organization, equifinality) formalized through dynamics" },
-    { source: "gibson", target: "thelen_smith", type: "adopted", desc: "Ecological psychology: affordances, direct perception, exploration as developmental engine" },
+  // ─── PARALLEL / CONVERGES ───
+  { source:"connectionism", target:"thelen_smith", type:"parallel", desc:"Shares insight (knowledge = process) but fails to take brain heterogeneity and development seriously" },
+  { source:"connectionism", target:"edelman", type:"parallel", desc:"Both use distributed processing, but TNGS adds degeneracy, reentry, and selectionist learning" },
+  { source:"gesell", target:"piaget", type:"parallel", desc:"Both propose stage theories (motor and cognitive); both fail at close range" },
+  { source:"merzenich", target:"kelso", type:"parallel", desc:"Both show neural/behavioral patterns reorganize through experience rather than maturation" },
+  { source:"bernstein", target:"georgopoulos", type:"mechanism", desc:"Population coding provides neural implementation of how distributed systems solve degrees of freedom" },
 
-    // Dynamic systems lineage
-    { source: "thermodynamics", target: "prigogine", type: "adopted", desc: "Prigogine extends thermodynamics: far-from-equilibrium systems create order (dissipative structures)" },
-    { source: "prigogine", target: "haken", type: "adopted", desc: "Both develop formal frameworks for self-organization; Haken focuses on order parameters" },
-    { source: "haken", target: "kelso", type: "adopted", desc: "Kelso applies synergetics to bimanual coordination: order parameter (relative phase), control parameter (frequency)" },
-    { source: "kelso", target: "thelen_smith", type: "adopted", desc: "HKB model provides template: phase transitions, hysteresis, enhanced fluctuations applied to development" },
-    { source: "kugler_turvey", target: "kelso", type: "adopted", desc: "Dissipative structures framework for motor control feeds directly into Kelso's coordination dynamics" },
-    { source: "bernstein", target: "kugler_turvey", type: "adopted", desc: "Bernstein's degrees of freedom problem formalized through thermodynamic coordination principles" },
-    { source: "bernstein", target: "thelen_smith", type: "adopted", desc: "Degrees of freedom as central developmental problem: how does the system compress infinite possibilities?" },
-
-    // Neural mechanism
-    { source: "freeman", target: "edelman", type: "mechanism", desc: "Chaos provides variability substrate; TNGS provides the selection mechanism operating on that variability" },
-    { source: "freeman", target: "thelen_smith", type: "mechanism", desc: "Chaotic dynamics as source of novel forms: structured variability, not random noise" },
-    { source: "georgopoulos", target: "thelen_smith", type: "mechanism", desc: "Population coding demonstrates distributed causality: no single neuron commands movement direction" },
-    { source: "merzenich", target: "thelen_smith", type: "mechanism", desc: "Experience-driven map reorganization: cortical plasticity as neural analog of attractor deepening" },
-    { source: "edelman", target: "thelen_smith", type: "mechanism", desc: "TNGS provides the homunculus-free neural mechanism: selection from degeneracy via reentrant mapping" },
-    { source: "edelman", target: "reeke_edelman", type: "mechanism", desc: "TNGS principles implemented as computational model: self-organizing categorization" },
-    { source: "singer", target: "edelman", type: "mechanism", desc: "Synchronous oscillations provide temporal binding mechanism consistent with reentrant integration" },
-
-    // Cognition extension
-    { source: "rosch", target: "lakoff", type: "adopted", desc: "Rosch's graded structure findings extended by Lakoff into embodied, radial category theory" },
-    { source: "lakoff", target: "thelen_smith", type: "adopted", desc: "Embodied cognition: categories are perception-action assemblies, not abstract representations" },
-    { source: "reeke_edelman", target: "thelen_smith", type: "mechanism", desc: "Demonstration proof: categorization without teacher, template, or feedback; only disjunctive coupling" },
-    { source: "spelke", target: "reeke_edelman", type: "challenged", desc: "Innate core knowledge replaced by self-organizing perceptual categorization through reentrant mapping" },
-
-    // Connectionism as parallel
-    { source: "connectionism", target: "thelen_smith", type: "parallel", desc: "Shares key insight (knowledge = process, not structure) but fails to take brain heterogeneity and development seriously" },
-    { source: "connectionism", target: "edelman", type: "parallel", desc: "Both use distributed processing, but TNGS adds degeneracy, reentry, and selectionist (not instructionist) learning" },
-
-    // Thelen's own work building
-    { source: "thelen_stepping", target: "thelen_treadmill", type: "adopted", desc: "Stepping data motivate treadmill studies: if biomechanics explain disappearance, what elicits reappearance?" },
-    { source: "thelen_treadmill", target: "thelen_kicking", type: "adopted", desc: "Treadmill work extends to longitudinal kicking studies: attractors, variability, developmental timescales" },
-    { source: "thelen_kicking", target: "thelen_smith", type: "adopted", desc: "Empirical program crystallizes into dynamic systems theory of development" },
-    { source: "lorenz", target: "thelen_stepping", type: "challenged", desc: "Fixed action patterns challenged: newborn stepping is context-sensitive, not a fixed motor program" },
-
-    // Cross-era connections
-    { source: "oyama", target: "thelen_smith", type: "adopted", desc: "Constructivist interactionism: information not preset in genes or environment but constructed in development" },
-    { source: "bernstein", target: "georgopoulos", type: "mechanism", desc: "Population coding provides neural implementation of how distributed systems solve the degrees of freedom problem" },
-    { source: "merzenich", target: "kelso", type: "parallel", desc: "Both demonstrate that neural/behavioral patterns reorganize through experience rather than maturation" },
-    { source: "gesell", target: "piaget", type: "parallel", desc: "Both propose stage theories (motor and cognitive) driven by maturation/equilibration; both fail at close range" },
+  // ─── POST-1994 LEGACY ───
+  { source:"thelen_smith", target:"smith_thelen_anb", type:"legacy", desc:"Book's Ch 10 conceptual model formalized into empirical program: 3 coupled systems (what/look/reach)" },
+  { source:"smith_thelen_anb", target:"thelen_schoner_dft", type:"legacy", desc:"Conceptual model formalized as neural dynamic field: activation peaks, memory traces, self-excitation" },
+  { source:"thelen_schoner_dft", target:"spencer_sandbox", type:"legacy", desc:"DFT predictions tested in 2-year-olds: A-not-B error is general across ages and tasks (5 experiments)" },
+  { source:"thelen_schoner_dft", target:"schoner_dineva", type:"legacy", desc:"DFT extended: dynamic instabilities as general developmental mechanism for emergence of new forms" },
+  { source:"thelen_smith", target:"smith_shape_bias", type:"legacy", desc:"Attentional learning account of shape bias: 17-month training accelerates vocabulary. NDS → word learning." },
+  { source:"thelen_smith", target:"adolph_locomotion", type:"legacy", desc:"Motor-cognition cascades: sitting → vision → parent speech → language. Embodied development fully realized." },
+  { source:"adolph", target:"adolph_locomotion", type:"legacy", desc:"Adolph's slopes work extended into comprehensive embodied developmental framework" },
+  { source:"gibson", target:"adolph_locomotion", type:"adopted", desc:"Gibson's ecological approach realized across the full lifespan of motor development research" },
+  { source:"schoner_dineva", target:"spencer_dft_book", type:"legacy", desc:"DFT formalized into full textbook (2022): mathematical framework for embodied, situated, dynamic cognition" },
+  { source:"kelso", target:"thelen_schoner_dft", type:"mechanism", desc:"Schöner (Kelso's student) brings dynamic field mathematics to developmental psychology" },
+  { source:"haken", target:"thelen_schoner_dft", type:"mechanism", desc:"Synergetics formalism (order parameters, instabilities) provides the mathematical backbone of DFT" },
+  { source:"edelman", target:"thelen_schoner_dft", type:"mechanism", desc:"TNGS neural architecture (reentry, degeneracy) informs the field-level dynamics in DFT" },
+  { source:"spencer_sandbox", target:"spencer_dft_book", type:"legacy", desc:"Spencer's sandbox work grows into 20-year DFT research program culminating in comprehensive textbook" },
 ];
 
-// Fix: add nativism_general node if referenced
-const nativismCheck = links.find(l => l.source === "nativism_general" || l.target === "nativism_general");
-if (nativismCheck) {
-    // Remove links referencing non-existent node
-    const validIds = new Set(nodes.map(n => n.id));
-    // Filter out invalid links
-    const validLinks = links.filter(l => validIds.has(l.source) && validIds.has(l.target));
-    links.length = 0;
-    links.push(...validLinks);
-}
-
-const arcColors = {
-    challenged: "#e07a5f",
-    adopted: "#81b29a",
-    mechanism: "#f2cc8f",
-    parallel: "#8ecae6"
+const typeColors = {
+  challenged: "var(--challenged)",
+  adopted: "var(--adopted)",
+  mechanism: "var(--mechanism)",
+  parallel: "var(--parallel)",
+  legacy: "var(--legacy)",
+};
+const typeLabels = {
+  challenged: "Challenged by T&S",
+  adopted: "Adopted / Extended",
+  mechanism: "Provides Mechanism",
+  parallel: "Parallel / Converges",
+  legacy: "Post-1994 Legacy",
 };
 
-const roleColors = {
-    challenged: "#8b4f3f",
-    adopted: "#4a7a5e",
-    mechanism: "#8a7a4f",
-    parallel: "#4a6a7a"
-};
-
-// Sort nodes by year
-nodes.sort((a, b) => a.year - b.year);
-
-// Layout
-const margin = { top: 300, right: 70, bottom: 140, left: 70 };
-const nodeSpacing = 54;
-const width = margin.left + margin.right + nodes.length * nodeSpacing;
-const height = margin.top + margin.bottom + 80;
-
-const svg = d3.select("#arc-container")
-    .append("svg")
-    .attr("width", width)
-    .attr("height", height);
-
-// Position nodes linearly
-nodes.forEach((n, i) => {
-    n.px = margin.left + i * nodeSpacing + nodeSpacing / 2;
-    n.py = margin.top;
-});
-
-// Era background bands
-const eras = [
-    { label: "19th C.", start: 1850, end: 1900, color: "#1a1520" },
-    { label: "Early 20th C.", start: 1900, end: 1950, color: "#151a18" },
-    { label: "Mid-Century", start: 1950, end: 1970, color: "#1a1818" },
-    { label: "1970s", start: 1970, end: 1980, color: "#15181a" },
-    { label: "1980s", start: 1980, end: 1990, color: "#181518" },
-    { label: "1990s", start: 1990, end: 2000, color: "#181a15" },
-];
-
-eras.forEach(era => {
-    const eraNodes = nodes.filter(n => n.year >= era.start && n.year < era.end);
-    if (eraNodes.length === 0) return;
-    const x1 = eraNodes[0].px - nodeSpacing * 0.45;
-    const x2 = eraNodes[eraNodes.length - 1].px + nodeSpacing * 0.45;
-    svg.append("rect")
-        .attr("class", "era-band")
-        .attr("x", x1).attr("y", 20)
-        .attr("width", x2 - x1).attr("height", height - 40)
-        .attr("fill", era.color);
-    svg.append("text")
-        .attr("class", "year-label")
-        .attr("x", (x1 + x2) / 2).attr("y", margin.top - 18)
-        .attr("text-anchor", "middle")
-        .attr("fill", "#333")
-        .attr("font-size", "9px")
-        .text(era.label);
-});
-
-// Build node map
+// ═══════════════════════════════════════════
+// BUILD TIMELINE
+// ═══════════════════════════════════════════
 const nodeMap = {};
 nodes.forEach(n => nodeMap[n.id] = n);
+nodes.sort((a,b) => a.year - b.year);
 
-// Draw arcs
-const arcGroup = svg.append("g");
-const arcPaths = arcGroup.selectAll("path")
-    .data(links)
-    .enter()
-    .append("path")
-    .attr("class", "arc")
-    .attr("d", d => {
-        const s = nodeMap[d.source];
-        const t = nodeMap[d.target];
-        if (!s || !t) return "";
-        const x1 = s.px, x2 = t.px;
-        const mid = (x1 + x2) / 2;
-        const dx = Math.abs(x2 - x1);
-        const arcH = Math.min(dx * 0.5, 260);
-        return `M ${x1} ${margin.top} Q ${mid} ${margin.top - arcH} ${x2} ${margin.top}`;
-    })
-    .attr("stroke", d => arcColors[d.type])
-    .on("mouseenter", function(event, d) { if (!locked) { highlightArc(this, d); showTooltipArc(event, d); }})
-    .on("mouseleave", function() { if (!locked) { resetAll(); hideTooltip(); }});
+const eras = [
+  { label: "Pre-1900", min:1800, max:1900 },
+  { label: "Early 20th Century", min:1900, max:1950 },
+  { label: "Mid-Century", min:1950, max:1970 },
+  { label: "1970s", min:1970, max:1980 },
+  { label: "1980s", min:1980, max:1990 },
+  { label: "1990s", min:1990, max:2000 },
+  { label: "Post-1994 Extensions", min:2000, max:2100 },
+];
 
-// Node dots
-const dotGroup = svg.append("g");
-dotGroup.selectAll("circle")
-    .data(nodes)
-    .enter()
-    .append("circle")
-    .attr("class", "node-dot")
-    .attr("cx", d => d.px).attr("cy", d => d.py)
-    .attr("r", 4.5)
-    .attr("fill", d => {
-        const c = roleColors[d.role] || "#555";
-        return d3.color(c).brighter(1.2);
-    })
-    .attr("stroke", d => {
-        const c = roleColors[d.role] || "#555";
-        return d3.color(c).brighter(2.2);
-    })
-    .attr("stroke-width", 1)
-    .on("mouseenter", function(event, d) { if (!locked) { highlightNode(d); showTooltipNode(event, d); }})
-    .on("mouseleave", function() { if (!locked) { resetAll(); hideTooltip(); }})
-    .on("click", function(event, d) { event.stopPropagation(); toggleLock(d); });
+let activeNodeId = null;
+let activeFilter = "all";
 
-// Year labels under dots
-const yearGroup = svg.append("g");
-yearGroup.selectAll("text")
-    .data(nodes)
-    .enter()
-    .append("text")
-    .attr("class", "year-label")
-    .attr("x", d => d.px).attr("y", d => d.py + 16)
-    .attr("text-anchor", "middle")
-    .text(d => d.year);
+function buildTimeline() {
+  const panel = document.getElementById("timeline");
+  panel.innerHTML = "";
 
-// Name labels rotated
-const labelGroup = svg.append("g");
-labelGroup.selectAll("text")
-    .data(nodes)
-    .enter()
-    .append("text")
-    .attr("class", "node-label")
-    .attr("x", d => d.px).attr("y", d => d.py + 30)
-    .attr("text-anchor", "start")
-    .attr("transform", d => `rotate(55, ${d.px}, ${d.py + 30})`)
-    .text(d => d.label)
-    .on("mouseenter", function(event, d) { if (!locked) { highlightNode(d); showTooltipNode(event, d); }})
-    .on("mouseleave", function() { if (!locked) { resetAll(); hideTooltip(); }})
-    .on("click", function(event, d) { event.stopPropagation(); toggleLock(d); });
+  eras.forEach(era => {
+    const eraNodes = nodes.filter(n => n.year >= era.min && n.year < era.max);
+    if (eraNodes.length === 0) return;
 
-// Tooltip
-const tooltip = d3.select("#tooltip");
+    const section = document.createElement("div");
+    section.className = "era";
 
-function showTooltipArc(event, d) {
-    const s = nodeMap[d.source], t = nodeMap[d.target];
-    if (!s || !t) return;
-    const types = { challenged: "Challenged by T&S", adopted: "Adopted / Extended", mechanism: "Provides Mechanism", parallel: "Parallel / Converges" };
-    tooltip.style("opacity", 1)
-        .style("left", Math.min(event.clientX + 14, window.innerWidth - 380) + "px")
-        .style("top", (event.clientY - 10) + "px")
-        .html(`<div class="tt-type" style="color:${arcColors[d.type]}">${types[d.type]}</div>
-            <strong>${s.label}</strong> (${s.year}) → <strong>${t.label}</strong> (${t.year})<br>${d.desc}`);
+    const label = document.createElement("div");
+    label.className = "era-label";
+    label.textContent = era.label;
+    section.appendChild(label);
+
+    eraNodes.forEach(n => {
+      const color = typeColors[n.role] || "#555";
+      const el = document.createElement("div");
+      el.className = "node";
+      el.dataset.id = n.id;
+      el.style.setProperty("--dot-color", color);
+
+      // Apply filter dimming
+      if (activeFilter !== "all" && n.role !== activeFilter) {
+        // Check if any connection matches filter
+        const hasConn = links.some(l =>
+          (l.source === n.id || l.target === n.id) && l.type === activeFilter
+        );
+        if (!hasConn) el.classList.add("dimmed");
+      }
+
+      if (activeNodeId === n.id) el.classList.add("active");
+
+      // If another node is active, dim unconnected nodes
+      if (activeNodeId && activeNodeId !== n.id) {
+        const connected = links.some(l =>
+          (l.source === activeNodeId && l.target === n.id) ||
+          (l.target === activeNodeId && l.source === n.id)
+        );
+        if (!connected) el.classList.add("dimmed");
+      }
+
+      el.innerHTML = `
+        <div class="node-name">${n.label}</div>
+        <div class="node-meta">${n.year} · ${n.ch}</div>
+        <div class="node-desc">${n.desc}</div>
+      `;
+
+      el.addEventListener("click", () => {
+        activeNodeId = activeNodeId === n.id ? null : n.id;
+        buildTimeline();
+        buildPanel();
+      });
+
+      section.appendChild(el);
+    });
+
+    panel.appendChild(section);
+  });
 }
 
-function showTooltipNode(event, d) {
-    tooltip.style("opacity", 1)
-        .style("left", Math.min(event.clientX + 14, window.innerWidth - 380) + "px")
-        .style("top", (event.clientY - 10) + "px")
-        .html(`<strong>${d.label}</strong> <span class="tt-year">${d.year} &middot; ${d.chapter}</span><br>${d.desc}`);
+// ═══════════════════════════════════════════
+// BUILD CONNECTION PANEL
+// ═══════════════════════════════════════════
+function buildPanel() {
+  const panel = document.getElementById("conn-panel");
+
+  if (!activeNodeId) {
+    panel.innerHTML = `<div class="conn-placeholder"><span class="arrow">←</span>Click any theorist on the<br>timeline to see connections.<br><br>Cards show relationship type,<br>direction, and description.</div>`;
+    return;
+  }
+
+  const n = nodeMap[activeNodeId];
+  const outgoing = links.filter(l => l.source === activeNodeId);
+  const incoming = links.filter(l => l.target === activeNodeId);
+
+  let html = `
+    <div class="panel-header">
+      <div class="panel-node-name">${n.label}</div>
+      <div class="panel-node-year">${n.year} · ${n.ch}</div>
+      <div class="panel-node-desc">${n.desc}</div>
+    </div>
+  `;
+
+  if (incoming.length > 0) {
+    html += `<div class="conn-section-label">Influenced by (${incoming.length})</div>`;
+    incoming.forEach(l => {
+      const src = nodeMap[l.source];
+      if (!src) return;
+      const c = typeColors[l.type];
+      html += `
+        <div class="conn-card" style="--conn-color:${c}" data-target="${src.id}">
+          <div class="conn-card-header">
+            <span class="conn-direction" style="color:${c}">← from</span>
+            <span class="conn-target-name">${src.label}</span>
+            <span class="conn-target-year">${src.year}</span>
+            <span class="conn-type-badge" style="--conn-color:${c}">${typeLabels[l.type]}</span>
+          </div>
+          <div class="conn-desc">${l.desc}</div>
+        </div>
+      `;
+    });
+  }
+
+  if (outgoing.length > 0) {
+    html += `<div class="conn-section-label">Influences (${outgoing.length})</div>`;
+    outgoing.forEach(l => {
+      const tgt = nodeMap[l.target];
+      if (!tgt) return;
+      const c = typeColors[l.type];
+      html += `
+        <div class="conn-card" style="--conn-color:${c}" data-target="${tgt.id}">
+          <div class="conn-card-header">
+            <span class="conn-direction" style="color:${c}">→ to</span>
+            <span class="conn-target-name">${tgt.label}</span>
+            <span class="conn-target-year">${tgt.year}</span>
+            <span class="conn-type-badge" style="--conn-color:${c}">${typeLabels[l.type]}</span>
+          </div>
+          <div class="conn-desc">${l.desc}</div>
+        </div>
+      `;
+    });
+  }
+
+  if (incoming.length === 0 && outgoing.length === 0) {
+    html += `<div class="conn-placeholder" style="padding-top:2rem;">No connections mapped for this node.</div>`;
+  }
+
+  panel.innerHTML = html;
+
+  // Make cards clickable to navigate
+  panel.querySelectorAll(".conn-card").forEach(card => {
+    card.addEventListener("click", () => {
+      const targetId = card.dataset.target;
+      if (targetId) {
+        activeNodeId = targetId;
+        buildTimeline();
+        buildPanel();
+        // Scroll timeline to the node
+        const nodeEl = document.querySelector(`.node[data-id="${targetId}"]`);
+        if (nodeEl) nodeEl.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+    });
+  });
 }
 
-function hideTooltip() { tooltip.style("opacity", 0); }
+// ═══════════════════════════════════════════
+// LEGEND FILTER
+// ═══════════════════════════════════════════
+document.querySelectorAll(".legend-item").forEach(item => {
+  item.addEventListener("click", () => {
+    const filter = item.dataset.filter;
+    activeFilter = filter;
+    activeNodeId = null;
+    document.querySelectorAll(".legend-item").forEach(i => i.classList.remove("active"));
+    item.classList.add("active");
+    buildTimeline();
+    buildPanel();
+  });
+});
 
-// Highlighting
-let locked = null;
-
-function highlightArc(el, d) {
-    const inv = new Set([d.source, d.target]);
-    arcPaths.classed("dimmed", l => l !== d).classed("highlighted", l => l === d);
-    dotGroup.selectAll("circle").classed("dimmed", n => !inv.has(n.id));
-    labelGroup.selectAll("text").classed("dimmed", n => !inv.has(n.id));
-    yearGroup.selectAll("text").classed("dimmed", n => !inv.has(n.id));
-}
-
-function highlightNode(d) {
-    const conn = new Set([d.id]);
-    links.forEach(l => { if (l.source === d.id) conn.add(l.target); if (l.target === d.id) conn.add(l.source); });
-    arcPaths.classed("dimmed", l => l.source !== d.id && l.target !== d.id).classed("highlighted", l => l.source === d.id || l.target === d.id);
-    dotGroup.selectAll("circle").classed("dimmed", n => !conn.has(n.id));
-    labelGroup.selectAll("text").classed("dimmed", n => !conn.has(n.id)).classed("active", n => n.id === d.id);
-    yearGroup.selectAll("text").classed("dimmed", n => !conn.has(n.id));
-}
-
-function resetAll() {
-    arcPaths.classed("dimmed", false).classed("highlighted", false);
-    dotGroup.selectAll("circle").classed("dimmed", false);
-    labelGroup.selectAll("text").classed("dimmed", false).classed("active", false);
-    yearGroup.selectAll("text").classed("dimmed", false);
-}
-
-function toggleLock(d) {
-    if (locked === d.id) { locked = null; resetAll(); hideTooltip(); }
-    else { locked = d.id; highlightNode(d); }
-}
-
-svg.on("click", () => { locked = null; resetAll(); hideTooltip(); });
+// Init
+buildTimeline();
 </script>
 </body>
 </html>
