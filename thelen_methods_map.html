@@ -255,6 +255,34 @@
     margin: 3px;
   }
 
+  .iv-chip-manip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 10px;
+    border-radius: 4px;
+    background: rgba(232,91,107,0.08);
+    border: 1px solid rgba(232,91,107,0.2);
+    color: var(--cat-falsify);
+    font-size: 10px;
+    margin: 3px;
+    letter-spacing: 0.3px;
+  }
+
+  .iv-chip-ctrl {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 10px;
+    border-radius: 4px;
+    background: rgba(61,214,192,0.08);
+    border: 1px solid rgba(61,214,192,0.2);
+    color: var(--cat-extend);
+    font-size: 10px;
+    margin: 3px;
+    letter-spacing: 0.3px;
+  }
+
   .chip-falsify { background: rgba(232,91,107,0.1); border: 1px solid rgba(232,91,107,0.3); color: var(--cat-falsify); }
   .chip-extend { background: rgba(61,214,192,0.1); border: 1px solid rgba(61,214,192,0.3); color: var(--cat-extend); }
   .chip-explore { background: rgba(155,135,245,0.1); border: 1px solid rgba(155,135,245,0.3); color: var(--cat-explore); }
@@ -395,6 +423,11 @@ const data = [
         id: "i1",
         label: "Walking Sequence Observation",
         hypothesis: "Maturation theory predicts universal, clock-like motor milestone onset driven by neural schedule.",
+        iv: {
+          manipulated: ['None (observational) — age and milestone onset recorded naturalistically'],
+          controlled: ['Standardized observation protocols (Gesell norms)'],
+          scale: "Scalar (age in weeks/months); Categorical (milestone achieved Y/N)"
+        },
         dv: "Age-of-onset distributions across infants",
         who: "Large normative samples (Gesell, McGraw, Shirley); cross-cultural cohorts",
         instruments: ["Direct observation", "Developmental norms (Gesell/McGraw/Shirley scales)"],
@@ -409,6 +442,11 @@ const data = [
         id: "i2",
         label: "Newborn Reflex Stepping",
         hypothesis: "If stepping is cortically mediated, neonates (immature cortex) should not show coordinated alternating steps.",
+        iv: {
+          manipulated: ['Postural support condition (upright vs. supine)'],
+          controlled: ['Surface contact (feet on flat surface)', 'Support method (experimenter hold)'],
+          scale: "Categorical (stepping present/absent); Scalar (step frequency)"
+        },
         dv: "Step frequency, coordination pattern",
         who: "Neonates (days old), tested immediately post-birth",
         instruments: ["Supported-upright posture paradigm", "Observational coding"],
@@ -432,6 +470,11 @@ const data = [
         id: "c1n1",
         label: "Historical Case Analysis",
         hypothesis: "Standard explanatory frameworks (maturation, learning, interactionism) each contain an infinite-regress problem.",
+        iv: {
+          manipulated: ['None — meta-theoretical analysis of existing frameworks'],
+          controlled: ['N/A'],
+          scale: "N/A (conceptual analysis)"
+        },
         dv: "Logical structure of explanatory frameworks",
         who: "N/A — meta-theoretical analysis of McGraw, Gesell, Piaget, learning theory",
         instruments: ["Conceptual / meta-theoretical analysis"],
@@ -446,6 +489,11 @@ const data = [
         id: "c1n2",
         label: "Frog Wiping Reflex (Berkinblit et al.)",
         hypothesis: "If motor behavior is a fixed program, the trajectory of a wiping movement should be invariant regardless of limb configuration.",
+        iv: {
+          manipulated: ['Skin irritant location (varied across body sites)', 'Starting limb posture (varied)'],
+          controlled: ['Decerebrate preparation (eliminates brain involvement)', 'Same animal across conditions'],
+          scale: "Categorical (irritant site); Scalar (trajectory endpoint coordinates, joint angles)"
+        },
         dv: "Wiping trajectory endpoint accuracy; joint-angle time series",
         who: "Spinal frogs (decerebrate preparation)",
         instruments: ["Kinematic recording of limb trajectory", "Irritant application to skin"],
@@ -469,6 +517,11 @@ const data = [
         id: "c2n1",
         label: "Phase Portrait / Attractor Basin",
         hypothesis: "Behavioral stability can be described without invoking stored representations — as attractor topology in state space.",
+        iv: {
+          manipulated: ['None — mathematical formalism'],
+          controlled: ['N/A'],
+          scale: "N/A (formal/mathematical)"
+        },
         dv: "Trajectory in state space; attractor topology",
         who: "N/A — mathematical formalism",
         instruments: ["Phase plane analysis (mathematical formalism from physics)"],
@@ -483,6 +536,11 @@ const data = [
         id: "c2n2",
         label: "Order Parameter & Control Parameter",
         hypothesis: "Complex systems can be described by few collective variables (order parameters) whose landscape is shifted by control parameters.",
+        iv: {
+          manipulated: ['None — conceptual formalism'],
+          controlled: ['N/A'],
+          scale: "N/A (formal/conceptual)"
+        },
         dv: "Collective variable (observable pattern); parameter that shifts the landscape",
         who: "N/A — conceptual formalism",
         instruments: ["Conceptual formalism from synergetics (Haken)"],
@@ -497,6 +555,11 @@ const data = [
         id: "c2n3",
         label: "Kelso Finger Oscillation (HKB Model)",
         hypothesis: "Bimanual coordination should show phase transitions characteristic of self-organizing systems: hysteresis, critical fluctuations, and critical slowing.",
+        iv: {
+          manipulated: ['Pacing frequency (scalar, stepwise increase via metronome)', 'Starting mode (anti-phase)'],
+          controlled: ['Movement amplitude (instructed)', 'Finger used (index)'],
+          scale: "Scalar (metronome frequency in Hz); Scalar (relative phase 0°–180°); Scalar (SD of relative phase)"
+        },
         dv: "Relative phase between index fingers; phase variability (SD of relative phase)",
         who: "Adult participants performing rhythmic bimanual finger flexion",
         instruments: ["Metronome (pacing frequency)", "Kinematic sensors on index fingers", "Phase-angle computation"],
@@ -520,6 +583,11 @@ const data = [
         id: "c3n1",
         label: "Surface EMG on Infant Legs",
         hypothesis: "CPG model predicts reciprocal flexor/extensor inhibition during kicking. Spring-mass model predicts co-contraction.",
+        iv: {
+          manipulated: ['None (observational) — spontaneous kicks recorded'],
+          controlled: ['Posture (supine)', 'State (alert, non-crying)'],
+          scale: "Scalar (EMG amplitude in mV, timing in ms); Categorical (flexion vs. extension phase)"
+        },
         dv: "Flexor & extensor muscle activation timing and amplitude",
         who: "Infants (~3 months) during spontaneous supine kicking",
         instruments: ["EMG electrodes on bilateral rectus femoris & biceps femoris", "Analog recording / kymograph"],
@@ -534,6 +602,11 @@ const data = [
         id: "c3n2",
         label: "Joint Angle Kinematics",
         hypothesis: "If kicking is a spring-mass limit cycle, phase-plane plots of joint angle vs. velocity should show closed orbital attractors.",
+        iv: {
+          manipulated: ['None (observational) — spontaneous kicks recorded'],
+          controlled: ['Posture (supine)', 'Age window (~3 months)'],
+          scale: "Scalar (joint angle in degrees, angular velocity in °/s)"
+        },
         dv: "Hip, knee, ankle angular displacement & velocity over kick cycle",
         who: "Infants (~3 months), longitudinal tracking across weeks",
         instruments: ["High-speed film / video with reflective markers", "Frame-by-frame digitization"],
@@ -548,6 +621,11 @@ const data = [
         id: "c3n3",
         label: "Interlimb Coupling Analysis",
         hypothesis: "Coupled oscillator dynamics (Kelso HKB) predict preferred in-phase coupling with weaker anti-phase mode in bilateral kicks.",
+        iv: {
+          manipulated: ['None (observational) — bilateral kicks recorded simultaneously'],
+          controlled: ['Posture (supine)', 'State (alert)'],
+          scale: "Scalar (relative phase angle 0°–360°); Scalar (circular SD)"
+        },
         dv: "Phase relationship between left and right kicks",
         who: "Infants (~3 months), bilateral kicking recorded simultaneously",
         instruments: ["Video frame coding of bilateral leg timing", "Circular statistics for phase angles"],
@@ -571,6 +649,11 @@ const data = [
         id: "c4n1",
         label: "Treadmill Paradigm — Leg Load Manipulation",
         hypothesis: "If stepping disappearance is cortical inhibition, no peripheral manipulation should restore it. If mass/strength ratio is the control parameter, treadmill should elicit stepping in the 'gap' period.",
+        iv: {
+          manipulated: ['Treadmill belt speed (scalar, multiple levels)', 'Leg load (weighted cuffs, categorical: on/off)'],
+          controlled: ['Upright support (experimenter hold)', 'Belt surface texture'],
+          scale: "Scalar (belt speed in cm/s); Scalar (step rate per minute); Categorical (stepping present/absent)"
+        },
         dv: "Step rate, interlimb coordination on moving treadmill",
         who: "Infants 2–4 months (during 'no-step' period) and across first year longitudinally",
         instruments: ["Motorized infant treadmill", "Video-based step counting", "Weighted leg cuffs"],
@@ -585,6 +668,11 @@ const data = [
         id: "c4n2",
         label: "Water Immersion — Buoyancy Manipulation",
         hypothesis: "If mass/strength ratio controls stepping, reducing effective limb mass (buoyancy) should restore stepping in the gap period.",
+        iv: {
+          manipulated: ['Effective limb mass (categorical: dry vs. water immersion)'],
+          controlled: ['Water temperature (warm)', 'Support method (upright hold)'],
+          scale: "Categorical (dry vs. submerged); Scalar (step frequency pre/post)"
+        },
         dv: "Stepping frequency before/after leg unloading",
         who: "Infants in the 'no-step' period (~2–4 months)",
         instruments: ["Warm water bath", "Video recording"],
@@ -599,6 +687,11 @@ const data = [
         id: "c4n3",
         label: "Weighted Ankle Cuffs on Newborns",
         hypothesis: "If mass is a control parameter, adding mass to stepping newborns should reduce or suppress step rate.",
+        iv: {
+          manipulated: ['Added limb mass (scalar: weight of ankle cuffs)'],
+          controlled: ['Baseline stepping rate', 'Posture (supported upright)'],
+          scale: "Scalar (cuff weight in grams); Scalar (step rate change)"
+        },
         dv: "Step frequency change with added limb mass",
         who: "Stepping newborns (days old)",
         instruments: ["Small weighted cuffs on newborn ankles", "Video step counting"],
@@ -622,6 +715,11 @@ const data = [
         id: "c5n1",
         label: "Longitudinal Kinematics of Reaching",
         hypothesis: "If reaching is dynamically assembled, early reaches should be highly variable (weak attractor) and converge over time (deepening attractor).",
+        iv: {
+          manipulated: ['Age (scalar, weekly sessions from 3–52 weeks — within-subject longitudinal)'],
+          controlled: ['Toy presentation (midline, attractive)', 'Seated posture (supported → unsupported)'],
+          scale: "Scalar (movement units per reach, path straightness ratio, peak velocity in cm/s)"
+        },
         dv: "Hand path, velocity profile, number of movement units",
         who: "4 infants tracked longitudinally from 3 to 52 weeks (weekly sessions)",
         instruments: ["3D motion capture (Optotrak)", "Reflective wrist/hand markers"],
@@ -636,6 +734,11 @@ const data = [
         id: "c5n2",
         label: "Edelman TNGS — Brain as Selectionist System",
         hypothesis: "Brain development follows selectionist (not instructionist) logic: variable neural repertoire is pruned by experience, not built by blueprint.",
+        iv: {
+          manipulated: ['None — theoretical framework application'],
+          controlled: ['N/A'],
+          scale: "N/A (theoretical/conceptual)"
+        },
         dv: "Diversity of neuronal groups; selectional amplification via reentry",
         who: "N/A — theoretical framework (Edelman 1987) applied to development",
         instruments: ["Conceptual framework: TNGS (Theory of Neuronal Group Selection)"],
@@ -659,6 +762,11 @@ const data = [
         id: "c6n1",
         label: "Perceptual Categorization via Classification Couples",
         hypothesis: "Categories form autonomously through reentrant mapping of multimodal signals, not from symbolic rules or innate modules.",
+        iv: {
+          manipulated: ['Category membership of stimuli (categorical: in-category vs. out-of-category)', 'Modality of presentation (visual, auditory, haptic)'],
+          controlled: ['Perceptual similarity within and across categories', 'Habituation criterion'],
+          scale: "Categorical (category member vs. non-member); Scalar (looking time in seconds)"
+        },
         dv: "Cross-modal matching accuracy; looking-time discrimination of category members vs. non-members",
         who: "Infants 3–12 months in looking-time and reaching studies",
         instruments: ["Habituation/dishabituation paradigm", "Looking-time recording", "Classification couple formalism (Edelman)"],
@@ -673,6 +781,11 @@ const data = [
         id: "c6n2",
         label: "Mobile Conjugate Reinforcement (Rovee-Collier)",
         hypothesis: "If infant memory is context-specific (not abstract), changing the mobile or crib context should abolish retention.",
+        iv: {
+          manipulated: ['Contingency (categorical: ribbon connected vs. disconnected)', 'Context (categorical: same crib liner/mobile vs. changed)', 'Delay (scalar: 1 day to 6 weeks)'],
+          controlled: ['Baseline kick rate (pre-contingency)', 'Mobile type (during training)'],
+          scale: "Scalar (kick rate ratio = test/baseline); Categorical (context same/changed); Scalar (retention delay in days)"
+        },
         dv: "Kick rate ratio (test/baseline); retention across delays and context changes",
         who: "Infants 2–6 months in crib mobile paradigm",
         instruments: ["Ribbon connecting infant ankle to overhead crib mobile", "Frequency coding from video", "Context manipulations (crib liner, mobile items)"],
@@ -687,6 +800,11 @@ const data = [
         id: "c6n3",
         label: "Variability Measures During Transition Periods",
         hypothesis: "NDS predicts: weaker attractor → more variability. Transition periods should show heightened variability before the new stable form emerges.",
+        iv: {
+          manipulated: ['Developmental time point (scalar: weeks of age, indexed to transition proximity)'],
+          controlled: ['Measurement instrument held constant across sessions', 'Same infants tracked longitudinally'],
+          scale: "Scalar (SD of collective variable per session); Scalar (developmental age in weeks)"
+        },
         dv: "Standard deviation of collective variable at different developmental points",
         who: "Infants at various developmental transitions (reaching onset, walking onset, etc.)",
         instruments: ["Kinematic time series from existing reach/step data", "SD computation across trials within session"],
@@ -710,6 +828,11 @@ const data = [
         id: "c7n1",
         label: "Treadmill Stepping — Longitudinal Study",
         hypothesis: "If locomotor pattern is continuous (not appearing/disappearing), treadmill should elicit stepping across the entire 'gap' period and track emerging walking.",
+        iv: {
+          manipulated: ['Treadmill speed (scalar, multiple levels)', 'Age (scalar, monthly sessions birth–12 months)'],
+          controlled: ['Belt surface', 'Upright support method', 'Same infants longitudinally'],
+          scale: "Scalar (step rate, cycle duration in ms, interlimb phase angle)"
+        },
         dv: "Step rate, interlimb phase, step cycle duration across age",
         who: "Infants from birth through independent walking onset (~12 months), longitudinal",
         instruments: ["Motorized treadmill (speed-adjustable)", "Video with bilateral lateral views", "Frame-by-frame kinematic coding"],
@@ -724,6 +847,11 @@ const data = [
         id: "c7n2",
         label: "Body Fat & Leg Mass Anthropometrics",
         hypothesis: "If fat deposition (not neural maturation) drives stepping disappearance, fat should accumulate faster than muscle in the 2–5 month window.",
+        iv: {
+          manipulated: ['None (observational) — anthropometrics tracked monthly'],
+          controlled: ['Same infants across time points', 'Measurement technique standardized'],
+          scale: "Scalar (leg volume in cc, skinfold thickness in mm, calf circumference in cm)"
+        },
         dv: "Leg volume, adiposity estimates, muscle cross-section",
         who: "Infants tracked monthly in first 8 months",
         instruments: ["Anthropometric calipers", "Leg volume by water displacement", "Skinfold measurements"],
@@ -738,6 +866,11 @@ const data = [
         id: "c7n3",
         label: "Split-Belt Treadmill",
         hypothesis: "If stepping is a stored program, split-belt (different speeds per leg) should produce breakdown. If dynamically assembled, real-time compensation should occur.",
+        iv: {
+          manipulated: ['Belt speed ratio (scalar: ratio of left to right belt speeds)'],
+          controlled: ['Overall walking speed (average of two belts)', 'Support method'],
+          scale: "Scalar (speed ratio); Scalar (interlimb phase asymmetry, adaptation latency in seconds)"
+        },
         dv: "Interlimb coordination asymmetry; adaptation rate",
         who: "Infants on treadmill (7–11 months)",
         instruments: ["Split-belt treadmill (two belts at different speeds)"],
@@ -752,6 +885,11 @@ const data = [
         id: "c7n4",
         label: "Ground Reaction Force — Force Plate Walking",
         hypothesis: "If mature gait is a discovered attractor (not a triggered program), early walkers should lack the mature GRF signature.",
+        iv: {
+          manipulated: ['Walking experience group (categorical: novice, experienced, adult)'],
+          controlled: ['Walking speed (self-selected)', 'Force plate calibration'],
+          scale: "Categorical (experience level); Scalar (vertical GRF in N, heel-strike timing in ms)"
+        },
         dv: "Vertical GRF profile, heel-strike patterns, push-off timing",
         who: "Newly walking infants vs. experienced walkers vs. adults",
         instruments: ["Force plate embedded in floor", "Synchronized video"],
@@ -775,6 +913,11 @@ const data = [
         id: "c8n1",
         label: "Slopes: Crawlers vs. Walkers (Adolph)",
         hypothesis: "If locomotor knowledge transfers across modes, crawlers who avoid cliffs should also avoid slopes when they become walkers. NDS predicts no transfer.",
+        iv: {
+          manipulated: ['Locomotor mode (categorical: crawling vs. walking — within-subject longitudinal)', 'Slope steepness (scalar: degrees of incline)'],
+          controlled: ['Same infants tested in both modes', 'Slope apparatus constant'],
+          scale: "Categorical (go/no-go); Scalar (slope angle in degrees, latency in seconds)"
+        },
         dv: "Go/no-go decisions at slope edge; latency to descend; exploratory behaviors",
         who: "Infants transitioning from crawling to walking (~8–14 months), longitudinal",
         instruments: ["Adjustable-slope walkway", "Video coding of approach, hesitation, exploration behaviors"],
@@ -789,6 +932,11 @@ const data = [
         id: "c8n2",
         label: "Baillargeon Drawbridge / Impossible Events",
         hypothesis: "Nativists: infants have innate object permanence (shown by longer looking at 'impossible' events). T&S reinterpret: looking-time reflects trajectory-tracking in what/where systems, not abstract knowledge.",
+        iv: {
+          manipulated: ['Event type (categorical: possible vs. impossible screen rotation)', 'Box presence (categorical: present vs. absent in control)'],
+          controlled: ['Habituation criterion (infant-controlled)', 'Screen rotation speed'],
+          scale: "Categorical (possible/impossible); Scalar (looking time in seconds)"
+        },
         dv: "Looking time at possible vs. impossible screen-rotation events",
         who: "3.5- and 4.5-month-old infants (Baillargeon 1987)",
         instruments: ["Rotating screen apparatus ('drawbridge')", "Box placed behind screen", "Looking-time coding from video"],
@@ -803,6 +951,11 @@ const data = [
         id: "c8n3",
         label: "Haptic Exploration of Object Properties",
         hypothesis: "If knowing is action-embedded, infants should differentiate exploration strategy by object property before symbolic thought is plausible.",
+        iv: {
+          manipulated: ['Object property (categorical: hard/soft, smooth/rough, heavy/light)'],
+          controlled: ['Object size held constant within comparisons', 'Presentation order'],
+          scale: "Categorical (object property type); Scalar (duration of each exploratory behavior in seconds)"
+        },
         dv: "Mouthing, fingering, visual inspection duration and type",
         who: "Infants 6–12 months handling objects",
         instruments: ["Video coding of exploratory hand/mouth contact", "Objects varying in texture, rigidity, weight"],
@@ -817,6 +970,11 @@ const data = [
         id: "c8n4",
         label: "Novel Word Interpretation — Shape Bias (Smith)",
         hypothesis: "If word learning operates as an attractor landscape, shifting one parameter (e.g., adding texture) should produce a nonlinear bifurcation in categorization.",
+        iv: {
+          manipulated: ['Texture salience (categorical: plain vs. glitter)', "Linguistic frame (categorical: noun 'a dax' vs. adjective 'the daxy one')"],
+          controlled: ['Shape of target object', 'Novel label (unfamiliar word)'],
+          scale: "Categorical (texture condition, frame condition); Categorical (choice: shape-match vs. texture-match)"
+        },
         dv: "Choice of referent object (shape-match vs. texture-match) when taught novel label",
         who: "2-year-olds in forced-choice word-extension task",
         instruments: ["Novel objects varying in shape and texture", "Glitter manipulation (adding salient texture)", "Forced-choice selection task"],
@@ -831,6 +989,11 @@ const data = [
         id: "c8n5",
         label: "Cliff / Drop-off Avoidance (Campos et al.)",
         hypothesis: "If depth avoidance is innate, it should appear regardless of locomotor experience. If experience-dependent, onset should track crawling experience, not age.",
+        iv: {
+          manipulated: ['Locomotor experience (scalar: weeks of crawling; categorical: pre-crawler/novice/experienced)'],
+          controlled: ['Age matched across experience groups where possible', 'Deep-side depth constant'],
+          scale: "Categorical (cross vs. avoid); Scalar (HR in bpm — acceleration = wariness, deceleration = interest)"
+        },
         dv: "Crossing vs. avoidance at visual cliff; heart rate acceleration (wariness) vs. deceleration (interest)",
         who: "Pre-crawlers, novice crawlers, experienced crawlers (~6–10 months)",
         instruments: ["Visual cliff apparatus (glass-covered drop)", "Cardiac monitor (HR as index of wariness vs. interest)"],
@@ -854,6 +1017,11 @@ const data = [
         id: "c9n1",
         label: "Clifton Dark-Reaching Studies",
         hypothesis: "If vision is required for reach guidance (Piaget/Bruner), reaching should fail in the dark. If proprioception suffices, dark reaching should succeed.",
+        iv: {
+          manipulated: ['Lighting condition (categorical: light vs. dark)', 'Object modality (categorical: sounding/glowing vs. silent/dark)'],
+          controlled: ['Object location (same position)', 'Reach distance'],
+          scale: "Categorical (light/dark); Scalar (contact accuracy, trajectory straightness, hand orientation angle)"
+        },
         dv: "Contact accuracy, reach trajectory, hand orientation in dark vs. light",
         who: "Infants ~5–7 months, cross-sectional",
         instruments: ["Darkened room with infrared camera", "Sounding objects (rattle, glowing objects)", "3D motion tracking"],
@@ -868,6 +1036,11 @@ const data = [
         id: "c9n2",
         label: "Gabriel vs. Hannah — Contrasting Reach Pathways",
         hypothesis: "If reaching develops via a single universal pathway, individual kinematic profiles should converge. NDS predicts distinct pathways from distinct intrinsic dynamics.",
+        iv: {
+          manipulated: ['None — longitudinal observation of two individual infants with contrasting intrinsic dynamics'],
+          controlled: ['Toy presentation method (midline, same toy)', 'Session schedule (weekly)'],
+          scale: "Scalar (hand speed in cm/s, movement units, trajectory straightness); individual-level qualitative comparison"
+        },
         dv: "Hand speed, trajectory straightness, movement units, muscle stiffness",
         who: "Gabriel and Hannah — two infants tracked longitudinally from pre-reaching through skilled reaching (~3 weeks to 1 year, weekly sessions)",
         instruments: ["3D motion capture (Optotrak)", "Reflective markers on hand/wrist", "Video of posture and toy presentation"],
@@ -882,6 +1055,11 @@ const data = [
         id: "c9n3",
         label: "Nathan — Year-Long Dense Longitudinal Reaching",
         hypothesis: "Dense within-infant sampling should reveal nonlinear transitions, attractor shifts, and couplings invisible in group cross-sectional data.",
+        iv: {
+          manipulated: ['None — dense longitudinal observation of single infant (Nathan). Developmental time is the implicit IV.'],
+          controlled: ['Toy type and presentation', 'Session frequency (2–3×/week)', 'Recording apparatus constant'],
+          scale: "Scalar (hand speed in cm/s, force-stiffness parameters, movement units); Categorical (unimanual vs. bimanual)"
+        },
         dv: "Hand speed (collective variable); force-stiffness space; unimanual vs. bimanual ratio; movement units",
         who: "Nathan — single infant from 3 weeks to ~1 year, 2–3 sessions/week",
         instruments: ["3D motion capture (Optotrak)", "Reflective markers", "Video of posture (supported/unsupported sitting)"],
@@ -905,6 +1083,11 @@ const data = [
         id: "c10n1",
         label: "Standard A-not-B Task — Dynamic Reinterpretation",
         hypothesis: "Error is not a stage-specific deficit (Piaget) or frontal inhibition failure (Diamond). It is a general process: motor memory + decaying specific input + weak task input during delay.",
+        iv: {
+          manipulated: ['Delay duration (scalar: 0–12 s)', 'Number of A trials (scalar: 1–6)', 'Hiding location (categorical: A vs. B)'],
+          controlled: ['Box and lid appearance', 'Toy attractiveness', 'Experimenter behavior'],
+          scale: "Categorical (reach to A vs. B); Scalar (delay in seconds, number of A trials)"
+        },
         dv: "Reach direction (A vs. B); reach latency; gaze direction during delay",
         who: "8–10-month-old infants in canonical A-not-B paradigm",
         instruments: ["A-not-B box (2 wells with identical lids)", "Attractive toy", "Video coding of reach direction and gaze"],
@@ -919,6 +1102,11 @@ const data = [
         id: "c10n2",
         label: "Posture Manipulation — Standing on B Trial",
         hypothesis: "If motor memory is body-posture-specific, changing posture between A and B trials should disrupt the motor memory trace and reduce the error.",
+        iv: {
+          manipulated: ['Posture between A and B trials (categorical: same-posture vs. sit→stand)'],
+          controlled: ['Same A-not-B box', 'Same delay', 'Same number of A trials'],
+          scale: "Categorical (posture condition); Categorical (correct B search vs. A-not-B error)"
+        },
         dv: "A-not-B error rate; reach direction on first B trial",
         who: "8–10-month-old infants in standard A-not-B task",
         instruments: ["A-not-B box", "Posture manipulation (sit→stand between A and B trials)"],
@@ -933,6 +1121,11 @@ const data = [
         id: "c10n3",
         label: "Lid Distinctiveness Manipulation",
         hypothesis: "If task input (lid salience) modulates the competition, more distinctive B lid should strengthen B-location activation and reduce error.",
+        iv: {
+          manipulated: ['Lid distinctiveness (scalar/categorical: identical color → increasingly distinct colors for A vs. B lids)'],
+          controlled: ['Delay duration', 'Number of A trials', 'Box configuration'],
+          scale: "Categorical/ordinal (distinctiveness level); Scalar (error rate as proportion)"
+        },
         dv: "A-not-B error rate as function of lid color distinctiveness",
         who: "8–10-month-old infants (Diedrich et al. 2001)",
         instruments: ["A-not-B box with colored lids (identical vs. distinct)", "Video coding"],
@@ -947,6 +1140,11 @@ const data = [
         id: "c10n4",
         label: "Locomotor Experience and A-not-B (Campos/Kermoian)",
         hypothesis: "Diamond: frontal maturation drives correct search. Campos/T&S: self-produced locomotion (crawling) drives the neural changes that enable correct search.",
+        iv: {
+          manipulated: ['Locomotor experience (categorical: pre-crawler, belly crawler, hands-and-knees crawler, walker-aided)'],
+          controlled: ['Age (matched across experience groups)', 'Standard A-not-B procedure'],
+          scale: "Categorical (locomotor status); Categorical (correct vs. error); Scalar (crawling experience in weeks)"
+        },
         dv: "A-not-B error rate as function of crawling experience (not age)",
         who: "8–10-month-old infants grouped by locomotor status: pre-crawlers, belly crawlers, hands-and-knees crawlers, walker-aided",
         instruments: ["A-not-B box", "Locomotor experience questionnaire / observation"],
@@ -970,6 +1168,11 @@ const data = [
         id: "c11n1",
         label: "Spatial Classification (Namy & Gershkoff-Stowe)",
         hypothesis: "If symbolic thought emerges through external manifestations (spatial placement, gesture), children should classify objects spatially before they can label them verbally.",
+        iv: {
+          manipulated: ['Object category membership (categorical: animals vs. vehicles)', 'Tray availability (2 sorting trays)'],
+          controlled: ['Number of objects per category', 'Object size'],
+          scale: "Categorical (category); Scalar (proportion correct placements); Categorical (verbal label production: present/absent)"
+        },
         dv: "Sorting accuracy; spatial placement patterns (grouping by category)",
         who: "Toddlers ~18–24 months in object-sorting tasks",
         instruments: ["Sorting trays", "Objects from two categories (e.g., animals vs. vehicles)", "Video coding of placement patterns"],
@@ -984,6 +1187,11 @@ const data = [
         id: "c11n2",
         label: "Johnson Body-Schema / Image-Schema Analysis",
         hypothesis: "If meaning is grounded in bodily experience, conceptual structure should reflect recurrent sensorimotor patterns (containment, force, balance).",
+        iv: {
+          manipulated: ['None — philosophical/linguistic analysis'],
+          controlled: ['N/A'],
+          scale: "N/A (conceptual analysis)"
+        },
         dv: "Structural parallels between bodily experience and conceptual metaphor",
         who: "N/A — philosophical/linguistic analysis (Johnson 1987, Lakoff & Johnson 1980/1999)",
         instruments: ["Conceptual analysis of image schemas", "Linguistic corpus analysis of metaphoric structure"],
@@ -998,6 +1206,11 @@ const data = [
         id: "c11n3",
         label: "Watt Governor Metaphor — Intelligence Without Representation",
         hypothesis: "If intelligent behavior requires representations, the Watt centrifugal governor (which regulates engine speed perfectly without any) should be impossible. It isn't.",
+        iv: {
+          manipulated: ['None — formal analogy (mechanical system)'],
+          controlled: ['N/A'],
+          scale: "N/A (conceptual demonstration)"
+        },
         dv: "N/A — conceptual demonstration (van Gelder 1995)",
         who: "N/A — philosophical analysis of a mechanical system",
         instruments: ["Watt centrifugal governor as formal analogy"],
@@ -1012,6 +1225,11 @@ const data = [
         id: "c11n4",
         label: "Smith & Sera — Language Shapes Dimensional Perception",
         hypothesis: "If linguistic labels are neutral tags, adjective framing should not change perceptual similarity judgments. If language shapes perception, it should.",
+        iv: {
+          manipulated: ["Linguistic frame (categorical: adjective type — 'big' vs. 'dark' etc.)", 'Target dimension (categorical: size, brightness, texture)'],
+          controlled: ['Target object held constant within trials', 'Test objects matched on non-target dimensions'],
+          scale: "Categorical (frame condition, dimension); Categorical (match choice: dimension A vs. B)"
+        },
         dv: "Matching accuracy when adjective context forces attention to dimension (size, brightness, etc.)",
         who: "Children 2–5 years in perceptual matching tasks",
         instruments: ["Triads of objects varying on two dimensions", "Linguistic frame manipulation ('the big one' vs. 'the dark one')"],
@@ -1035,6 +1253,11 @@ const data = [
         id: "sp1",
         label: "Exp 1–2: A-not-B in Sandbox with 2-Year-Olds",
         hypothesis: "If A-not-B error arises from general goal-directed-action processes (not stage-specific deficit), 2-year-olds should show A-ward bias in a continuous sandbox task after repeated A trials.",
+        iv: {
+          manipulated: ['Hiding location (categorical: A vs. B)', 'Layout condition (categorical: A-inside-B vs. A-outside-B relative to sandbox center; Exp 2: 4 conditions)', 'Delay (scalar: 3 s on A trials, 10 s on B trials)'],
+          controlled: ['Sandbox dimensions (60×12 in.)', 'A–B separation (8–10 in.)', 'Training trials (3)', 'Experimenter distraction method'],
+          scale: "Scalar (distance error in inches from correct location); Categorical (direction: toward A vs. toward center)"
+        },
         dv: "Distance error on B trials (inches from correct location); direction of error (toward A vs. toward center)",
         who: "2-year-olds (N=12 Exp 1, N=28 Exp 2; mean ~27 months)",
         instruments: ["Rectangular sandbox (60 × 12 in.)", "Small buried toys", "1-inch marking tape on sandbox rim (hidden from child)", "Video for double-coding (mean deviation 0.2–0.3 in.)"],
@@ -1049,6 +1272,11 @@ const data = [
         id: "sp2",
         label: "Exp 3: Three B Trials — Decay of A Bias",
         hypothesis: "If memory input accumulates and decays through experience, repeated B trials should weaken the A-ward bias as B-location memory strengthens.",
+        iv: {
+          manipulated: ['Trial number on B (scalar: B1, B2, B3)'],
+          controlled: ['Same A phase (3 training + 3 A trials)', '10-s delay on B trials', 'A–B separation'],
+          scale: "Scalar (distance error toward A in inches, by trial)"
+        },
         dv: "Distance error toward A across B1, B2, B3",
         who: "2-year-olds (N=16; mean ~20 months)",
         instruments: ["Same sandbox apparatus", "Video double-coding"],
@@ -1063,6 +1291,11 @@ const data = [
         id: "sp3",
         label: "Exp 4: Number of A Trials (1A vs. 3A)",
         hypothesis: "If A-bias comes from cumulative motor memory, more A trials should produce stronger pull toward A on B trials.",
+        iv: {
+          manipulated: ['Number of A trials (categorical: 1A vs. 3A condition)'],
+          controlled: ['3 training trials in both conditions', 'Same B procedure (3 B trials, 10-s delay)', 'A–B separation (8 in.)'],
+          scale: "Categorical (1A vs. 3A); Scalar (distance error toward A in inches)"
+        },
         dv: "Distance error toward A on B trials in 1A vs. 3A condition",
         who: "2-year-olds (N=12; mean ~20 months); 6 per condition",
         instruments: ["Same sandbox apparatus", "Video double-coding"],
@@ -1077,6 +1310,11 @@ const data = [
         id: "sp4",
         label: "Exp 5: Variable A Locations (Fixed vs. Distributed)",
         hypothesis: "If memory is a graded activation distribution (not a discrete slot), variable A locations should still produce a bias toward the mean-A region — just weaker than fixed-A.",
+        iv: {
+          manipulated: ['A-location variability (categorical: fixed vs. variable ±4 in. around mean)'],
+          controlled: ['Same mean A location', 'Same B location', 'Same number of total A-phase trials', 'Same delay'],
+          scale: "Categorical (fixed vs. variable); Scalar (distance error toward mean-A in inches)"
+        },
         dv: "Distance error toward mean-A on B trials; comparison of fixed vs. variable conditions",
         who: "2-year-olds (N=16; mean ~21 months); 8 per condition",
         instruments: ["Same sandbox apparatus", "Variable hiding locations distributed around mean-A"],
@@ -1100,6 +1338,11 @@ const data = [
         id: "ep1",
         label: "Respect for Time — Dense Longitudinal Sampling",
         hypothesis: "Developmental dynamics are invisible in cross-sectional snapshots. Only dense within-subject time series reveal phase transitions, attractor landscapes, and control parameters.",
+        iv: {
+          manipulated: ['Sampling frequency (methodological principle: weekly+ vs. monthly vs. cross-sectional)'],
+          controlled: ['N/A — methodological argument'],
+          scale: "N/A (methodological imperative)"
+        },
         dv: "N/A — methodological principle",
         who: "Applies to all developmental research (modeled by Nathan, Gabriel/Hannah studies)",
         instruments: ["Frequent repeated-measures designs (weekly or more)", "Time-series analysis techniques"],
@@ -1114,6 +1357,11 @@ const data = [
         id: "ep2",
         label: "Respect for Variability — Noise as Data",
         hypothesis: "Variability is not measurement error — it is the signature of system dynamics. It indexes attractor stability and proximity to transitions.",
+        iv: {
+          manipulated: ['N/A — variability itself is the datum, not a nuisance parameter to minimize'],
+          controlled: ['N/A — methodological argument'],
+          scale: "Scalar (SD, CV, entropy of behavioral time series)"
+        },
         dv: "SD, coefficient of variation, or entropy of behavioral time series",
         who: "Any developing organism across any behavioral domain",
         instruments: ["Trial-by-trial variance computation", "Phase-space reconstruction from time series"],
@@ -1128,6 +1376,11 @@ const data = [
         id: "ep3",
         label: "Respect for Individuality — The Individual as Unit",
         hypothesis: "Group averages obscure developmental pathways. The individual, studied in detail across multiple dimensions, is the proper unit of developmental analysis.",
+        iv: {
+          manipulated: ['N/A — unit of analysis is the individual, not the group'],
+          controlled: ['N/A — methodological argument'],
+          scale: "Multi-dimensional within-individual trajectories"
+        },
         dv: "Within-individual trajectories across multiple measures simultaneously",
         who: "Few subjects, many observations per subject (Gabriel/Hannah, Nathan)",
         instruments: ["Multi-dimensional longitudinal tracking", "Kinematic, postural, and behavioral coding in parallel"],
@@ -1348,6 +1601,21 @@ function renderDetail(node) {
     <div class="detail-section">
       <div class="detail-section-label">Instruments / Apparatus</div>
       <div class="detail-section-content">${instrumentsHtml}</div>
+    </div>
+
+    <div class="detail-section">
+      <div class="detail-section-label">IV — What Was Manipulated</div>
+      <div class="detail-section-content">${node.iv ? node.iv.manipulated.map(m => '<span class="iv-chip-manip">▸ ' + m + '</span>').join('') : '—'}</div>
+    </div>
+
+    <div class="detail-section">
+      <div class="detail-section-label">Controlled / Held Constant</div>
+      <div class="detail-section-content">${node.iv ? node.iv.controlled.map(c => '<span class="iv-chip-ctrl">● ' + c + '</span>').join('') : '—'}</div>
+    </div>
+
+    <div class="detail-section">
+      <div class="detail-section-label">Scale of Measurement</div>
+      <div class="detail-section-content" style="color:var(--accent-gold);">${node.iv ? node.iv.scale : '—'}</div>
     </div>
 
     <div class="detail-section">
