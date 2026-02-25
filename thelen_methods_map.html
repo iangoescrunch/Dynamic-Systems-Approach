@@ -142,7 +142,7 @@
 
   .main-layout {
     display: grid;
-    grid-template-columns: 1fr 340px;
+    grid-template-columns: 1fr 380px;
     height: calc(100vh - 145px);
   }
 
@@ -332,7 +332,7 @@
 <header>
   <div class="header-title">
     <h1>Thelen & Smith — Methods & Theory-Building</h1>
-    <p>Introduction → Chapter 8 &nbsp;·&nbsp; Instruments, Measurements, DVs, Theory Functions</p>
+    <p>Introduction → Epilogue + Spencer et al. 2001 &nbsp;·&nbsp; Hypotheses, DVs, Instruments, Procedures, Results</p>
   </div>
   <div class="legend">
     <div class="legend-item" onclick="filterCategory('falsify')">
@@ -367,9 +367,10 @@
     <div class="detail-placeholder">
       <span class="arrow">←</span>
       Click any node on the<br>timeline to see full details:<br><br>
-      · What was measured<br>
-      · What instrument was used<br>
-      · What the finding does<br>theoretically
+      · Hypothesis & operationalization<br>
+      · Who & what was measured<br>
+      · Materials & procedures<br>
+      · Results & implications
     </div>
   </div>
 </div>
@@ -383,6 +384,9 @@ const CATEGORY_COLORS = {
 };
 
 const data = [
+  // ═══════════════════════════════════════
+  // INTRODUCTION
+  // ═══════════════════════════════════════
   {
     chapter: "Intro",
     title: "The Developmental Puzzle",
@@ -390,9 +394,13 @@ const data = [
       {
         id: "i1",
         label: "Walking Sequence Observation",
+        hypothesis: "Maturation theory predicts universal, clock-like motor milestone onset driven by neural schedule.",
         dv: "Age-of-onset distributions across infants",
-        instruments: ["Direct observation", "Developmental norms (Gesell/McGraw)"],
+        who: "Large normative samples (Gesell, McGraw, Shirley); cross-cultural cohorts",
+        instruments: ["Direct observation", "Developmental norms (Gesell/McGraw/Shirley scales)"],
+        procedure: "Record age at which infants achieve motor milestones (sitting, crawling, standing, walking). Compare distributions across samples and cultures.",
         measured: "Timing and sequence of motor milestones across infants",
+        results: "Orderly sequence at group level masks enormous individual variability in timing and pathway. Some infants skip stages; cross-cultural variation in sequence.",
         function: "falsify",
         functionLabel: "Falsifies maturation-as-clock",
         theory: "Establishes the paradox: orderliness at low magnification does not require prescriptive instructions. Sets the falsification target against stage-maturation accounts.",
@@ -400,15 +408,22 @@ const data = [
       {
         id: "i2",
         label: "Newborn Reflex Stepping",
+        hypothesis: "If stepping is cortically mediated, neonates (immature cortex) should not show coordinated alternating steps.",
         dv: "Step frequency, coordination pattern",
+        who: "Neonates (days old), tested immediately post-birth",
         instruments: ["Supported-upright posture paradigm", "Observational coding"],
+        procedure: "Hold neonate upright with feet touching surface. Record spontaneous alternating leg movements. Code step frequency and bilateral coordination.",
         measured: "Spontaneous alternating leg movements in neonate held upright",
+        results: "Robust alternating stepping present at birth. Disappears by ~2 months despite continued neural development.",
         function: "explore",
         functionLabel: "Opens new explanatory territory",
-        theory: "The existence of coordinated stepping before corticospinal maturation demands an alternative to 'maturation enables behavior.' Frames the whole program.",
+        theory: "Coordinated stepping before corticospinal maturation demands an alternative to 'maturation enables behavior.' Frames the whole program.",
       },
     ]
   },
+  // ═══════════════════════════════════════
+  // CHAPTER 1: Rethinking Development
+  // ═══════════════════════════════════════
   {
     chapter: "Ch 1",
     title: "Rethinking Development",
@@ -416,15 +431,36 @@ const data = [
       {
         id: "c1n1",
         label: "Historical Case Analysis",
+        hypothesis: "Standard explanatory frameworks (maturation, learning, interactionism) each contain an infinite-regress problem.",
         dv: "Logical structure of explanatory frameworks",
+        who: "N/A — meta-theoretical analysis of McGraw, Gesell, Piaget, learning theory",
         instruments: ["Conceptual / meta-theoretical analysis"],
+        procedure: "Trace causal logic in each framework. Identify where preexisting structure is invoked to explain emergent structure.",
         measured: "Explanatory regress in maturational, learning, and interactionist accounts",
+        results: "All three require homunculus: genes, schemas, or interaction rules that already contain the outcome. None explains genuine novelty.",
         function: "falsify",
         functionLabel: "Falsifies all three standard frameworks",
         theory: "Demonstrates that preexisting structure cannot explain emergent structure without infinite regress. Establishes NDS as the logical alternative.",
       },
+      {
+        id: "c1n2",
+        label: "Frog Wiping Reflex (Berkinblit et al.)",
+        hypothesis: "If motor behavior is a fixed program, the trajectory of a wiping movement should be invariant regardless of limb configuration.",
+        dv: "Wiping trajectory endpoint accuracy; joint-angle time series",
+        who: "Spinal frogs (decerebrate preparation)",
+        instruments: ["Kinematic recording of limb trajectory", "Irritant application to skin"],
+        procedure: "Apply irritant to various skin locations on spinal frogs. Record wiping limb trajectory across different starting postures.",
+        measured: "Whether spinal circuit produces context-appropriate trajectory without brain involvement",
+        results: "Spinal frog adjusts wiping trajectory to hit correct skin site from multiple starting postures. Same endpoint, different joint patterns.",
+        function: "falsify",
+        functionLabel: "Falsifies fixed motor program",
+        theory: "Even a spinal-level circuit is not a fixed tape — it assembles the trajectory on the fly from current body configuration. No stored 'wiping program.'",
+      },
     ]
   },
+  // ═══════════════════════════════════════
+  // CHAPTER 2: Dynamic Systems Framework
+  // ═══════════════════════════════════════
   {
     chapter: "Ch 2",
     title: "A Dynamic Systems Framework",
@@ -432,9 +468,13 @@ const data = [
       {
         id: "c2n1",
         label: "Phase Portrait / Attractor Basin",
+        hypothesis: "Behavioral stability can be described without invoking stored representations — as attractor topology in state space.",
         dv: "Trajectory in state space; attractor topology",
+        who: "N/A — mathematical formalism",
         instruments: ["Phase plane analysis (mathematical formalism from physics)"],
+        procedure: "Plot system state (e.g., angle vs. angular velocity) as trajectory. Identify point, limit cycle, and chaotic attractors by topology.",
         measured: "Stability and qualitative states of dynamical systems",
+        results: "Fixed points, limit cycles, and strange attractors provide a taxonomy of behavioral stability without requiring an executive controller.",
         function: "extend",
         functionLabel: "Extends Haken, Kelso, Kugler work",
         theory: "Imports attractor landscape formalism into developmental theory. The tools for describing pattern stability and transitions become the backbone of empirical claims.",
@@ -442,15 +482,36 @@ const data = [
       {
         id: "c2n2",
         label: "Order Parameter & Control Parameter",
+        hypothesis: "Complex systems can be described by few collective variables (order parameters) whose landscape is shifted by control parameters.",
         dv: "Collective variable (observable pattern); parameter that shifts the landscape",
+        who: "N/A — conceptual formalism",
         instruments: ["Conceptual formalism from synergetics (Haken)"],
+        procedure: "Identify macroscopic behavioral pattern (e.g., gait). Systematically vary candidate control parameters (e.g., speed) to find phase transitions.",
         measured: "System-level behavioral pattern vs. underlying driver of change",
+        results: "Small continuous change in control parameter produces abrupt qualitative shift in order parameter at critical values.",
         function: "explore",
         functionLabel: "Redefines developmental causation",
-        theory: "Separates 'what changes' (order parameter) from 'what drives the change' (control parameter). This distinction restructures what counts as an experiment in developmental science.",
+        theory: "Separates 'what changes' (order parameter) from 'what drives the change' (control parameter). Restructures what counts as an experiment in developmental science.",
+      },
+      {
+        id: "c2n3",
+        label: "Kelso Finger Oscillation (HKB Model)",
+        hypothesis: "Bimanual coordination should show phase transitions characteristic of self-organizing systems: hysteresis, critical fluctuations, and critical slowing.",
+        dv: "Relative phase between index fingers; phase variability (SD of relative phase)",
+        who: "Adult participants performing rhythmic bimanual finger flexion",
+        instruments: ["Metronome (pacing frequency)", "Kinematic sensors on index fingers", "Phase-angle computation"],
+        procedure: "Participants oscillate index fingers in anti-phase. Metronome frequency increased stepwise. Measure relative phase and variability.",
+        measured: "Phase transition from anti-phase to in-phase and accompanying fluctuation signatures",
+        results: "At critical frequency, anti-phase destabilizes (variability spikes), system snaps to in-phase. Transition shows hysteresis: different critical frequency going up vs. down.",
+        function: "extend",
+        functionLabel: "Foundational NDS demonstration",
+        theory: "Haken-Kelso-Bunz model is the empirical anchor of the entire book. Demonstrates that phase transitions, enhanced fluctuations, and self-organization are real features of biological coordination.",
       },
     ]
   },
+  // ═══════════════════════════════════════
+  // CHAPTER 3: Infant Kicking
+  // ═══════════════════════════════════════
   {
     chapter: "Ch 3",
     title: "A Dynamic Systems Account of Infant Kicking",
@@ -458,35 +519,50 @@ const data = [
       {
         id: "c3n1",
         label: "Surface EMG on Infant Legs",
+        hypothesis: "CPG model predicts reciprocal flexor/extensor inhibition during kicking. Spring-mass model predicts co-contraction.",
         dv: "Flexor & extensor muscle activation timing and amplitude",
-        instruments: ["EMG electrodes taped to bilateral rectus femoris (flexor) and biceps femoris (extensor)", "Ink-on-paper kymograph / analog recording"],
+        who: "Infants (~3 months) during spontaneous supine kicking",
+        instruments: ["EMG electrodes on bilateral rectus femoris & biceps femoris", "Analog recording / kymograph"],
+        procedure: "Tape surface EMG electrodes to flexor and extensor muscles of both legs. Record activation during spontaneous supine kicks.",
         measured: "Co-activation patterns at flexion vs. extension phase of spontaneous kicks",
+        results: "Co-contraction during flexion phase; passive recoil during extension. Not reciprocal inhibition.",
         function: "falsify",
         functionLabel: "Falsifies CPG alternation model",
-        theory: "CPG predicts reciprocal flexor/extensor inhibition. EMG showed co-contraction at flexion, passive recoil at extension. The kick is not a neural toggle—it is a spring-mass system.",
+        theory: "CPG predicts reciprocal inhibition. EMG showed co-contraction at flexion, passive recoil at extension. The kick is a spring-mass system, not a neural toggle.",
       },
       {
         id: "c3n2",
         label: "Joint Angle Kinematics",
+        hypothesis: "If kicking is a spring-mass limit cycle, phase-plane plots of joint angle vs. velocity should show closed orbital attractors.",
         dv: "Hip, knee, ankle angular displacement & velocity over kick cycle",
+        who: "Infants (~3 months), longitudinal tracking across weeks",
         instruments: ["High-speed film / video with reflective markers", "Frame-by-frame digitization"],
+        procedure: "Film infant supine kicks from lateral view. Digitize joint markers frame-by-frame. Plot angle vs. angular velocity in phase plane.",
         measured: "Spatiotemporal trajectory of limb segments during spontaneous supine kicking",
+        results: "Phase-plane plots reveal spring-like limit cycle attractor. Tight coupling of hip-knee-ankle into a single functional unit.",
         function: "explore",
         functionLabel: "Describes the emergent trajectory",
-        theory: "Quantifies the collective variable of kicking. Phase plane plots of angle vs. angular velocity reveal spring-like limit cycle attractor — stability without encoding.",
+        theory: "Quantifies the collective variable of kicking. Stability without encoding — attractor topology reveals the system's preferred state.",
       },
       {
         id: "c3n3",
         label: "Interlimb Coupling Analysis",
+        hypothesis: "Coupled oscillator dynamics (Kelso HKB) predict preferred in-phase coupling with weaker anti-phase mode in bilateral kicks.",
         dv: "Phase relationship between left and right kicks",
+        who: "Infants (~3 months), bilateral kicking recorded simultaneously",
         instruments: ["Video frame coding of bilateral leg timing", "Circular statistics for phase angles"],
+        procedure: "Code onset/offset of each kick bilaterally. Compute relative phase. Use circular statistics to identify preferred coupling modes.",
         measured: "Preferred phase relationships (synchrony, alternation) and their variability",
+        results: "Preferred in-phase coupling with occasional alternation. Phase variability higher in alternation mode, consistent with HKB predictions.",
         function: "extend",
         functionLabel: "Extends Kelso coupled oscillator model",
-        theory: "Preferred in-phase coupling with occasional alternation matches predictions from coupled oscillator dynamics, extending Kelso's HKB model to infant development.",
+        theory: "Extends HKB model to infant development. Bilateral kicking matches coupled oscillator dynamics — same formal principles apply across adult bimanual coordination and infant leg movements.",
       },
     ]
   },
+  // ═══════════════════════════════════════
+  // CHAPTER 4: The Developmental System
+  // ═══════════════════════════════════════
   {
     chapter: "Ch 4",
     title: "Causality and the Developmental System",
@@ -494,35 +570,50 @@ const data = [
       {
         id: "c4n1",
         label: "Treadmill Paradigm — Leg Load Manipulation",
+        hypothesis: "If stepping disappearance is cortical inhibition, no peripheral manipulation should restore it. If mass/strength ratio is the control parameter, treadmill should elicit stepping in the 'gap' period.",
         dv: "Step rate, interlimb coordination on moving treadmill",
+        who: "Infants 2–4 months (during 'no-step' period) and across first year longitudinally",
         instruments: ["Motorized infant treadmill", "Video-based step counting", "Weighted leg cuffs"],
+        procedure: "Place infant supported upright on moving treadmill belt. Record stepping at multiple speeds. Compare step rate to spontaneous (no-belt) condition.",
         measured: "Stepping in infants who had 'lost' reflex stepping (2–4 months)",
+        results: "Treadmill restores robust alternating stepping during the gap period. Stepping rate entrains to belt speed.",
         function: "falsify",
         functionLabel: "Falsifies cortical inhibition account",
-        theory: "McGraw/Gesell: stepping vanishes because immature cortex is superseded. Treadmill restores stepping in the 'no-step' period. Neural maturation is not the cause; biomechanical loading is the control parameter.",
+        theory: "McGraw/Gesell: stepping vanishes because cortex supersedes subcortex. Treadmill restores it — neural maturation is not the cause; biomechanical loading is the control parameter.",
       },
       {
         id: "c4n2",
         label: "Water Immersion — Buoyancy Manipulation",
+        hypothesis: "If mass/strength ratio controls stepping, reducing effective limb mass (buoyancy) should restore stepping in the gap period.",
         dv: "Stepping frequency before/after leg unloading",
+        who: "Infants in the 'no-step' period (~2–4 months)",
         instruments: ["Warm water bath", "Video recording"],
+        procedure: "Submerge infant's legs in warm water to reduce effective limb weight via buoyancy. Record step rate and compare to dry condition.",
         measured: "Step rate change when limb mass effectively reduced by buoyancy",
+        results: "Stepping restored in water. Converges with treadmill finding — mass, not neural maturation, is the control parameter.",
         function: "falsify",
-        functionLabel: "Falsifies cortical inhibition — converging evidence",
-        theory: "Independent manipulation of the same proposed control parameter (limb mass relative to strength). Unloading legs restores stepping. Converges with treadmill result — mass/strength ratio is the control parameter, not neural maturation.",
+        functionLabel: "Falsifies cortical inhibition — converging",
+        theory: "Independent manipulation of the same proposed control parameter (limb mass relative to strength). Converges with treadmill result.",
       },
       {
         id: "c4n3",
         label: "Weighted Ankle Cuffs on Newborns",
+        hypothesis: "If mass is a control parameter, adding mass to stepping newborns should reduce or suppress step rate.",
         dv: "Step frequency change with added limb mass",
+        who: "Stepping newborns (days old)",
         instruments: ["Small weighted cuffs on newborn ankles", "Video step counting"],
+        procedure: "Record baseline stepping in supported newborns. Add weighted cuffs. Record post-weight stepping. Compare rates.",
         measured: "Effect of increasing limb mass on newborn step rate",
+        results: "Adding weight reduces step rate. Confirms bidirectional control: mass reduction restores, mass addition suppresses.",
         function: "extend",
         functionLabel: "Extends control-parameter logic",
-        theory: "If mass is a control parameter, adding mass to stepping newborns should reduce step rate. It does. Confirms bidirectional control: mass reduction restores, mass addition suppresses.",
+        theory: "Bidirectional manipulation of control parameter. Neonatal stepping is parametrically controlled by mass/strength ratio, not a maturational switch.",
       },
     ]
   },
+  // ═══════════════════════════════════════
+  // CHAPTER 5: Embodied Mind — Neurons
+  // ═══════════════════════════════════════
   {
     chapter: "Ch 5",
     title: "The Embodied Mind: From Neurons to Neighborhoods",
@@ -530,61 +621,87 @@ const data = [
       {
         id: "c5n1",
         label: "Longitudinal Kinematics of Reaching",
+        hypothesis: "If reaching is dynamically assembled, early reaches should be highly variable (weak attractor) and converge over time (deepening attractor).",
         dv: "Hand path, velocity profile, number of movement units",
-        instruments: ["3D motion capture (Optotrak or equivalent)", "Reflective wrist/hand markers"],
+        who: "4 infants tracked longitudinally from 3 to 52 weeks (weekly sessions)",
+        instruments: ["3D motion capture (Optotrak)", "Reflective wrist/hand markers"],
+        procedure: "Present attractive toy at midline. Record 3D hand trajectories. Compute velocity profiles, movement units (submovements), straightness ratio.",
         measured: "Reaching trajectories in infants from 3 to 52 weeks across longitudinal sessions",
+        results: "Movement units decrease 7→2 across first year. Trajectories straighten. High inter-individual variability in pathway to same endpoint.",
         function: "explore",
         functionLabel: "Maps developmental landscape of reaching",
-        theory: "Documents the high variability → lower variability trajectory. Movement units (velocity submovements) decrease as attractors stabilize. Variability is theoretically informative — it indexes proximity to attractor.",
+        theory: "Documents the high variability → lower variability trajectory. Variability indexes proximity to attractor — it is data, not noise.",
       },
       {
         id: "c5n2",
-        label: "Object Weight Manipulation in Reaching",
-        dv: "Grip force, trajectory adjustments, velocity scaling",
-        instruments: ["Instrumented objects of varying mass", "Force plate or strain gauges"],
-        measured: "How infants scale motor output to object properties",
-        function: "explore",
-        functionLabel: "Reveals context-sensitive assembly",
-        theory: "No motor program for 'reaching' is retrieved — each reach is soft-assembled to the specific object. Anticipatory force scaling emerges gradually, indexing attractor learning.",
+        label: "Edelman TNGS — Brain as Selectionist System",
+        hypothesis: "Brain development follows selectionist (not instructionist) logic: variable neural repertoire is pruned by experience, not built by blueprint.",
+        dv: "Diversity of neuronal groups; selectional amplification via reentry",
+        who: "N/A — theoretical framework (Edelman 1987) applied to development",
+        instruments: ["Conceptual framework: TNGS (Theory of Neuronal Group Selection)"],
+        procedure: "Map three TNGS stages onto development: (1) primary repertoire from morphogenesis, (2) secondary repertoire from experiential selection, (3) reentry for cross-modal binding.",
+        measured: "Whether development follows instructionist or selectionist logic",
+        results: "Degeneracy (many-to-one mapping), reentry (time-locked cross-area correlation), and value-dependent selection explain learning without representation.",
+        function: "extend",
+        functionLabel: "Extends Neural Darwinism (Edelman)",
+        theory: "Provides the neural mechanism for NDS claims: variability is the substrate for selection, not error. Degeneracy and reentry replace stored programs.",
       },
     ]
   },
+  // ═══════════════════════════════════════
+  // CHAPTER 6: Categories as Knowledge
+  // ═══════════════════════════════════════
   {
     chapter: "Ch 6",
-    title: "Development as Selection",
+    title: "Dynamic Categories as Knowledge",
     nodes: [
       {
         id: "c6n1",
-        label: "Edelman Selectionist Framework",
-        dv: "Repertoire diversity in early spontaneous movements",
-        instruments: ["Video coding of spontaneous movement variety", "Classification schemes for movement types"],
-        measured: "Variety and frequency of spontaneous limb and trunk movements in neonates",
+        label: "Perceptual Categorization via Classification Couples",
+        hypothesis: "Categories form autonomously through reentrant mapping of multimodal signals, not from symbolic rules or innate modules.",
+        dv: "Cross-modal matching accuracy; looking-time discrimination of category members vs. non-members",
+        who: "Infants 3–12 months in looking-time and reaching studies",
+        instruments: ["Habituation/dishabituation paradigm", "Looking-time recording", "Classification couple formalism (Edelman)"],
+        procedure: "Habituate infant to exemplars of a category (e.g., animals). Present novel in-category and out-of-category item. Measure looking-time recovery.",
+        measured: "Whether infants categorize on basis of correlated perceptual features without symbolic instruction",
+        results: "Infants as young as 3–4 months discriminate category boundaries. Categories track correlated feature structure, not arbitrary groupings.",
         function: "extend",
-        functionLabel: "Extends Neural Darwinism (Edelman)",
-        theory: "Spontaneous movement generates movement repertoire for selection. Diversity is not noise — it is the substrate for learning. Extends selectionism from neural to behavioral level.",
+        functionLabel: "Extends Edelman classification couples",
+        theory: "Categories emerge from reentrant binding of 'what' and 'where' streams. No stored category labels needed — knowledge is the dynamic coupling itself.",
       },
       {
         id: "c6n2",
-        label: "Mobile Conjugate Reinforcement",
-        dv: "Rate of leg kicking when kick moves mobile vs. baseline",
-        instruments: ["Ribbon connecting infant ankle to crib mobile", "Frequency coding from video"],
-        measured: "Learning rate and retention of kick-mobile contingency",
+        label: "Mobile Conjugate Reinforcement (Rovee-Collier)",
+        hypothesis: "If infant memory is context-specific (not abstract), changing the mobile or crib context should abolish retention.",
+        dv: "Kick rate ratio (test/baseline); retention across delays and context changes",
+        who: "Infants 2–6 months in crib mobile paradigm",
+        instruments: ["Ribbon connecting infant ankle to overhead crib mobile", "Frequency coding from video", "Context manipulations (crib liner, mobile items)"],
+        procedure: "Train: ribbon connects ankle to mobile; kicks move mobile (conjugate schedule). Test: after delay (1 day–6 weeks), reconnect in same or different context. DV = kick rate relative to baseline.",
+        measured: "Retention of kick-mobile contingency; context-specificity of memory",
+        results: "3-month-olds forget if mobile or crib liner changes. 6-month-olds tolerate some mobile changes but are MORE context-sensitive to background cues. Memory is context-bound, not abstract.",
         function: "explore",
         functionLabel: "Explores selection of movement forms",
-        theory: "Infants differentially activate the movement that produces environmental consequences — selection acts on existing repertoire, not instruction. Supports selectionist/NDS account of learning.",
+        theory: "Memory is action-in-context, not retrieved representation. Increasing context sensitivity with age contradicts abstraction-with-development accounts.",
       },
       {
         id: "c6n3",
         label: "Variability Measures During Transition Periods",
-        dv: "Standard deviation of collective variable around mean at different developmental points",
-        instruments: ["Kinematic time series from existing reach/step data"],
+        hypothesis: "NDS predicts: weaker attractor → more variability. Transition periods should show heightened variability before the new stable form emerges.",
+        dv: "Standard deviation of collective variable at different developmental points",
+        who: "Infants at various developmental transitions (reaching onset, walking onset, etc.)",
+        instruments: ["Kinematic time series from existing reach/step data", "SD computation across trials within session"],
+        procedure: "Compute trial-by-trial variability (SD) of relevant collective variable. Compare variability before, during, and after developmental transition.",
         measured: "Behavioral variability as a function of developmental age / proximity to transition",
+        results: "Variability spikes at transition, decreases as new attractor stabilizes. Pattern consistent across reaching, stepping, and interlimb coordination transitions.",
         function: "extend",
-        functionLabel: "Extends NDS prediction: instability precedes transition",
-        theory: "NDS predicts: weaker attractor → more variability. Transition periods should show heightened variability. This is data taken seriously as evidence, not treated as measurement error.",
+        functionLabel: "Extends NDS: instability precedes transition",
+        theory: "Variability is theoretically informative — it indexes proximity to phase transition. This is data taken seriously as evidence, not treated as measurement error.",
       },
     ]
   },
+  // ═══════════════════════════════════════
+  // CHAPTER 7: Ontogeny of Leg Movements
+  // ═══════════════════════════════════════
   {
     chapter: "Ch 7",
     title: "The Ontogeny of Leg Movements",
@@ -592,78 +709,434 @@ const data = [
       {
         id: "c7n1",
         label: "Treadmill Stepping — Longitudinal Study",
+        hypothesis: "If locomotor pattern is continuous (not appearing/disappearing), treadmill should elicit stepping across the entire 'gap' period and track emerging walking.",
         dv: "Step rate, interlimb phase, step cycle duration across age",
+        who: "Infants from birth through independent walking onset (~12 months), longitudinal",
         instruments: ["Motorized treadmill (speed-adjustable)", "Video with bilateral lateral views", "Frame-by-frame kinematic coding"],
+        procedure: "Monthly treadmill sessions from neonate through walking onset. Record stepping at multiple speeds. Code step timing, interlimb coordination, and cycle parameters.",
         measured: "Stepping patterns from neonate through independent walking onset",
+        results: "Continuous treadmill stepping across the 'gap.' Step parameters gradually mature — no discontinuity. Emerging walking pattern visible months before independent steps.",
         function: "explore",
         functionLabel: "Maps the full developmental landscape",
-        theory: "Continuous treadmill stepping across the 'gap' in spontaneous walking proves locomotor pattern never disappears — only the biomechanical context changes. Tracks attractor re-emergence as control parameter (mass/strength) shifts.",
+        theory: "Locomotor pattern never disappears — only the biomechanical context changes. Tracks attractor re-emergence as control parameter (mass/strength) shifts.",
       },
       {
         id: "c7n2",
         label: "Body Fat & Leg Mass Anthropometrics",
+        hypothesis: "If fat deposition (not neural maturation) drives stepping disappearance, fat should accumulate faster than muscle in the 2–5 month window.",
         dv: "Leg volume, adiposity estimates, muscle cross-section",
+        who: "Infants tracked monthly in first 8 months",
         instruments: ["Anthropometric calipers", "Leg volume by water displacement", "Skinfold measurements"],
+        procedure: "Monthly measures: calf circumference, skinfold thickness, leg volume via water displacement. Plot fat vs. muscle growth curves.",
         measured: "Rate of fat deposition vs. muscle development across months 1–8",
+        results: "Fat accumulates faster than muscle in months 2–5 — exactly the stepping-disappearance window. Ratio reverses as muscle catches up.",
         function: "falsify",
-        functionLabel: "Explains the disappearance — no neural story needed",
-        theory: "Fat accumulates faster than muscle strengthens in months 2–5. Mass/strength ratio is the control parameter driving the 'disappearance.' This is a biomechanical, not neural, story.",
+        functionLabel: "Explains disappearance — no neural story",
+        theory: "Mass/strength ratio is the control parameter driving the 'disappearance.' This is a biomechanical, not neural, story.",
       },
       {
         id: "c7n3",
         label: "Split-Belt Treadmill",
+        hypothesis: "If stepping is a stored program, split-belt (different speeds per leg) should produce breakdown. If dynamically assembled, real-time compensation should occur.",
         dv: "Interlimb coordination asymmetry; adaptation rate",
+        who: "Infants on treadmill (7–11 months)",
         instruments: ["Split-belt treadmill (two belts at different speeds)"],
+        procedure: "Set each belt to a different speed. Record bilateral stepping. Measure adaptation latency and coordination pattern.",
         measured: "Compensation when each leg receives different treadmill speeds",
+        results: "Infants adapt interlimb timing within seconds. No breakdown — flexible compensation.",
         function: "extend",
         functionLabel: "Extends coupled oscillator / CPG research",
-        theory: "Asymmetric treadmill forces interlimb coordination to adapt in real time — demonstrates that the pattern is dynamically assembled, not retrieved from a stored program.",
+        theory: "Pattern is dynamically assembled, not retrieved from a stored program. Real-time entrainment to asymmetric constraints.",
       },
       {
         id: "c7n4",
         label: "Ground Reaction Force — Force Plate Walking",
+        hypothesis: "If mature gait is a discovered attractor (not a triggered program), early walkers should lack the mature GRF signature.",
         dv: "Vertical GRF profile, heel-strike patterns, push-off timing",
+        who: "Newly walking infants vs. experienced walkers vs. adults",
         instruments: ["Force plate embedded in floor", "Synchronized video"],
+        procedure: "Record GRF during treadmill or overground walking. Compare vertical force profile shapes across experience levels.",
         measured: "Force profiles during early independent walking vs. mature gait",
+        results: "Early walkers show flat GRF profile. Mature double-peaked signature emerges gradually with experience — not present at onset.",
         function: "explore",
         functionLabel: "Describes attractor topology of mature walking",
-        theory: "Mature gait has a distinctive double-peaked GRF signature. Early walkers show immature flat profile — the attractor for mature walking is not present at onset, it must be discovered through experience.",
+        theory: "The attractor for mature walking must be discovered through experience, not triggered by a developmental switch.",
       },
     ]
   },
+  // ═══════════════════════════════════════
+  // CHAPTER 8: Knowing Through Action
+  // ═══════════════════════════════════════
   {
     chapter: "Ch 8",
     title: "Knowing the World Through Action",
     nodes: [
       {
         id: "c8n1",
-        label: "Reaching to Moving vs. Stationary Objects",
-        dv: "Trajectory curvature, timing of reach initiation, success rate",
-        instruments: ["3D motion capture", "Objects on motorized pendulum or conveyor", "Video coding"],
-        measured: "Prospective control — does reach account for object motion?",
+        label: "Slopes: Crawlers vs. Walkers (Adolph)",
+        hypothesis: "If locomotor knowledge transfers across modes, crawlers who avoid cliffs should also avoid slopes when they become walkers. NDS predicts no transfer.",
+        dv: "Go/no-go decisions at slope edge; latency to descend; exploratory behaviors",
+        who: "Infants transitioning from crawling to walking (~8–14 months), longitudinal",
+        instruments: ["Adjustable-slope walkway", "Video coding of approach, hesitation, exploration behaviors"],
+        procedure: "Present crawling infants with slopes of varying steepness. Track same infants as they transition to walking. Test slope avoidance in each mode.",
+        measured: "Transfer of depth/surface knowledge between locomotor modes",
+        results: "Experienced crawlers accurately calibrate slope affordances. Same infants as novice walkers plunge down slopes they avoided while crawling. Knowledge is mode-specific.",
         function: "falsify",
-        functionLabel: "Falsifies feed-forward representation model",
-        theory: "If motor programs are retrieved representations, reaching to a moving object requires a stored 'moving object program.' NDS predicts prospective control assembled online. Infants reach prospectively before formal cognitive representation can be attributed.",
+        functionLabel: "Falsifies abstract knowledge transfer",
+        theory: "Knowledge is assembled in the perception-action loop of each locomotor mode. No abstract 'slope danger' representation transfers. Context makes knowledge.",
       },
       {
         id: "c8n2",
-        label: "Haptic Exploration of Object Properties",
-        dv: "Mouthing, fingering, visual inspection duration and type",
-        instruments: ["Video coding of exploratory hand/mouth contact", "Objects varying in texture, rigidity, weight"],
-        measured: "Whether exploration mode matches object property",
-        function: "explore",
-        functionLabel: "Frames perception-action as active construction",
-        theory: "Infants differentiate exploration strategy by object property before symbolic thought is plausible. Knowing is action-embedded, not representation-based. Extends Gibson's ecological realism into development.",
+        label: "Baillargeon Drawbridge / Impossible Events",
+        hypothesis: "Nativists: infants have innate object permanence (shown by longer looking at 'impossible' events). T&S reinterpret: looking-time reflects trajectory-tracking in what/where systems, not abstract knowledge.",
+        dv: "Looking time at possible vs. impossible screen-rotation events",
+        who: "3.5- and 4.5-month-old infants (Baillargeon 1987)",
+        instruments: ["Rotating screen apparatus ('drawbridge')", "Box placed behind screen", "Looking-time coding from video"],
+        procedure: "Habituate to 180° screen rotation. Place box behind screen. Show (a) possible event: screen stops at box, (b) impossible event: screen rotates through box's space. Measure differential looking.",
+        measured: "Whether longer looking at impossible event indexes abstract object knowledge or trajectory capture",
+        results: "Infants look longer at impossible event. Standard interpretation: object permanence. T&S reinterpret: differential looking reflects disrupted trajectory expectation in spatiotemporal tracking, not propositional knowledge 'the object still exists.'",
+        function: "falsify",
+        functionLabel: "Reinterprets nativist evidence",
+        theory: "Impossible-event looking is trajectory capture in coupled what/where systems, not evidence of abstract knowledge structures. Same data, radically different mechanism.",
       },
       {
         id: "c8n3",
-        label: "Cliff, Drop, Surface-Texture Avoidance",
-        dv: "Crawling over vs. avoidance at drop-off; heart rate change",
-        instruments: ["Visual cliff apparatus (glass-covered drop)", "Foam vs. rigid surface boards", "Cardiac monitor (HR as index of wariness)"],
-        measured: "Depth perception and behavioral avoidance as function of locomotor experience",
+        label: "Haptic Exploration of Object Properties",
+        hypothesis: "If knowing is action-embedded, infants should differentiate exploration strategy by object property before symbolic thought is plausible.",
+        dv: "Mouthing, fingering, visual inspection duration and type",
+        who: "Infants 6–12 months handling objects",
+        instruments: ["Video coding of exploratory hand/mouth contact", "Objects varying in texture, rigidity, weight"],
+        procedure: "Present objects that differ on a single property (hard/soft, smooth/rough, heavy/light). Code which exploratory procedure (mouthing, banging, fingering) infants deploy.",
+        measured: "Whether exploration mode matches object property",
+        results: "Infants match exploration to property: mouth soft objects, bang rigid ones, finger textured ones. Appropriate strategy before any verbal labeling possible.",
+        function: "explore",
+        functionLabel: "Frames perception-action as active construction",
+        theory: "Knowing is action-embedded, not representation-based. Extends Gibson's ecological realism into development.",
+      },
+      {
+        id: "c8n4",
+        label: "Novel Word Interpretation — Shape Bias (Smith)",
+        hypothesis: "If word learning operates as an attractor landscape, shifting one parameter (e.g., adding texture) should produce a nonlinear bifurcation in categorization.",
+        dv: "Choice of referent object (shape-match vs. texture-match) when taught novel label",
+        who: "2-year-olds in forced-choice word-extension task",
+        instruments: ["Novel objects varying in shape and texture", "Glitter manipulation (adding salient texture)", "Forced-choice selection task"],
+        procedure: "Teach child a novel name for an object. Test: choose between shape-match and texture-match. Manipulate texture salience (plain → glitter) as control parameter.",
+        measured: "Whether shape bias shifts nonlinearly with texture manipulation",
+        results: "Without glitter: strong shape bias. With glitter: sudden shift to texture-match selections. Bifurcation pattern — not graded shift. Adjective context ('Look at the daxy one') modulates the transition.",
+        function: "explore",
+        functionLabel: "Maps attractor bifurcation in word learning",
+        theory: "Demonstrates that word-learning biases are attractor states, not rules. Texture as control parameter produces classic NDS bifurcation in a cognitive domain.",
+      },
+      {
+        id: "c8n5",
+        label: "Cliff / Drop-off Avoidance (Campos et al.)",
+        hypothesis: "If depth avoidance is innate, it should appear regardless of locomotor experience. If experience-dependent, onset should track crawling experience, not age.",
+        dv: "Crossing vs. avoidance at visual cliff; heart rate acceleration (wariness) vs. deceleration (interest)",
+        who: "Pre-crawlers, novice crawlers, experienced crawlers (~6–10 months)",
+        instruments: ["Visual cliff apparatus (glass-covered drop)", "Cardiac monitor (HR as index of wariness vs. interest)"],
+        procedure: "Place infant on cliff edge. Mother calls from deep side. Record crossing/avoidance and HR pattern. Compare groups by locomotor experience (not age).",
+        measured: "Depth avoidance as function of locomotor experience",
+        results: "Pre-crawlers show HR deceleration (interest). Experienced crawlers show HR acceleration (wariness) and avoidance. Effect tracks experience, not age.",
         function: "extend",
         functionLabel: "Extends Campos locomotor-experience work",
-        theory: "Locomotor experience drives perceptual differentiation of depth — not maturation of depth perception. Heart rate shows wariness, avoidance shows action-appropriate use of depth information. NDS: perception and action co-specify each other.",
+        theory: "Locomotor experience drives perceptual differentiation of depth. Perception and action co-specify each other — NDS principle.",
+      },
+    ]
+  },
+  // ═══════════════════════════════════════
+  // CHAPTER 9: Reaching — Knowledge from Action
+  // ═══════════════════════════════════════
+  {
+    chapter: "Ch 9",
+    title: "Reaching as Knowledge from Action",
+    nodes: [
+      {
+        id: "c9n1",
+        label: "Clifton Dark-Reaching Studies",
+        hypothesis: "If vision is required for reach guidance (Piaget/Bruner), reaching should fail in the dark. If proprioception suffices, dark reaching should succeed.",
+        dv: "Contact accuracy, reach trajectory, hand orientation in dark vs. light",
+        who: "Infants ~5–7 months, cross-sectional",
+        instruments: ["Darkened room with infrared camera", "Sounding objects (rattle, glowing objects)", "3D motion tracking"],
+        procedure: "Present sounding or glowing object in light then dark conditions. Record whether infant contacts target and the trajectory/hand orientation.",
+        measured: "Whether reaching degrades without visual feedback",
+        results: "Infants reach successfully in the dark for sounding objects. Hand orientation appropriate to object size even without vision. Vision not required for guidance.",
+        function: "falsify",
+        functionLabel: "Falsifies visually-guided-reach models",
+        theory: "Undermines both Piaget (reach = coordination of vision and prehension) and Bower (innate visual guidance). Reaching is multimodal from the start.",
+      },
+      {
+        id: "c9n2",
+        label: "Gabriel vs. Hannah — Contrasting Reach Pathways",
+        hypothesis: "If reaching develops via a single universal pathway, individual kinematic profiles should converge. NDS predicts distinct pathways from distinct intrinsic dynamics.",
+        dv: "Hand speed, trajectory straightness, movement units, muscle stiffness",
+        who: "Gabriel and Hannah — two infants tracked longitudinally from pre-reaching through skilled reaching (~3 weeks to 1 year, weekly sessions)",
+        instruments: ["3D motion capture (Optotrak)", "Reflective markers on hand/wrist", "Video of posture and toy presentation"],
+        procedure: "Weekly sessions presenting toy at midline. Record reaching kinematics. Compare across infants: who moves fast vs. slow, who uses stiffness vs. relaxation.",
+        measured: "Individual differences in the route to skilled reaching",
+        results: "Gabriel: high-energy flapper, had to learn to damp speed. Hannah: low-energy, quiet, had to learn to generate enough force. Same endpoint (successful reach), opposite pathways.",
+        function: "explore",
+        functionLabel: "Demonstrates individual as unit of analysis",
+        theory: "No universal reaching program. Each infant solves the reach problem from their unique intrinsic dynamics. The individual — not the group mean — is the unit of developmental analysis.",
+      },
+      {
+        id: "c9n3",
+        label: "Nathan — Year-Long Dense Longitudinal Reaching",
+        hypothesis: "Dense within-infant sampling should reveal nonlinear transitions, attractor shifts, and couplings invisible in group cross-sectional data.",
+        dv: "Hand speed (collective variable); force-stiffness space; unimanual vs. bimanual ratio; movement units",
+        who: "Nathan — single infant from 3 weeks to ~1 year, 2–3 sessions/week",
+        instruments: ["3D motion capture (Optotrak)", "Reflective markers", "Video of posture (supported/unsupported sitting)"],
+        procedure: "2–3 sessions per week for a full year. Present toys. Record reaching kinematics. Track hand speed as collective variable. Map exploration of force-stiffness parameter space. Code bimanual vs. unimanual reaching across postural changes.",
+        measured: "Within-infant developmental dynamics at high temporal resolution",
+        results: "Hand speed shows nonlinear transitions. Bimanual→unimanual→bimanual transitions tracked postural development (supported→unsupported sitting). Force-stiffness space explored broadly before settling. Variability spikes at transitions.",
+        function: "explore",
+        functionLabel: "Paradigm case for dense longitudinal method",
+        theory: "Validates the Epilogue methodology: respect for time, variability, individuality. Cross-chapter proof that dense single-subject data reveals dynamics invisible in snapshots.",
+      },
+    ]
+  },
+  // ═══════════════════════════════════════
+  // CHAPTER 10: The A-not-B Error
+  // ═══════════════════════════════════════
+  {
+    chapter: "Ch 10",
+    title: "The A-not-B Error",
+    nodes: [
+      {
+        id: "c10n1",
+        label: "Standard A-not-B Task — Dynamic Reinterpretation",
+        hypothesis: "Error is not a stage-specific deficit (Piaget) or frontal inhibition failure (Diamond). It is a general process: motor memory + decaying specific input + weak task input during delay.",
+        dv: "Reach direction (A vs. B); reach latency; gaze direction during delay",
+        who: "8–10-month-old infants in canonical A-not-B paradigm",
+        instruments: ["A-not-B box (2 wells with identical lids)", "Attractive toy", "Video coding of reach direction and gaze"],
+        procedure: "Hide toy at A repeatedly. Infant retrieves. Switch to B. Impose delay (hold hands). Release. Code which well infant reaches to. Vary delay length and number of A trials.",
+        measured: "Whether error rate varies with delay, number of A trials, and perceptual salience — as NDS predicts",
+        results: "Error increases with longer delay and more A trials. Reduced with shorter delay or more distinctive lids. Gaze during delay predicts reach direction.",
+        function: "falsify",
+        functionLabel: "Falsifies Piaget + Diamond accounts",
+        theory: "Three coupled systems (what/look/reach) produce the error through general dynamics, not stage-specific cognitive deficit or frontal immaturity.",
+      },
+      {
+        id: "c10n2",
+        label: "Posture Manipulation — Standing on B Trial",
+        hypothesis: "If motor memory is body-posture-specific, changing posture between A and B trials should disrupt the motor memory trace and reduce the error.",
+        dv: "A-not-B error rate; reach direction on first B trial",
+        who: "8–10-month-old infants in standard A-not-B task",
+        instruments: ["A-not-B box", "Posture manipulation (sit→stand between A and B trials)"],
+        procedure: "Standard A trials while infant sits. Before B trial, stand infant up. Release to search. Compare error rate to same-posture control group.",
+        measured: "Whether posture change eliminates perseverative error",
+        results: "Posture change dramatically reduces or eliminates the error. Same infant who errs while sitting searches correctly while standing.",
+        function: "falsify",
+        functionLabel: "Falsifies representational accounts",
+        theory: "If the error reflected a cognitive deficit (no object permanence) or frontal inhibition failure, changing posture shouldn't fix it. Motor memory is body-configuration-specific — competence/performance distinction collapses.",
+      },
+      {
+        id: "c10n3",
+        label: "Lid Distinctiveness Manipulation",
+        hypothesis: "If task input (lid salience) modulates the competition, more distinctive B lid should strengthen B-location activation and reduce error.",
+        dv: "A-not-B error rate as function of lid color distinctiveness",
+        who: "8–10-month-old infants (Diedrich et al. 2001)",
+        instruments: ["A-not-B box with colored lids (identical vs. distinct)", "Video coding"],
+        procedure: "Standard A-not-B procedure. Vary B lid color from identical-to-A through increasingly distinct. Measure error rate as function of distinctiveness.",
+        measured: "Whether perceptual salience of target modulates perseveration",
+        results: "More distinct B lids reduce error. Effect is graded — not all-or-none — consistent with activation-field competition.",
+        function: "extend",
+        functionLabel: "Extends dynamic field model predictions",
+        theory: "Task input is a parameter in the dynamic field. Making it stronger shifts the activation balance. Error is not a fixed property of the infant — it is a property of the coupled infant-task system.",
+      },
+      {
+        id: "c10n4",
+        label: "Locomotor Experience and A-not-B (Campos/Kermoian)",
+        hypothesis: "Diamond: frontal maturation drives correct search. Campos/T&S: self-produced locomotion (crawling) drives the neural changes that enable correct search.",
+        dv: "A-not-B error rate as function of crawling experience (not age)",
+        who: "8–10-month-old infants grouped by locomotor status: pre-crawlers, belly crawlers, hands-and-knees crawlers, walker-aided",
+        instruments: ["A-not-B box", "Locomotor experience questionnaire / observation"],
+        procedure: "Administer standard A-not-B task to infants matched on age but varying in locomotor experience. Compare error rate by locomotor status.",
+        measured: "Whether locomotor experience (not age/maturation) predicts correct B search",
+        results: "Locomotor experience, not age, predicts success. Same-age infants with more crawling experience perform better. Pre-crawlers given walker experience improve.",
+        function: "falsify",
+        functionLabel: "Falsifies frontal maturation account",
+        theory: "Self-produced locomotion is the control parameter, not frontal cortex maturation. Action drives neural change, not the reverse. Causality runs from body to brain.",
+      },
+    ]
+  },
+  // ═══════════════════════════════════════
+  // CHAPTER 11: Hard Problems
+  // ═══════════════════════════════════════
+  {
+    chapter: "Ch 11",
+    title: "Hard Problems: The Emergence of Higher Cognition",
+    nodes: [
+      {
+        id: "c11n1",
+        label: "Spatial Classification (Namy & Gershkoff-Stowe)",
+        hypothesis: "If symbolic thought emerges through external manifestations (spatial placement, gesture), children should classify objects spatially before they can label them verbally.",
+        dv: "Sorting accuracy; spatial placement patterns (grouping by category)",
+        who: "Toddlers ~18–24 months in object-sorting tasks",
+        instruments: ["Sorting trays", "Objects from two categories (e.g., animals vs. vehicles)", "Video coding of placement patterns"],
+        procedure: "Present mixed objects and two trays. Record where children place objects. Code whether spatial placement reveals category knowledge before verbal labeling emerges.",
+        measured: "Whether spatial action reveals categorical knowledge before language",
+        results: "Children sort by category in spatial placement before they can name the categories verbally. Spatial behavior is the leading edge of symbolic thought.",
+        function: "explore",
+        functionLabel: "Explores embodied origins of symbolic thought",
+        theory: "Symbolic thought doesn't appear from nowhere — it emerges through increasingly elaborated external manifestations of behavior. Action grounds cognition, even for 'higher' capacities.",
+      },
+      {
+        id: "c11n2",
+        label: "Johnson Body-Schema / Image-Schema Analysis",
+        hypothesis: "If meaning is grounded in bodily experience, conceptual structure should reflect recurrent sensorimotor patterns (containment, force, balance).",
+        dv: "Structural parallels between bodily experience and conceptual metaphor",
+        who: "N/A — philosophical/linguistic analysis (Johnson 1987, Lakoff & Johnson 1980/1999)",
+        instruments: ["Conceptual analysis of image schemas", "Linguistic corpus analysis of metaphoric structure"],
+        procedure: "Identify recurrent sensorimotor patterns (in-out, up-down, force, containment). Trace their metaphoric extension into abstract reasoning across domains.",
+        measured: "Whether abstract concepts are systematically structured by bodily experience",
+        results: "Containment, force, balance, and path schemas structure reasoning about time, causation, quantity, and emotion. Metaphor is not decorative — it is constitutive.",
+        function: "extend",
+        functionLabel: "Extends embodied cognition (Lakoff/Johnson)",
+        theory: "Bridges NDS developmental account to philosophy of mind. If meaning is grounded in action, then development of action IS development of thought.",
+      },
+      {
+        id: "c11n3",
+        label: "Watt Governor Metaphor — Intelligence Without Representation",
+        hypothesis: "If intelligent behavior requires representations, the Watt centrifugal governor (which regulates engine speed perfectly without any) should be impossible. It isn't.",
+        dv: "N/A — conceptual demonstration (van Gelder 1995)",
+        who: "N/A — philosophical analysis of a mechanical system",
+        instruments: ["Watt centrifugal governor as formal analogy"],
+        procedure: "Analyze how the governor achieves optimal engine speed control through continuous coupling of flyball angle and throttle — no computation, no representation, no clock cycle.",
+        measured: "Whether intelligent regulation requires representation",
+        results: "The governor is a dynamical system: continuous, time-locked, and coupled — not computational. Provides existence proof that 'intelligence' can operate without representation.",
+        function: "explore",
+        functionLabel: "Existence proof: cognition without representation",
+        theory: "If a mechanical device achieves intelligent regulation without computation, the burden of proof shifts to representationalists. Key metaphor for the entire NDS program.",
+      },
+      {
+        id: "c11n4",
+        label: "Smith & Sera — Language Shapes Dimensional Perception",
+        hypothesis: "If linguistic labels are neutral tags, adjective framing should not change perceptual similarity judgments. If language shapes perception, it should.",
+        dv: "Matching accuracy when adjective context forces attention to dimension (size, brightness, etc.)",
+        who: "Children 2–5 years in perceptual matching tasks",
+        instruments: ["Triads of objects varying on two dimensions", "Linguistic frame manipulation ('the big one' vs. 'the dark one')"],
+        procedure: "Show child a target. Present two test objects: one matches on dimension A, other on dimension B. Vary whether adjective frame directs attention to A or B. Measure match choice.",
+        measured: "Whether linguistic framing shifts which perceptual dimension dominates matching",
+        results: "Adjective framing shifts match preferences significantly. 'Big' elicits size matches; 'dark' elicits brightness matches. Language is not a label on pre-formed categories — it shapes what dimensions are salient.",
+        function: "explore",
+        functionLabel: "Language as parameter on perceptual landscape",
+        theory: "Language acts as a control parameter on the attractor landscape of perceptual categorization. Extends NDS into the traditionally 'cognitive' domain of word meaning.",
+      },
+    ]
+  },
+  // ═══════════════════════════════════════
+  // SPENCER, SMITH & THELEN 2001
+  // ═══════════════════════════════════════
+  {
+    chapter: "Spencer+",
+    title: "Spencer, Smith & Thelen (2001) — Sandbox A-not-B",
+    nodes: [
+      {
+        id: "sp1",
+        label: "Exp 1–2: A-not-B in Sandbox with 2-Year-Olds",
+        hypothesis: "If A-not-B error arises from general goal-directed-action processes (not stage-specific deficit), 2-year-olds should show A-ward bias in a continuous sandbox task after repeated A trials.",
+        dv: "Distance error on B trials (inches from correct location); direction of error (toward A vs. toward center)",
+        who: "2-year-olds (N=12 Exp 1, N=28 Exp 2; mean ~27 months)",
+        instruments: ["Rectangular sandbox (60 × 12 in.)", "Small buried toys", "1-inch marking tape on sandbox rim (hidden from child)", "Video for double-coding (mean deviation 0.2–0.3 in.)"],
+        procedure: "3 training + 3 A trials (3-s delay): bury toy at Location A, child retrieves. Then B trials (10-s delay): bury at Location B (8–10 in. from A). Record first hand-contact location. Exp 2: manipulate A inside vs. outside B relative to sandbox center.",
+        measured: "Whether 2-year-olds' search on B trials is biased toward A, and whether this is separable from center-of-sandbox prototype bias",
+        results: "Mean B-trial error: ~5.6 in. toward A. Children overshoot center in direction of A. Exp 2: bias toward A persists even when A is outside (away from center), though magnitude varies. Both A-memory and center-prototype operate, but A-memory is stronger.",
+        function: "extend",
+        functionLabel: "Extends A-not-B across age and task",
+        theory: "A-not-B error is not stage-specific. Same general dynamics (motor planning field competition between specific input, task input, and memory input) operate at 2 years in a continuous spatial task.",
+      },
+      {
+        id: "sp2",
+        label: "Exp 3: Three B Trials — Decay of A Bias",
+        hypothesis: "If memory input accumulates and decays through experience, repeated B trials should weaken the A-ward bias as B-location memory strengthens.",
+        dv: "Distance error toward A across B1, B2, B3",
+        who: "2-year-olds (N=16; mean ~20 months)",
+        instruments: ["Same sandbox apparatus", "Video double-coding"],
+        procedure: "Standard A phase. Three B trials with 10-s delay each. Track error on B1, B2, B3 separately.",
+        measured: "Whether A-bias decreases across repeated B trials",
+        results: "Significant reduction in A-ward bias across B1→B3. By B3, error substantially reduced. B-location memory builds and competes with A memory.",
+        function: "extend",
+        functionLabel: "Confirms memory-field dynamics",
+        theory: "Memory input is not a fixed trace — it is a dynamic distribution that updates with each action. Repeated B trials build B-location activation that competes with and eventually overtakes A.",
+      },
+      {
+        id: "sp3",
+        label: "Exp 4: Number of A Trials (1A vs. 3A)",
+        hypothesis: "If A-bias comes from cumulative motor memory, more A trials should produce stronger pull toward A on B trials.",
+        dv: "Distance error toward A on B trials in 1A vs. 3A condition",
+        who: "2-year-olds (N=12; mean ~20 months); 6 per condition",
+        instruments: ["Same sandbox apparatus", "Video double-coding"],
+        procedure: "1A condition: 3 training + 1 A trial + 3 B trials. 3A condition: 3 training + 3 A trials + 3 B trials. Compare B-trial error across conditions.",
+        measured: "Whether number of A trials modulates strength of A-ward bias",
+        results: "3A condition: significant bias toward A (mean ~5–6 in.). 1A condition: no reliable bias. Directly parallels Smith et al. 1999 infant findings. Replicates across age and task.",
+        function: "extend",
+        functionLabel: "Replicates repetition-sensitivity across age",
+        theory: "Longer-term memory strengthens with each reaching episode. The number of A trials is a control parameter on the memory-input distribution.",
+      },
+      {
+        id: "sp4",
+        label: "Exp 5: Variable A Locations (Fixed vs. Distributed)",
+        hypothesis: "If memory is a graded activation distribution (not a discrete slot), variable A locations should still produce a bias toward the mean-A region — just weaker than fixed-A.",
+        dv: "Distance error toward mean-A on B trials; comparison of fixed vs. variable conditions",
+        who: "2-year-olds (N=16; mean ~21 months); 8 per condition",
+        instruments: ["Same sandbox apparatus", "Variable hiding locations distributed around mean-A"],
+        procedure: "Fixed condition: all A trials at same location. Variable condition: A trials distributed ±4 in. around mean location (e.g., 6, 12, 8, 14, 10 in.). Same B location. Compare B-trial error.",
+        measured: "Whether distributed A locations still produce A-bias on B trials",
+        results: "Variable condition still produces significant bias toward mean-A location, though slightly weaker than fixed. Graded memory distribution confirmed.",
+        function: "explore",
+        functionLabel: "Tests graded memory distribution",
+        theory: "Memory is a continuous activation landscape, not a discrete address. Overlapping distributions from variable locations sum to produce a bias — key prediction of dynamic field theory.",
+      },
+    ]
+  },
+  // ═══════════════════════════════════════
+  // EPILOGUE
+  // ═══════════════════════════════════════
+  {
+    chapter: "Epilogue",
+    title: "Three Methodological Imperatives",
+    nodes: [
+      {
+        id: "ep1",
+        label: "Respect for Time — Dense Longitudinal Sampling",
+        hypothesis: "Developmental dynamics are invisible in cross-sectional snapshots. Only dense within-subject time series reveal phase transitions, attractor landscapes, and control parameters.",
+        dv: "N/A — methodological principle",
+        who: "Applies to all developmental research (modeled by Nathan, Gabriel/Hannah studies)",
+        instruments: ["Frequent repeated-measures designs (weekly or more)", "Time-series analysis techniques"],
+        procedure: "Sample individual infants 2–3×/week across months. Analyze within-infant trajectories. Look for variability signatures and nonlinear transitions.",
+        measured: "Whether developmental dynamics are recoverable from time-dense data",
+        results: "Dense sampling reveals: variability spikes at transitions, nonlinear bifurcations, individual pathways invisible in group data. Nathan study is the proof of concept.",
+        function: "instrument",
+        functionLabel: "Methodological imperative #1",
+        theory: "Cross-sectional means destroy the phenomenon. Development is a time-varying process and must be measured as one.",
+      },
+      {
+        id: "ep2",
+        label: "Respect for Variability — Noise as Data",
+        hypothesis: "Variability is not measurement error — it is the signature of system dynamics. It indexes attractor stability and proximity to transitions.",
+        dv: "SD, coefficient of variation, or entropy of behavioral time series",
+        who: "Any developing organism across any behavioral domain",
+        instruments: ["Trial-by-trial variance computation", "Phase-space reconstruction from time series"],
+        procedure: "Compute variability metrics within sessions and across sessions. Correlate with developmental transitions. Test prediction: variability peaks before reorganization.",
+        measured: "Whether variability is systematically related to developmental state",
+        results: "Confirmed across reaching, stepping, interlimb coupling, and word learning: variability spikes before transitions, settles after. Critical fluctuations are diagnostic.",
+        function: "instrument",
+        functionLabel: "Methodological imperative #2",
+        theory: "Throwing out variability as noise discards the most diagnostic feature of developing systems. NDS treats it as the primary signal.",
+      },
+      {
+        id: "ep3",
+        label: "Respect for Individuality — The Individual as Unit",
+        hypothesis: "Group averages obscure developmental pathways. The individual, studied in detail across multiple dimensions, is the proper unit of developmental analysis.",
+        dv: "Within-individual trajectories across multiple measures simultaneously",
+        who: "Few subjects, many observations per subject (Gabriel/Hannah, Nathan)",
+        instruments: ["Multi-dimensional longitudinal tracking", "Kinematic, postural, and behavioral coding in parallel"],
+        procedure: "Track 1–4 infants intensively across many sessions. Measure multiple subsystems simultaneously (reaching + posture + hand preference + speed). Analyze individual trajectories.",
+        measured: "Whether individual developmental pathways are recoverable and theoretically meaningful",
+        results: "Gabriel ≠ Hannah ≠ Nathan — each followed a distinct route to the same endpoint. Group means would have erased the phenomenon.",
+        function: "instrument",
+        functionLabel: "Methodological imperative #3",
+        theory: "Development is a property of individuals, not populations. The idiographic approach recovers the dynamics that nomothetic averaging destroys.",
       },
     ]
   },
@@ -753,7 +1226,7 @@ function renderTimeline() {
       .attr('class', 'chapter-title-label')
       .text(chapter.title);
 
-    // Chapter subtitle (DV type)
+    // Chapter subtitle (count)
     g.append('text')
       .attr('x', spineX + 16).attr('y', chY + 34)
       .attr('class', 'chapter-label')
@@ -863,18 +1336,33 @@ function renderDetail(node) {
     </div>
 
     <div class="detail-section">
+      <div class="detail-section-label">Hypothesis</div>
+      <div class="detail-section-content">${node.hypothesis}</div>
+    </div>
+
+    <div class="detail-section">
+      <div class="detail-section-label">Who Was Measured</div>
+      <div class="detail-section-content">${node.who}</div>
+    </div>
+
+    <div class="detail-section">
       <div class="detail-section-label">Instruments / Apparatus</div>
       <div class="detail-section-content">${instrumentsHtml}</div>
     </div>
 
     <div class="detail-section">
-      <div class="detail-section-label">What Was Measured (DV)</div>
+      <div class="detail-section-label">DV — What Was Measured</div>
       <div class="detail-section-content">${node.dv}</div>
     </div>
 
     <div class="detail-section">
-      <div class="detail-section-label">Operationalization</div>
-      <div class="detail-section-content">${node.measured}</div>
+      <div class="detail-section-label">Procedure</div>
+      <div class="detail-section-content">${node.procedure}</div>
+    </div>
+
+    <div class="detail-section">
+      <div class="detail-section-label">Key Results</div>
+      <div class="detail-section-content" style="color:#fff;">${node.results}</div>
     </div>
 
     <div class="detail-section">
