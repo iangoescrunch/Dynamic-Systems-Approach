@@ -1,7 +1,10 @@
 # Dynamic Systems Graduate Seminar Blog
 
 A comprehensive blog exploring Thelen & Smith's (1994) *A Dynamic Systems Approach to the Development of Cognition and Action* through both personal reflections and technical theoretical analyses.
-
+[Navigation Page](https://iangoescrunch.github.io/Dynamic-Systems-Approach/)
+[Standalone Master Concept Map](https://iangoescrunch.github.io/Dynamic-Systems-Approach/thelen_master_concept_map.html)
+[Thelen & Smith, (1994) Theory Lineage](https://iangoescrunch.github.io/Dynamic-Systems-Approach/theory-lineage.html)
+[Thelen & Smith, (1994) Methods Map](https://iangoescrunch.github.io/Dynamic-Systems-Approach/thelen_methods_map.html)
 ## Project Overview
 
 This graduate seminar blog demonstrates two complementary approaches to engaging with developmental systems theory:
